@@ -8,7 +8,7 @@ This working group defines architectural patterns for designing and operating ag
 
 | Name | Role | Organization | Title |
 |------|------|-------------|-------|
-| Andrew Kumar | Co-Chair | Bloomreach | Head of Agentic Platforms |
+| George Fitzgibbons | Co-Chair | Vercel | Principal Sales Engineer |
 | Tim Benniks | Co-Chair | Contentstack | Developer Experience Lead |
 | Everett Zufelt | Program Lead, Agent Ecosystem | Orium | VP, Agentic Systems & Partnerships |
 | Rebecca Veldon | Working Group Admin | MACH Alliance | Data and Systems Manager |

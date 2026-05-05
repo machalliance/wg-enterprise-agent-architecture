@@ -17,9 +17,9 @@ This working group defines architectural patterns for designing and operating ag
 
 <!-- Add members as they join -->
 
-| Name | Organization |
-|------|-------------|
-| | |
+| Name | Organization | Title |
+|------|-------------|---------|
+| [Devon Hillard](https://github.com/devondragon) | [McFadyen Digital](https://mcfadyen.com) | Principal Architect - AI |
 
 ## Meeting Schedule
 

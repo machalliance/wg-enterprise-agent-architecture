@@ -2,7 +2,7 @@
 
 Part of the [Agent Ecosystem](https://github.com/machalliance/agent-ecosystem) initiative by the [MACH Alliance](https://machalliance.org).
 
-This working group defines architectural patterns for designing and operating agent-driven systems across enterprise environments. It translates lessons from real-world implementations into reference architectures and design guidance that enterprises can use to build scalable agent-driven systems
+This working group defines architectural patterns for designing and operating agent-driven systems across enterprise environments. It translates lessons from real-world implementations into reference architectures and design guidance that enterprises can use to build scalable agent-driven systems.
 
 ## Leadership
 

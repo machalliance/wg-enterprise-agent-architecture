@@ -30,7 +30,7 @@ These aren't levels to climb. They aren't a maturity model. Each is the best cho
 
 We've grouped them into five buckets, knowing that the last bucket deliberately collapses two distinct ideas — collaboration across systems and self-directed autonomy — into one. They're separable in theory, but the group landed on this grouping because it's the easiest to reason about in practice.
 
-![Horizontal arrow diagram showing five stages of AI autonomy, from "More Structured / Human direction" on the left to "More Autonomous / System direction" on the right. Stage 1: LLM-assisted workflows (not yet agents). Stage 2: LLM-directed workflows. Stage 3: Goal-directed, task-oriented agents. Stage 4: Long running, policy driven. Stage 5: Collaborating across domains and organizations.](diagram-degreees-of-agency.png)
+![Horizontal arrow diagram showing five stages of AI autonomy, from "More Structured / Human direction" on the left to "More Autonomous / System direction" on the right. Stage 1: LLM-assisted workflows (not yet agents). Stage 2: LLM-directed workflows. Stage 3: Goal-directed, task-oriented agents. Stage 4: Long running, policy driven. Stage 5: Collaborating across domains and organizations.](diagram-degrees-of-agency.png)
 
 ### 1. LLM-assisted workflows (not yet agents)
 

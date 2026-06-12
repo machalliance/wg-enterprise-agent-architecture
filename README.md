@@ -20,6 +20,7 @@ This working group defines architectural patterns for designing and operating ag
 | Name | Organization | Title |
 |------|-------------|---------|
 | [Devon Hillard](https://github.com/devondragon) | [McFadyen Digital](https://mcfadyen.com) | Principal Architect - AI |
+| [Daniele Stroppa](https://github.com/dstroppa) | [Amazon Web Services](https://aws.amazon.com) | WW Sr. Partner Solutions Architect, Retail & Consumer Goods |
 
 ## Meeting Schedule
 

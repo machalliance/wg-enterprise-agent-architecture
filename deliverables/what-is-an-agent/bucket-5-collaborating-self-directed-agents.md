@@ -279,5 +279,3 @@ What remains unsolved is the part this document keeps returning to: trust betwee
 **Authors**
 
 This document was developed by the Enterprise Agent Architecture Working Group of the Agent Ecosystem. The working group's charter, members, and ongoing work are public at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture). Learn more about the broader agent ecosystem vision at [agentecosystem.org](https://agentecosystem.org).
-</content>
-</invoke>

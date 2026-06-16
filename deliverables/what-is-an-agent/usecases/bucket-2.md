@@ -2,6 +2,8 @@
 
 **By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)**
 
+The use cases below illustrate the category defined in [Bucket 2: LLM-directed workflows](../bucket-2-llm-directed-workflows.md), where an LLM makes decisions that direct control flow within a set of human-designed paths.
+
 ## 1. Intelligent Ticket Routing Across a MACH Stack
 
 A support ticket comes in: “My order says delivered, but I never received it, and the tracking page is broken.”

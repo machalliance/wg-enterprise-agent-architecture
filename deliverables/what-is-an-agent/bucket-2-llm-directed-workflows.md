@@ -10,6 +10,8 @@
 
 Bucket 2 is where the system first crosses the agency line. The LLM is no longer only generating content inside a fixed path. It evaluates context and makes a decision that changes how the workflow behaves.
 
+That decision takes one of two shapes: *choosing which path to take* — routing a record or request to one of several designed branches — or *deciding whether to continue* — judging an output and looping to refine it, or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop is just as much a bucket 2 pattern. In both, the model directs control flow without escaping the structure people designed.
+
 That decision is still constrained. People design the paths. People define the allowed routes, tools, thresholds, loops, and fallbacks. The model chooses from those options at runtime.
 
 This is not a goal-directed agent. The system is not handed a broad objective and asked to invent its own plan. It does not freely decide which tools exist, how long to run, or what outcome to pursue. It makes decisions within a designed structure.
@@ -231,10 +233,20 @@ The fallback path is not an error. It is part of the design.
 
 ### Evaluation loops with budgets
 
-Bucket 2 can include evaluation loops, but the loops must be bounded. For example, one model may generate a route and another evaluation step may check whether the route is consistent with the evidence.
+Not every bucket 2 decision is a choice between paths. The other common shape is a decision about whether to *continue*. Bucket 2 can include evaluation loops, but the loops must be bounded.
+
+A generate-evaluate-revise loop is the clearest retail example, and it sits directly on top of bucket 1's content enrichment workflow. In bucket 1, the model drafts a product description once, and a human or a deterministic validator decides what happens next. Promote that one decision point and it becomes bucket 2:
+
+1. A generator produces a product description from the approved attribute package.
+2. An evaluator — a separate model call with its own rubric — scores the draft against brand voice, required attributes, reading level, and SEO completeness, and returns structured feedback.
+3. If the draft passes, the workflow ships it or queues it for light human review. If it fails, the feedback returns to the generator for a revision, and the loop runs again.
+4. The loop is bounded: a fixed maximum number of revisions. If the draft still fails on the last attempt, the record escalates to a human rather than looping forever.
+
+The agency here is not *which path* — it is *whether to go again*. The evaluator's pass-or-fail judgment is a model-made decision that shapes control flow, exactly like a routing decision, but the structure is a loop rather than a branch. Everything that bounds it — the rubric, the revision cap, the escalation fallback — is human-designed. That is what keeps it in bucket 2 and out of bucket 3: the model decides whether the output is good enough, not what the goal is, which tools exist, or how many attempts it gets.
 
 Useful patterns:
 
+- bounded generate-evaluate-revise loops for generated content
 - one bounded retry after invalid structured output
 - second-pass evaluation for regulated categories
 - disagreement routing when two classifiers choose different paths

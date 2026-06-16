@@ -94,3 +94,13 @@ For example:
 This does not require a fully autonomous agent. The company designs the possible exception-handling paths. The LLM helps choose the most appropriate one based on messy, real-world context.
 
 **Why this fits Bucket 2:** The model makes a routing decision, but only within a controlled operational framework.
+
+## 6. Iterative Product Description Quality Loop
+
+Not every bucket 2 use case is a routing decision. Bucket 1 uses an LLM to draft product copy once, then hands it to a human or a deterministic validator. A bucket 2 version of the same workflow adds a model-judged refinement loop on top of that single generation step.
+
+A generator model drafts a product description from the approved attribute package. A separate evaluator model scores the draft against a fixed rubric — brand voice, required attributes, reading level, SEO completeness — and returns structured feedback. If the draft passes, the workflow ships it or queues it for light review. If it fails, the feedback returns to the generator for a revision and the loop runs again, up to a fixed maximum number of attempts. If the copy still falls short on the last attempt, the record escalates to a human instead of looping indefinitely.
+
+This is not routing. The model is not choosing among predefined branches; it is deciding whether the output is good enough to stop. That pass-fail-revise judgment is a model-made decision that directs control flow — the bucket 2 agency line — but the shape is a bounded loop rather than a branch. The rubric, the revision cap, and the escalation fallback are all human-designed, which is what keeps it inside bucket 2.
+
+**Why this fits Bucket 2:** The model decides whether to revise or ship, not which route to take. The agency is loop-continuation inside a human-designed, bounded structure.

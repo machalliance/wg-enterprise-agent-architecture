@@ -2,6 +2,8 @@
 
 **By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)**
 
+The use cases below illustrate the category defined in [Bucket 5: Collaborating, Self-Directed Agents](../bucket-5-collaborating-self-directed-agents.md), where independently built agents from different organizations coordinate across boundaries with no shared orchestrator.
+
 Every use case below crosses a boundary the earlier buckets never had to. There is no shared orchestrator and no single operator who controls the whole system — each organization runs its own agent, under its own policy, and the agents meet only through verified, mediated exchange. The examples are ordered along the continuum the bucket 5 article describes: from **coordinated agents with aligned intent** at the top, toward **self-interested agents with opposed intent** at the end. As you move down that continuum, every assumption you could leave implicit inside one organization has to become an explicit, verifiable protocol.
 
 ## 1. Multi-Vendor Composable Stack Coordination

@@ -2,6 +2,8 @@
 
 **By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)**
 
+The use cases below illustrate the category defined in [Bucket 1: LLM-assisted workflows](../bucket-1-llm-assisted-workflows.md), where an LLM generates content inside a workflow whose path is fully predetermined.
+
 ## 1. Content Enrichment for Product Experience Platforms
 
 A common MACH use case is product content enrichment inside a PIM, CMS, or commerce stack.

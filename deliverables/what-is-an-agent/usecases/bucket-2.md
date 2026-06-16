@@ -61,9 +61,7 @@ This avoids forcing every content item through the same heavy approval chain, wh
 
 **Why this fits Bucket 2:** The LLM does not publish the content. It decides the appropriate review route inside a predefined workflow.
 
-## 4. Your Existing Example: Don’t Burn Tokens on What a Script Can Do
-
-Your existing use case fits nicely as a bucket 2 pattern when framed as LLM-directed orchestration with deterministic execution.
+## 4. Don’t Burn Tokens on What a Script Can Do
 
 The idea is that not every step in an “agentic” system should be performed by an LLM. Some work is better handled by scripts, rules, APIs, or deterministic services. The LLM’s role is to decide which path or tool is appropriate, not to perform every operation itself.
 

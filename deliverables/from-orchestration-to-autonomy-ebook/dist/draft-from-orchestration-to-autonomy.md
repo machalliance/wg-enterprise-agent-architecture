@@ -1186,6 +1186,20 @@ Agentic AI in production (MACH Alliance):
 - [CarParts.com: Building a Multi-Agent Ecosystem for Agentic Automotive Commerce](https://machalliance.org/case-studies/carparts-com)
 - [Altitude Sports: From Monolith to Agentic Commerce](https://machalliance.org/case-studies/altitude-sports-from-monolith-to-agentic-commerce)
 
+# Contributors
+
+This book was shaped by members of the Enterprise Agent Architecture Working Group, with thanks to:
+
+- Daniele Stroppa, [Amazon Web Services](https://aws.amazon.com)
+- Danny Lake, [Orium](https://orium.com)
+- Devon Hillard, [McFadyen Digital](https://mcfadyen.com)
+- Doug Wessel, [viax](https://viax.io)
+- Everett Zufelt, [Orium](https://orium.com)
+- George FitzGibbons, [Vercel](https://vercel.com)
+- Ryan Lunka, [Aries Solutions](https://ariessolutions.io)
+- Sana Remekie, [Conscia](https://www.conscia.ai)
+- Tim Benniks, [Contentstack](https://www.contentstack.com)
+
 # About the working group
 
 This book was developed by the Enterprise Agent Architecture Working Group of the Agent Ecosystem. The working group's charter, members, and ongoing work are public at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture).

@@ -170,11 +170,13 @@ sequenceDiagram
         B->>BP: Escalate to human buyer
         BP-->>B: Approve / reject / adjust mandate
     else No agreement in round budget
+        B->>BP: Fallback within mandate? (approved counterparty, spend cap)
+        BP-->>B: Approved fallback / halt
         B->>SB: Fall back to next-best counterparty
     end
 ```
 
-The three terminal branches — settle within mandate, escalate beyond it, walk away — are the full decision space. "Walk away" matters here in a way it never did inside a single organization: a counterparty agent can refuse, stall, or behave adversarially, and your agent has to disengage cleanly rather than concede.
+The three terminal branches — settle within mandate, escalate beyond it, walk away — are the full decision space, and **every one of them passes through the buyer's policy engine.** That is the point: policy governs the agent regardless of how much agency it has been given. Settling consults the mandate, escalating hands control back to a human, and even walking away is policy-bounded — which counterparties are approved fallbacks, and whether the cumulative spend cap across concurrent negotiations still allows another attempt. "Walk away" matters here in a way it never did inside a single organization: a counterparty agent can refuse, stall, or behave adversarially, and your agent has to disengage cleanly rather than concede — but the disengage-and-retry decision is itself a governed action, not a free one.
 
 ---
 

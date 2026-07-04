@@ -14,19 +14,9 @@ The whole model on one screen:
 | 4 | Autonomous, policy-guided agents | The model runs continuously within policy | Continuous optimization of a domain | Durable identity, circuit breakers, decision trails |
 | 5 | Collaborating, self-directed agents | Agents work across organizational lines | Reach beyond your own walls | Cross-organization identity and mandates |
 
-The sections below expand each row, and Part Three's readiness reference turns the last column into full checklists.
+Part Two expands each row into a full chapter, and Part Three's readiness reference turns the last column into consolidated checklists.
 
-**1. LLM-assisted workflows (not yet agents).** A deterministic workflow uses a model to generate or transform content at one or more steps. Summarize this transcript, draft this email, translate this paragraph. The model does real work but does not choose the path. This sits below the agency line.
-
-**2. LLM-directed workflows.** The model makes decisions inside a structure people designed. You build the paths; the model chooses which one to take, or whether to loop and try again. Intelligent routing, parallel processing, bounded evaluation loops. The structure is authored by people; the decisions at each step are the model's.
-
-**3. Goal-directed, task-oriented agents.** You hand the system a goal and a set of tools, and it works out the steps itself. Fix this bug, research this codebase, clean up this feed. No predefined path. The task is bounded and the agent stops when it is done. This is the first archetype that is genuinely an agent rather than a workflow.
-
-**4. Autonomous, policy-guided agents.** The system operates independently over long durations, monitoring a domain, deciding, acting, and self-correcting, without waiting for an assignment. The shift from archetype 3 is persistence and self-direction. It does not complete a task and report back. It watches a domain and acts on what it finds, continuously, within defined policy.
-
-**5. Collaborating, self-directed agents.** Agents work together across teams, vendors, or organizational lines, and at the far end they do so on behalf of parties with opposing interests. A buyer's agent and a seller's agent, each optimizing for a different outcome, negotiating directly. No shared orchestrator. No single party in control.
-
-Each archetype also buys a different business outcome at a different price. Archetypes 1 and 2 buy speed and consistency on high-volume work: faster content, cleaner data, quicker routing, at low risk and predictable cost. Archetype 3 buys real autonomy on bounded problems no one had time to script, with the cost of testing and oversight for a system whose plan you no longer write. Archetype 4 buys continuous optimization of a domain, and requires a governance and identity function most organizations do not yet have. Archetype 5 buys reach beyond your own walls, and requires trust infrastructure the industry is still building. More autonomy does not mean more value; it means a different value with a different bill attached, and the skill is matching the archetype to the outcome you actually need.
+Each archetype buys a different business outcome at a different price. Archetypes 1 and 2 buy speed and consistency on high-volume work: faster content, cleaner data, quicker routing, at low risk and predictable cost. Archetype 3 buys real autonomy on bounded problems no one had time to script, with the cost of testing and oversight for a system whose plan you no longer write. Archetype 4 buys continuous optimization of a domain, and requires a governance and identity function most organizations do not yet have. Archetype 5 buys reach beyond your own walls, and requires trust infrastructure the industry is still building. More autonomy does not mean more value; it means a different value with a different bill attached, and the skill is matching the archetype to the outcome you actually need.
 
 Each is the best choice for a given class of problem, and most production systems use several at once. The next two sections make that last point concrete.
 

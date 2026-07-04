@@ -6,9 +6,7 @@
 
 This is where a system first crosses the agency line. The model is no longer only generating content inside a fixed path. It evaluates context and makes a decision that changes how the workflow behaves.
 
-That decision takes one of two shapes. The model chooses which path to take, routing a record or request to one of several designed branches. Or the model decides whether to continue, judging an output and looping to refine it or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop belongs here just as much. In both, the model directs control flow without escaping the structure people designed.
-
-The decision stays constrained. People design the paths and define the allowed routes, tools, thresholds, loops, and fallbacks; the model chooses among them at runtime, without inventing a plan of its own.
+That decision takes one of two shapes. The model chooses which path to take, routing a record or request to one of several designed branches. Or it decides whether to continue, judging an output and looping to refine it or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop belongs here just as much. In both, the model directs control flow without escaping the structure people designed: people define the allowed routes, tools, thresholds, loops, and fallbacks, and the model chooses among them at runtime, without inventing a plan of its own.
 
 New concerns appear the moment the model picks a path:
 

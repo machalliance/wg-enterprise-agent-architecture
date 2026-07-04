@@ -30,4 +30,4 @@ If it runs continuously within your own systems, under your policies and identit
 
 Now read back the set. If your solution touched more than one archetype, list each one and the readiness it demands: prompt governance and output validation for archetype 1, route policy and confidence handling for archetype 2, scoped tools and reasoning traces for archetype 3, durable identity and circuit breakers for archetype 4, cross-organization identity and mandates for archetype 5.
 
-A second question follows the first: for each archetype in play, are you resourced for it? Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement, and Part Three consolidates them into a single checklist.
+Then, for each archetype in play, ask whether you are resourced for it. Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement; Part Three consolidates them into a single checklist.

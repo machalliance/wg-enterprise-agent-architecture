@@ -2,7 +2,7 @@
 
 ## The "agentic" problem: one word, many systems
 
-Watch two vendors present at the same conference. The first shows a workflow that uses a language model to route support tickets and calls it agentic. The second shows a system that plans across domains, delegates to specialized sub-agents, and recovers when a step fails, and calls it agentic too. The word is doing no work. It describes both a routing rule with a model attached and a system that can act on the world with little supervision.
+The word is doing no work. It describes both a routing rule with a model attached and a system that plans across domains, delegates to sub-agents, and acts on the world with little supervision. When one term stretches that far, it stops distinguishing anything.
 
 For a buyer, that is a real cost. You cannot compare two products when the label that is supposed to distinguish them applies equally to both. You cannot write a requirement around a term that means seven things. You cannot set a safety boundary when the vendor's definition of the capability and yours do not overlap.
 

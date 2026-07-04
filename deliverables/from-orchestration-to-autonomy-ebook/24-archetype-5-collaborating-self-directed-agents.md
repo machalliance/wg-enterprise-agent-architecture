@@ -17,9 +17,7 @@ Four questions become unavoidable the moment an agent must interact with an agen
 - **Protocol.** What shared message contract lets independently built agents negotiate, counteroffer, and settle across a network neither side owns?
 - **Accountability.** When two organizations' agents produce an outcome neither operator intended, whose decision trail is authoritative, and how is the dispute resolved?
 
-Archetype 4 told you to build durable identity, auditable decision trails, and enforceable policy. None of that gets thrown away. This archetype extends it outward, across trust boundaries you do not own.
-
-This archetype is the top of a ladder you climb in one domain. Part Three walks Meridian's replenishment through all five rungs, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last rung: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
+Part Three walks Meridian's replenishment through all five archetypes, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last step: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
 
 ### Running example: sourcing a spring-line reorder across organizations
 

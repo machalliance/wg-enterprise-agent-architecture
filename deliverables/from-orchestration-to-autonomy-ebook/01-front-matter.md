@@ -24,8 +24,6 @@ We use *archetype* rather than *level* or *maturity stage* on purpose. A level i
 
 ## Contents
 
-Foreword
-
 Executive Summary
 
 Part One: The Model

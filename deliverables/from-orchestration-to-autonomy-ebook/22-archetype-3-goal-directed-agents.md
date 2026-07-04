@@ -6,15 +6,15 @@
 
 An LLM-directed workflow chooses among paths that people drew. This archetype removes the branches. You hand the system a goal and a set of tools, and it works out the steps itself. No predefined path. The agent inspects what it finds, decides what to do next, does it, looks at the result, and adjusts, until the goal is met or it runs out of room.
 
-This is the first archetype that is genuinely an agent rather than a workflow, and the last one that reliably stops. Both halves matter. Earlier archetypes are already agentic the moment a model makes decisions, but that is the adjective. The noun arrives here. It maps to Anthropic's definition of an agent: a system where the model dynamically directs its own process and tool usage, rather than being orchestrated through predefined code paths. But the task is bounded: a finite job, a scoped toolset, a session that ends when the work does. Most enterprises will do their first real agentic work here, because the shape of the task contains the blast radius.
+This is the first archetype that is genuinely an agent rather than a workflow, and the last one that reliably stops. Earlier archetypes are agentic the moment a model makes a decision — but that is the adjective; the noun arrives here. It maps to Anthropic's definition of an agent: a system where the model dynamically directs its own process and tool usage, rather than being orchestrated through predefined code paths. But the task is bounded: a finite job, a scoped toolset, a session that ends when the work does. Most enterprises will do their first real agentic work here, because the shape of the task contains the blast radius.
 
 New concerns appear the moment the model owns the sequence of steps:
 
-- **The plan is the model's, not yours.** You author the goal and the toolset. The order of operations is invented at runtime and differs from one run to the next. You are trusting a process, not reviewing a flowchart.
-- **Tools become the action surface.** Everything the agent can do is the union of the tools you give it. Scoping the toolset is scoping what the agent may touch. An over-broad toolset is a quietly over-broad grant of authority.
-- **Reasoning traces stop being optional.** You need to reconstruct both what the agent did and why it did it. Without that, an autonomous run is unreviewable.
+- **The plan is the model's, not yours.** You author the goal and tools; the order of operations is invented at runtime, so you are trusting a process, not reviewing a flowchart.
+- **Tools become the action surface.** Everything the agent can do is the union of the tools you give it, so scoping the toolset is scoping what it may touch.
+- **Reasoning traces stop being optional.** You need to reconstruct both what the agent did and why; without that, an autonomous run is unreviewable.
 - **Termination becomes a design decision.** Done, stuck, and out-of-budget all need explicit definitions. An agent that cannot decide it is finished is an archetype 4 problem you did not intend to take on.
-- **Permissions are scoped and short-lived.** The agent runs under the credentials of the human who invoked it, for the duration of the task, and no longer.
+- **Permissions are scoped and short-lived.** The agent runs under the credentials of the human who invoked it, for the duration of the task and no longer.
 
 The value: real autonomy, where the agent solves problems you did not script, without the open-ended commitment of an agent that runs forever.
 
@@ -97,7 +97,7 @@ graph TB
     OUTCOME --> AUDIT
 ```
 
-The guardrails do not participate in the reasoning. They bound it. The tool surface is the only way the agent reaches the outside world, which is why scoping the tools is the primary act of architecture here, the way defining the route set was in archetype 2. The loop terminates by design through three branches: goal achieved, blocked, budget reached. An agent with no path to "budget reached" is an agent with no guaranteed stop.
+The guardrails do not participate in the reasoning. They bound it. The tool surface is the only way the agent reaches the outside world, which is why scoping the tools is the primary act of architecture here, the way defining the route set was in archetype 2. The loop terminates by design through three branches: goal achieved, blocked, or budget reached.
 
 **The agent owns the plan.** The defining move is that the model decomposes the goal into steps at runtime. You write the goal, hand over the tools, and set the bounds. The sequence is emergent and will differ across runs. That variability is the feature, because the point is to handle problems you could not enumerate in advance. You cannot validate this by reading a flowchart, because there is none. You validate it by constraining what the agent can reach, observing what it did, and testing it against representative inputs first.
 

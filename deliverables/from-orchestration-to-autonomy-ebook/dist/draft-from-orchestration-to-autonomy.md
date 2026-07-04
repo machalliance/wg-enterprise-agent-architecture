@@ -24,8 +24,6 @@ We use *archetype* rather than *level* or *maturity stage* on purpose. A level i
 
 ## Contents
 
-Foreword
-
 Executive Summary
 
 Part One: The Model
@@ -56,36 +54,19 @@ Closing: Where most organizations sit, and how to contribute
 References and further reading
 
 
-# Foreword
-
-If you are building in the agent ecosystem right now, you have already hit the problem this book exists to fix. Nobody agrees on what "agentic" means. A vendor calls their language-model routing workflow agentic. Another uses the same word for a system that plans across domains, delegates to sub-agents, and self-corrects when something breaks.
-
-Treat that as a design problem, because the consequences are practical. When one term covers everything from an intelligent workflow to an autonomous system acting on your behalf, you cannot write clear requirements, compare two vendors on equal footing, or decide where the safety boundaries belong. The confusion becomes technical debt before anyone writes a line of code.
-
-We wrote this to give people who build a common language. The model has five archetypes, laid out from structured and human-directed to autonomous and system-directed. Every point along that range is valid. Each is the right choice for some class of problem. None is a trophy for outgrowing the one before it.
-
-Two decisions shape how we present them.
-
-First, we call them archetypes rather than levels. A maturity model implies you are meant to reach the top and that everything below it is a waystation. That framing is wrong for this material. A content-generation workflow is the correct architecture for a lot of high-volume language work, and plenty of production systems should never move past it. It has not failed by staying there.
-
-Second, we frame the model around the solution being built. You will not find a quiz that sorts you, the reader, into a single archetype, because real solutions combine several. An autonomous agent still calls content-generation steps that belong to archetype 1. The useful question is which archetypes a given solution needs, and whether you are resourced for the demands each one places on your architecture and your policy.
-
-Read Part One for the argument in full. Read Part Two when you need depth on a specific archetype. Read Part Three to see the archetypes working together and to check your own readiness. This is a working framework, shaped in the open, and it gets sharper the more people build against it.
-
-
 # Executive Summary
 
-If you read nothing else, read this.
+If you are building in the agent ecosystem right now, you have already hit the problem this book exists to fix: nobody agrees on what "agentic" means. If you read nothing else, read this.
 
 ### The problem: one word, many systems
 
-The word "agentic" now covers everything from a workflow that calls a language model to a system that negotiates a contract on your behalf. Vendors know it, and many are "agent washing": rebranding assistants, chatbots, and robotic process automation as agents. Gartner estimates only about 130 of the thousands of self-described agentic AI vendors are real ([Gartner, June 2025](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027)). For a buyer, the single label makes it impossible to compare products, write requirements, or set safety boundaries. The cost of that lands on the business long before it reaches engineering.
+The word "agentic" now covers everything from a workflow that calls a language model to a system that negotiates a contract on your behalf. Vendors know it, and many are "agent washing": rebranding assistants, chatbots, and robotic process automation as agents. Gartner estimates only about 130 of the thousands of self-described agentic AI vendors are real ([Gartner, June 2025](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027)). For a buyer, the single label makes it impossible to compare products, write requirements, or set safety boundaries — and that confusion becomes technical debt before anyone writes a line of code.
 
 ### The stakes, both ways
 
-It is also expensive to get wrong. Gartner predicts that over 40% of agentic AI projects will be canceled by the end of 2027, for three reasons: escalating costs, unclear business value, and inadequate risk controls. Those three share a root cause. They are what happens when a system's capability outruns the governance around it, or when governance is built for a capability that was never there. Matching the two is the difference between a pilot that ships and one that gets written off.
+It is also expensive to get wrong. Gartner predicts that over 40% of agentic AI projects will be canceled by the end of 2027, for three reasons: escalating costs, unclear business value, and inadequate risk controls. Those three share a root cause: a system's capability outrunning the governance around it, or governance built for a capability that was never there. Matching the two is the difference between a pilot that ships and one that gets written off.
 
-The upside is just as real, and it is already in production. B2B distributor AmerCareRoyal cut purchase-order processing from about eight minutes to under sixty seconds, with 99% of structured orders now flowing through untouched. Retailer Bash ran a shopping agent through Black Friday and saw a 35% lift in conversion and a 40% lift in revenue per visit against a control group. Smart-home brand Wyze more than halved click-to-delivery time and opened a new sales channel at near-zero added cost. These are documented outcomes from MACH Alliance award deployments ([The First Wave of Agentic AI](https://machalliance.org/insights-hub/The-First-Wave-of-Agentic-AI), 2026). The pattern behind the wins is consistent: a narrow, high-value workflow, measured before it was expanded, on composable infrastructure, with governance built in from the start. That is the same balance the cancelled projects got wrong.
+The upside is just as real, and already in production. B2B distributor AmerCareRoyal cut purchase-order processing from about eight minutes to under sixty seconds, with 99% of structured orders now flowing through untouched. Retailer Bash ran a shopping agent through Black Friday and saw a 35% lift in conversion and a 40% lift in revenue per visit against a control group. Smart-home brand Wyze more than halved click-to-delivery time and opened a new sales channel at near-zero added cost. These are documented outcomes from MACH Alliance award deployments ([The First Wave of Agentic AI](https://machalliance.org/insights-hub/The-First-Wave-of-Agentic-AI), 2026). The pattern behind the wins is consistent: a narrow, high-value workflow, measured before it was expanded, on composable infrastructure, with governance built in from the start — the same balance the cancelled projects got wrong.
 
 ### The five archetypes
 
@@ -97,7 +78,7 @@ This book gives you a way to do that matching. It names five **archetypes** of a
 4. **Autonomous, policy-guided agents** run continuously, monitoring and acting within policy.
 5. **Collaborating, self-directed agents** work across organizational lines, including with parties whose interests differ from yours.
 
-They are patterns to compose with. Most real systems use several at once, and each one places its own demands on your architecture (what the system can do) and your policy (what it is allowed to do).
+These are archetypes, not levels on a ladder. None is a trophy for outgrowing the one before it: a content-generation workflow is the right architecture for a lot of high-volume language work, and plenty of production systems should never move past it. They are patterns to compose with — most real systems use several at once — and each places its own demands on your architecture (what the system can do) and your policy (what it is allowed to do).
 
 ### What to do now
 
@@ -107,14 +88,14 @@ Three moves a leadership team can make now, without a single line of code:
 - **Fund governance in step with capability.** The Gartner cancellation reasons are a checklist in disguise. Before approving an agentic initiative, ask whether the risk controls, the cost model, and the business case scale with the autonomy you are buying. If they do not, you are funding a future write-off.
 - **Refuse "agentic" as an answer.** Ask a vendor which archetype their system is, and what it demands of you. A precise answer is a sign of a real product. A wave at "agentic" is a sign of agent washing.
 
-The organizations that get value are the ones doing their current archetype well before reaching for the next. The chapters that follow give the business case in Part One and the build detail in Part Two, so both the leadership team and the people who build have the same map.
+The organizations that get value are the ones doing their current archetype well before reaching for the next. The chapters that follow give the business case in Part One and the build detail in Part Two, so the leadership team and the people who build work from the same map. This is a working framework, shaped in the open, and it gets sharper the more people build against it.
 
 
 # Part One · The Model
 
 ## The "agentic" problem: one word, many systems
 
-Watch two vendors present at the same conference. The first shows a workflow that uses a language model to route support tickets and calls it agentic. The second shows a system that plans across domains, delegates to specialized sub-agents, and recovers when a step fails, and calls it agentic too. The word is doing no work. It describes both a routing rule with a model attached and a system that can act on the world with little supervision.
+The word is doing no work. It describes both a routing rule with a model attached and a system that plans across domains, delegates to sub-agents, and acts on the world with little supervision. When one term stretches that far, it stops distinguishing anything.
 
 For a buyer, that is a real cost. You cannot compare two products when the label that is supposed to distinguish them applies equally to both. You cannot write a requirement around a term that means seven things. You cannot set a safety boundary when the vendor's definition of the capability and yours do not overlap.
 
@@ -169,19 +150,9 @@ The whole model on one screen:
 | 4 | Autonomous, policy-guided agents | The model runs continuously within policy | Continuous optimization of a domain | Durable identity, circuit breakers, decision trails |
 | 5 | Collaborating, self-directed agents | Agents work across organizational lines | Reach beyond your own walls | Cross-organization identity and mandates |
 
-The sections below expand each row, and Part Three's readiness reference turns the last column into full checklists.
+Part Two expands each row into a full chapter, and Part Three's readiness reference turns the last column into consolidated checklists.
 
-**1. LLM-assisted workflows (not yet agents).** A deterministic workflow uses a model to generate or transform content at one or more steps. Summarize this transcript, draft this email, translate this paragraph. The model does real work but does not choose the path. This sits below the agency line.
-
-**2. LLM-directed workflows.** The model makes decisions inside a structure people designed. You build the paths; the model chooses which one to take, or whether to loop and try again. Intelligent routing, parallel processing, bounded evaluation loops. The structure is authored by people; the decisions at each step are the model's.
-
-**3. Goal-directed, task-oriented agents.** You hand the system a goal and a set of tools, and it works out the steps itself. Fix this bug, research this codebase, clean up this feed. No predefined path. The task is bounded and the agent stops when it is done. This is the first archetype that is genuinely an agent rather than a workflow.
-
-**4. Autonomous, policy-guided agents.** The system operates independently over long durations, monitoring a domain, deciding, acting, and self-correcting, without waiting for an assignment. The shift from archetype 3 is persistence and self-direction. It does not complete a task and report back. It watches a domain and acts on what it finds, continuously, within defined policy.
-
-**5. Collaborating, self-directed agents.** Agents work together across teams, vendors, or organizational lines, and at the far end they do so on behalf of parties with opposing interests. A buyer's agent and a seller's agent, each optimizing for a different outcome, negotiating directly. No shared orchestrator. No single party in control.
-
-Each archetype also buys a different business outcome at a different price. Archetypes 1 and 2 buy speed and consistency on high-volume work: faster content, cleaner data, quicker routing, at low risk and predictable cost. Archetype 3 buys real autonomy on bounded problems no one had time to script, with the cost of testing and oversight for a system whose plan you no longer write. Archetype 4 buys continuous optimization of a domain, and requires a governance and identity function most organizations do not yet have. Archetype 5 buys reach beyond your own walls, and requires trust infrastructure the industry is still building. More autonomy does not mean more value; it means a different value with a different bill attached, and the skill is matching the archetype to the outcome you actually need.
+Each archetype buys a different business outcome at a different price. Archetypes 1 and 2 buy speed and consistency on high-volume work: faster content, cleaner data, quicker routing, at low risk and predictable cost. Archetype 3 buys real autonomy on bounded problems no one had time to script, with the cost of testing and oversight for a system whose plan you no longer write. Archetype 4 buys continuous optimization of a domain, and requires a governance and identity function most organizations do not yet have. Archetype 5 buys reach beyond your own walls, and requires trust infrastructure the industry is still building. More autonomy does not mean more value; it means a different value with a different bill attached, and the skill is matching the archetype to the outcome you actually need.
 
 Each is the best choice for a given class of problem, and most production systems use several at once. The next two sections make that last point concrete.
 
@@ -241,7 +212,7 @@ If it runs continuously within your own systems, under your policies and identit
 
 Now read back the set. If your solution touched more than one archetype, list each one and the readiness it demands: prompt governance and output validation for archetype 1, route policy and confidence handling for archetype 2, scoped tools and reasoning traces for archetype 3, durable identity and circuit breakers for archetype 4, cross-organization identity and mandates for archetype 5.
 
-A second question follows the first: for each archetype in play, are you resourced for it? Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement, and Part Three consolidates them into a single checklist.
+Then, for each archetype in play, ask whether you are resourced for it. Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement; Part Three consolidates them into a single checklist.
 
 
 # Part Two · The Five Archetypes
@@ -400,9 +371,7 @@ This archetype stops at generation and transformation. It becomes archetype 2 wh
 
 This is where a system first crosses the agency line. The model is no longer only generating content inside a fixed path. It evaluates context and makes a decision that changes how the workflow behaves.
 
-That decision takes one of two shapes. The model chooses which path to take, routing a record or request to one of several designed branches. Or the model decides whether to continue, judging an output and looping to refine it or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop belongs here just as much. In both, the model directs control flow without escaping the structure people designed.
-
-The decision stays constrained. People design the paths and define the allowed routes, tools, thresholds, loops, and fallbacks; the model chooses among them at runtime, without inventing a plan of its own.
+That decision takes one of two shapes. The model chooses which path to take, routing a record or request to one of several designed branches. Or it decides whether to continue, judging an output and looping to refine it or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop belongs here just as much. In both, the model directs control flow without escaping the structure people designed: people define the allowed routes, tools, thresholds, loops, and fallbacks, and the model chooses among them at runtime, without inventing a plan of its own.
 
 New concerns appear the moment the model picks a path:
 
@@ -577,15 +546,15 @@ This archetype ends where the designed path set ends. A record routed to complia
 
 An LLM-directed workflow chooses among paths that people drew. This archetype removes the branches. You hand the system a goal and a set of tools, and it works out the steps itself. No predefined path. The agent inspects what it finds, decides what to do next, does it, looks at the result, and adjusts, until the goal is met or it runs out of room.
 
-This is the first archetype that is genuinely an agent rather than a workflow, and the last one that reliably stops. Both halves matter. Earlier archetypes are already agentic the moment a model makes decisions, but that is the adjective. The noun arrives here. It maps to Anthropic's definition of an agent: a system where the model dynamically directs its own process and tool usage, rather than being orchestrated through predefined code paths. But the task is bounded: a finite job, a scoped toolset, a session that ends when the work does. Most enterprises will do their first real agentic work here, because the shape of the task contains the blast radius.
+This is the first archetype that is genuinely an agent rather than a workflow, and the last one that reliably stops. Earlier archetypes are agentic the moment a model makes a decision — but that is the adjective; the noun arrives here. It maps to Anthropic's definition of an agent: a system where the model dynamically directs its own process and tool usage, rather than being orchestrated through predefined code paths. But the task is bounded: a finite job, a scoped toolset, a session that ends when the work does. Most enterprises will do their first real agentic work here, because the shape of the task contains the blast radius.
 
 New concerns appear the moment the model owns the sequence of steps:
 
-- **The plan is the model's, not yours.** You author the goal and the toolset. The order of operations is invented at runtime and differs from one run to the next. You are trusting a process, not reviewing a flowchart.
-- **Tools become the action surface.** Everything the agent can do is the union of the tools you give it. Scoping the toolset is scoping what the agent may touch. An over-broad toolset is a quietly over-broad grant of authority.
-- **Reasoning traces stop being optional.** You need to reconstruct both what the agent did and why it did it. Without that, an autonomous run is unreviewable.
+- **The plan is the model's, not yours.** You author the goal and tools; the order of operations is invented at runtime, so you are trusting a process, not reviewing a flowchart.
+- **Tools become the action surface.** Everything the agent can do is the union of the tools you give it, so scoping the toolset is scoping what it may touch.
+- **Reasoning traces stop being optional.** You need to reconstruct both what the agent did and why; without that, an autonomous run is unreviewable.
 - **Termination becomes a design decision.** Done, stuck, and out-of-budget all need explicit definitions. An agent that cannot decide it is finished is an archetype 4 problem you did not intend to take on.
-- **Permissions are scoped and short-lived.** The agent runs under the credentials of the human who invoked it, for the duration of the task, and no longer.
+- **Permissions are scoped and short-lived.** The agent runs under the credentials of the human who invoked it, for the duration of the task and no longer.
 
 The value: real autonomy, where the agent solves problems you did not script, without the open-ended commitment of an agent that runs forever.
 
@@ -668,7 +637,7 @@ graph TB
     OUTCOME --> AUDIT
 ```
 
-The guardrails do not participate in the reasoning. They bound it. The tool surface is the only way the agent reaches the outside world, which is why scoping the tools is the primary act of architecture here, the way defining the route set was in archetype 2. The loop terminates by design through three branches: goal achieved, blocked, budget reached. An agent with no path to "budget reached" is an agent with no guaranteed stop.
+The guardrails do not participate in the reasoning. They bound it. The tool surface is the only way the agent reaches the outside world, which is why scoping the tools is the primary act of architecture here, the way defining the route set was in archetype 2. The loop terminates by design through three branches: goal achieved, blocked, or budget reached.
 
 **The agent owns the plan.** The defining move is that the model decomposes the goal into steps at runtime. You write the goal, hand over the tools, and set the bounds. The sequence is emergent and will differ across runs. That variability is the feature, because the point is to handle problems you could not enumerate in advance. You cannot validate this by reading a flowchart, because there is none. You validate it by constraining what the agent can reach, observing what it did, and testing it against representative inputs first.
 
@@ -919,9 +888,7 @@ Four questions become unavoidable the moment an agent must interact with an agen
 - **Protocol.** What shared message contract lets independently built agents negotiate, counteroffer, and settle across a network neither side owns?
 - **Accountability.** When two organizations' agents produce an outcome neither operator intended, whose decision trail is authoritative, and how is the dispute resolved?
 
-Archetype 4 told you to build durable identity, auditable decision trails, and enforceable policy. None of that gets thrown away. This archetype extends it outward, across trust boundaries you do not own.
-
-This archetype is the top of a ladder you climb in one domain. Part Three walks Meridian's replenishment through all five rungs, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last rung: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
+Part Three walks Meridian's replenishment through all five archetypes, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last step: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
 
 ### Running example: sourcing a spring-line reorder across organizations
 
@@ -1209,5 +1176,3 @@ Learn more about the broader agent ecosystem vision at [agentecosystem.org](http
 # How to cite
 
 Enterprise Agent Architecture Working Group, *From Orchestration to Autonomy: A composable model for building across the agent ecosystem*. Agent Ecosystem, 2026.
-
-

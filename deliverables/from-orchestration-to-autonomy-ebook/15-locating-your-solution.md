@@ -1,6 +1,6 @@
 ## Locating your solution
 
-This is a short diagnostic for mapping a solution to the archetypes it uses. Run it per component. A solution with three moving parts should come out the other side named as a blend, which is the point.
+This is a short diagnostic for mapping a solution to the archetypes it uses. Run it per component. A solution with three moving parts should come out the other side named as a blend, which is exactly what you want.
 
 ### The business-language version
 
@@ -31,3 +31,5 @@ If it runs continuously within your own systems, under your policies and identit
 Now read back the set. If your solution touched more than one archetype, list each one and the readiness it demands: prompt governance and output validation for archetype 1, route policy and confidence handling for archetype 2, scoped tools and reasoning traces for archetype 3, durable identity and circuit breakers for archetype 4, cross-organization identity and mandates for archetype 5.
 
 Then, for each archetype in play, ask whether you are resourced for it. Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement; Part Three consolidates them into a single checklist.
+
+**Do this once, this week.** Pick one initiative that is live or about to be, and run the build-language questions above against each of its components. Write down the archetype each component lands in and the one readiness item you are least sure you have. That single page — initiative, components, archetypes, weakest link — is the whole diagnostic, and the one-initiative worksheet in Part Three's readiness reference gives you a grid to fill in. Running it on one real thing teaches the model faster than reading the rest of the book.

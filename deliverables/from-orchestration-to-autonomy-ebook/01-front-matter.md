@@ -2,7 +2,7 @@
 
 **A composable model for building across the agent ecosystem, from LLM-assisted workflows to self-directed agents.**
 
-By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)
+By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [MACH Alliance](https://machalliance.org)
 
 ---
 
@@ -35,11 +35,11 @@ Part One: The Model
 - Locating your solution (business-language and build-language diagnostics)
 
 Part Two: The Five Archetypes
-1. LLM-assisted workflows (not yet agents)
-2. LLM-directed workflows
-3. Goal-directed, task-oriented agents
-4. Autonomous, policy-guided agents
-5. Collaborating, self-directed agents
+1. LLM-assisted workflows (not yet agents) — *assisted*
+2. LLM-directed workflows — *directed*
+3. Goal-directed, task-oriented agents — *goal-directed*
+4. Autonomous, policy-guided agents — *autonomous*
+5. Collaborating, self-directed agents — *collaborating*
 
   Each chapter follows the same structure, so you can jump to the part you need: *What changes here · Running example · Architecture · Policy · Readiness checklist · Bridging to the next archetype.*
 

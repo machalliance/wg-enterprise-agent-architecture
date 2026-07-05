@@ -6,6 +6,8 @@ The organizations that move well across this range share a habit: they do their 
 
 So the work is not to rush toward the agents that never stop. It is to match each part of a solution to the right archetype and build that part well, with the means constrained and the reasoning visible.
 
+If you take one action from this book, take this one: pick a single live initiative this week and run the diagnostic on it, component by component, using the worksheet in the readiness reference. Naming where one real solution actually sits — and where its weakest readiness link is — will teach you more than reading any chapter twice, and it is the fastest way to turn this vocabulary into a decision.
+
 ## This is a working framework
 
 The model here is grounded in established work from [Anthropic](https://www.anthropic.com/engineering/building-effective-agents), [AGNTCY](https://agntcy.org), and [MIT](https://mitsloan.mit.edu). It is a working framework rather than a finished standard. The agent ecosystem only works if the people building in it share a common understanding, and that understanding sharpens with every team that tests it against real systems.

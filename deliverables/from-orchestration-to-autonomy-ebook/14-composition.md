@@ -1,6 +1,6 @@
 ## Composition: why real solutions blend archetypes
 
-The archetypes are patterns, and a real solution rarely lives in just one of them. It composes several, because different parts of the same job have different shapes.
+The archetypes are patterns, and a real solution rarely lives in just one of them. It composes several, because different parts of the same job have different shapes. And it composes them cleanly only on composable, connected foundations: a content step you can call as a service, a policy engine you can gate any action through, an identity you can scope and revoke on its own. Where the foundation is a monolith, every archetype you add inherits its limits.
 
 Take the autonomous revenue optimization agent from archetype 4. It runs continuously and reprices within policy, which is squarely archetype 4 work. But when it needs to draft the merchandising note that explains a price change, it calls a content-generation step that belongs to archetype 1. When it decides whether a flagged SKU goes to human review or proceeds, it is making the kind of routed decision that defines archetype 2. One deployed system, three archetypes, each governing a different component.
 

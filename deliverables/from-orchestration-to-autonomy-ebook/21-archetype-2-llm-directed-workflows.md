@@ -1,4 +1,4 @@
-## Archetype 2: LLM-directed workflows
+## Archetype 2: LLM-directed workflows — *directed*
 
 *The paths are designed by people. The model chooses which one to take.*
 

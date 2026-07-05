@@ -1,4 +1,4 @@
-## Archetype 4: Autonomous, policy-guided agents
+## Archetype 4: Autonomous, policy-guided agents — *autonomous*
 
 *Persistence changes everything. When an agent does not stop, your architecture and governance cannot either.*
 

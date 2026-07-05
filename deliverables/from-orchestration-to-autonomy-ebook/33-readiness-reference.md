@@ -27,3 +27,22 @@ A consolidated view of the readiness requirements from all five archetypes, on t
 Run the diagnostic in "Locating your solution" first, component by component. For each component, find its archetype row and treat both the architecture and policy cells as the minimum bar for that component. A component clears the bar only when both cells are satisfied, because capability without matching governance is the failure mode from Part One.
 
 Then read the whole set for your system. The obligations compound as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one. It is the crack the higher one is built on.
+
+### One-initiative worksheet
+
+The fastest way to make this model yours is to run it once, on one real initiative, before you finish the book. Pick something live or about to be. List its components — a component is any distinct point where the system decides or acts — and fill in a row for each:
+
+| Component | What it does | Archetype (1–5) | Weakest readiness item | Owner |
+|---|---|---|---|---|
+| e.g. "price change decision" | Routes a change to auto / notify / approve | 2 (*directed*) | No confidence threshold defined | |
+| e.g. "merchandising note" | Drafts the human-facing explanation | 1 (*assisted*) | No claim-handling rule on the note | |
+| | | | | |
+| | | | | |
+
+Three rules make it useful:
+
+- **One row per component, not per system.** A single deployment usually spans several archetypes; the point is to see each one. If every row says the same archetype, you have probably described the system, not its components.
+- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture-or-policy item you are least confident you have today. That single item is where the initiative is exposed.
+- **Assign an owner to every row.** Capability without an accountable owner is the failure mode from Part One in miniature.
+
+When the grid is full you have a one-page readiness map: what the initiative is, what each part demands, and the specific gaps to close before you scale. Bring that page to the funding conversation and the vendor conversation both.

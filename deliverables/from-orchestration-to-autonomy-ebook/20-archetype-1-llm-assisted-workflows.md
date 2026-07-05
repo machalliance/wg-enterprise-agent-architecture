@@ -6,7 +6,7 @@ Every chapter in Part Two uses one fictional retailer, so the examples connect i
 
 Across the chapters, Meridian is preparing and running its **spring outdoor line launch**, a few thousand new and returning products across tents, packs, footwear, and apparel. Each archetype is a different system in Meridian's stack touching that launch. The chapters appear in order of autonomy. Part Three puts the systems back in the order the work actually happens and shows them working together.
 
-## Archetype 1: LLM-assisted workflows (not yet agents)
+## Archetype 1: LLM-assisted workflows (not yet agents) — *assisted*
 
 *The model helps with language and structure. The workflow still decides everything.*
 

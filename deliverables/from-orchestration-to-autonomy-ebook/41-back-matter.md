@@ -34,10 +34,10 @@ This book was shaped by members of the Enterprise Agent Architecture Working Gro
 
 # About the working group
 
-This book was developed by the Enterprise Agent Architecture Working Group of the Agent Ecosystem. The working group's charter, members, and ongoing work are public at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture).
+This book was developed by the Enterprise Agent Architecture Working Group of the [MACH Alliance](https://machalliance.org). The working group's charter, members, and ongoing work are public at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture).
 
 Learn more about the broader agent ecosystem vision at [agentecosystem.org](https://agentecosystem.org).
 
 # How to cite
 
-Enterprise Agent Architecture Working Group, *From Orchestration to Autonomy: A composable model for building across the agent ecosystem*. Agent Ecosystem, 2026.
+Enterprise Agent Architecture Working Group, *From Orchestration to Autonomy: A composable model for building across the agent ecosystem*. MACH Alliance, 2026.

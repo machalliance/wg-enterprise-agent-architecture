@@ -4,8 +4,7 @@
 - Anthropic, [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)
 - Anthropic, [SWE-bench: Sonnet](https://www.anthropic.com/research/swe-bench-sonnet)
 - AGNTCY, [agntcy.org](https://agntcy.org) and the [Internet of Agents](https://agntcy.org)
-- AGNTCY, [CoffeeAGNTCY reference application](https://github.com/agntcy/coffeeAgntcy)
-- AGNTCY, [Identity](https://github.com/agntcy/identity) and the [Open Agentic Schema Framework (OASF)](https://docs.agntcy.org/)
+- AGNTCY, [Identity](https://github.com/agntcy/identity), the [Open Agentic Schema Framework (OASF)](https://docs.agntcy.org/), and the [Observe SDK](https://docs.agntcy.org/)
 - [A2A (Agent-to-Agent) protocol](https://a2a-protocol.org)
 - [MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) on marketplaces of agents
 

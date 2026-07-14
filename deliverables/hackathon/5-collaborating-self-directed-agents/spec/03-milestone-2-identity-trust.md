@@ -13,7 +13,7 @@ merely self-asserted; and is the selling agent actually authorized to commit its
 **AGNTCY component:** **AGNTCY Identity** — W3C **Decentralized Identifiers (DIDs)** and **Verifiable
 Credentials (VCs)**.
 
-**Time-box:** half a day to a day (crypto verification is the fiddly part).
+> Note: cryptographic verification is the fiddliest part of the whole prototype — budget accordingly.
 
 ---
 

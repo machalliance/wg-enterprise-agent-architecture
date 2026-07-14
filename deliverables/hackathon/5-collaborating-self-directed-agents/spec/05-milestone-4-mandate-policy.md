@@ -9,7 +9,7 @@ policy must govern what an agent may **commit you to** in a deal with an outside
 mandate."* Plus: *"The counterparty must never be able to infer your mandate. Leaking your reservation
 price to a self-interested seller's agent is a direct financial loss."*
 
-**Time-box:** one day (runs alongside / just after M3).
+> Pairs naturally with M3 — M3 wires the mechanism, M4 supplies the judgment.
 
 ---
 

@@ -13,8 +13,6 @@ evidence for the counterparty). *"Telemetry here is conventional observability a
 **AGNTCY component:** **Observe** / **OpenTelemetry** (the AGNTCY observability schema extends the OTel
 GenAI semantic conventions). Signing rides on the M2 DID keys.
 
-**Time-box:** half a day to a day.
-
 ---
 
 ## In scope

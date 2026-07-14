@@ -12,8 +12,6 @@ engage based on a structured, verifiable description rather than a PDF integrati
 **AGNTCY component:** **Agent Directory (`dir`)** — federated, content-addressed, cryptographically
 signed — indexing **OASF** capability records.
 
-**Time-box:** half a day.
-
 ---
 
 ## In scope

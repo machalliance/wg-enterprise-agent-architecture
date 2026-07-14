@@ -6,8 +6,7 @@ that makes the boundary real*.
 
 **Chapter tie-in:** the book insists there is "no shared orchestrator, no single party in control."
 M0 encodes that as a physical constraint: separate processes, separate stores, one shared vocabulary.
-
-**Time-box:** half a day (everyone pairs; this unblocks all other tracks).
+Build this first — it unblocks every other milestone.
 
 ---
 
@@ -28,9 +27,10 @@ M0 encodes that as a physical constraint: separate processes, separate stores, o
 ## Build tasks
 
 1. **Scaffold & pin versions.** `pnpm init` workspace. Add and **pin exact versions** of
-   `@a2a-js/sdk`, `@anthropic-ai/sdk`, `@opentelemetry/sdk-node`, `zod`. Record chosen versions of the
+   `@a2a-js/sdk`, an LLM-gateway client (any OpenAI-compatible client, base URL + model set by env),
+   `@opentelemetry/sdk-node`, `zod`. Record chosen versions of the
    AGNTCY services (`dir`, `identity`, `slim`) in `infra/VERSIONS.md`. The book stresses these
-   standards are moving — pinning on day one prevents a mid-hackathon break.
+   standards are moving — pinning up front prevents a mid-build break.
 2. **Transport factory.** One function, transport chosen by env var:
    ```ts
    // packages/agent-runtime/src/transport.ts

@@ -9,12 +9,10 @@ The dashboard honours that: it does not have a god view. It subscribes to **each
 event stream** and reconstructs the picture the way the reconcile tool (M5) does — by correlation ID,
 after the fact.
 
-**Time-box:** half a day, plus rehearsal time.
-
 ---
 
 ## In scope
-- A minimal Vite + React dashboard subscribing via SSE to the buyer and each supplier process.
+- A **Next.js** dashboard subscribing via SSE to the buyer and each supplier process.
 - Four panels: **Discovery/Verification**, **Live negotiations**, **Approval queue**, **Reconcile**.
 - A **kill-switch** button hitting the buyer's M4 endpoint.
 - A one-command demo runner and a printed runbook.

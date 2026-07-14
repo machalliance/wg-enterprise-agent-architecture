@@ -13,7 +13,7 @@ produces a disputed tent order, with money attached." The decision space is thre
 **AGNTCY component:** **A2A** (`@a2a-js/sdk`) as the contract, over the M0 transport (SLIM/gRPC). MCP is
 *not* used here — it exposes tools to one agent, a different layer.
 
-**Time-box:** one day (this is the core milestone).
+> This is the core milestone — the negotiation contract is what the whole prototype is built to show.
 
 ---
 

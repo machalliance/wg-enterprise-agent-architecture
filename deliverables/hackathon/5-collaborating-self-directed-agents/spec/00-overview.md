@@ -72,7 +72,7 @@ which any single party controls.
 ```mermaid
 graph TB
     subgraph Buyer["Meridian (Buyer) — one Node process"]
-        BAGENT["Procurement Agent<br/>(A2A-JS + Anthropic SDK)"]
+        BAGENT["Procurement Agent<br/>(A2A-JS + LLM gateway)"]
         BPOLICY["Private Policy Store<br/>(mandate tiers, reservation price)"]
         BIDENT["Buyer DID + Verifiable Credentials"]
         BLEDGER["Buyer half-trail<br/>(signed, correlated)"]
@@ -129,21 +129,21 @@ chapter describes, not a shortcut around it.
 
 | Layer | Choice | Why |
 |---|---|---|
-| Agent reasoning | **TypeScript** + `@anthropic-ai/sdk`, model `claude-opus-4-8` (or `claude-sonnet-5` for cheaper loops) | User-selected; agents author RFQs, evaluate quotes, and choose counteroffers with an LLM |
+| Agent reasoning | **TypeScript**, calling an **LLM gateway** (provider-agnostic — set base URL + model via env; e.g. an OpenAI-compatible gateway) | Agents author RFQs, evaluate quotes, and choose counteroffers with an LLM; no code is tied to a specific model or vendor |
 | Agent-to-agent protocol | **`@a2a-js/sdk`** (official A2A JS SDK, Linux Foundation) | The real, multi-vendor negotiation contract; TS-native |
 | Transport | **SLIM** via `slim-a2a-node`, with **gRPC/HTTP** fallback | Protocol and transport are separable — spec supports both so a team is never blocked on transport-binding maturity |
 | Discovery | **AGNTCY Agent Directory** (`dir`) + **OASF** (`oasf-sdk`) capability records | Real federated, content-addressed, signed capability registry |
 | Identity | **AGNTCY Identity** — W3C **DIDs** + **Verifiable Credentials** | Cryptographic, cross-org, not self-asserted |
 | Accountability | **OpenTelemetry-JS** emitting spans on the **AGNTCY observability schema**; AGNTCY **Observe** for collection | OTel is the open standard all agent telemetry builds on |
 | Persistence | SQLite (or flat signed JSONL) per organization | Two independent stores, never shared — this is the point |
-| Demo UI | Minimal Vite + React dashboard, SSE from each org's event stream | Shows the two half-trails side by side |
+| Demo UI | **Next.js** dashboard, SSE from each org's event stream | Shows the two half-trails side by side |
 
 > **Fidelity note.** Use the real SDKs. Where a TypeScript binding for an AGNTCY component is still
-> immature at hackathon time (SLIM node binding, dir JS SDK, Identity), the spec names an explicit
-> fallback (gRPC/HTTP transport; call the directory/identity **services** over their REST/gRPC APIs
-> from TS instead of a native SDK). The book itself stresses these standards are *moving and not yet
-> settled infrastructure* — pin exact versions on day one (see `01-milestone-0-foundation.md`) and
-> treat any binding gap as a fallback, not a blocker.
+> immature (SLIM node binding, dir JS SDK, Identity), the spec names an explicit fallback (gRPC/HTTP
+> transport; call the directory/identity **services** over their REST/gRPC APIs from TS instead of a
+> native SDK). The book itself stresses these standards are *moving and not yet settled
+> infrastructure* — pin exact versions up front (see `01-milestone-0-foundation.md`) and treat any
+> binding gap as a fallback, not a blocker.
 
 ## 6. Repository layout
 
@@ -151,7 +151,7 @@ chapter describes, not a shortcut around it.
 meridian-crossing/
 ├── packages/
 │   ├── protocol/        # shared A2A message schemas (OFFER, QUOTE, COUNTER, SETTLE, WALKAWAY) + zod validators
-│   ├── agent-runtime/   # TS harness: A2A server/client, transport factory, Anthropic reasoning loop, OTel spans
+│   ├── agent-runtime/   # TS harness: A2A server/client, transport factory, LLM-gateway reasoning loop, OTel spans
 │   ├── buyer/           # Meridian procurement agent + private policy store + buyer half-trail
 │   ├── supplier-summit/ # cooperative selling agent   (settles)
 │   ├── supplier-alpine/ # firm selling agent          (escalates)
@@ -204,18 +204,21 @@ mandate policy engine, adversarial-counterparty defenses, dual signed decision t
 
 State the boundary explicitly: this prototype demonstrates that the **four questions can be answered
 with real, open standards today** — not that the ecosystem is settled. It isn't, and the book says so.
+The business scenario (an urgent cross-supplier reorder) is one any procurement team recognizes; what
+is deliberately *near-future* is an agent **autonomously committing** the company to a deal. That gap
+is the point of Archetype 5, not a flaw in the demo — show that the plumbing is buildable now, and be
+honest that enterprises are not yet running this unattended in production.
 
-## 9. Suggested timeline (2-day hackathon, ~3 builders)
+## 9. Build order and fallback scope
 
-| Day | Milestones | Who |
-|---|---|---|
-| Day 1 AM | M0 foundation (everyone pairs to unblock transport + runtime) | all |
-| Day 1 PM | M1 discovery, M2 identity in parallel | 2 tracks |
-| Day 2 AM | M3 protocol + M4 mandate policy (the core) | 2 tracks |
-| Day 2 PM | M5 accountability + M6 dashboard, then rehearse the demo script | all |
+Build the milestones in order — each adds exactly one thing to the one before it. M0 (foundation)
+unblocks everything else, so start there; M1/M2 and M5/M6 each pair up naturally if more than one
+person is building.
 
-If time runs short, the **minimum credible demo is M0→M3** (discover, verify, negotiate to a settle).
-M4's walk-away and M5's dual-trail split-screen are the highest-impact additions after that.
+The **minimum credible demo is M0→M3** — discover, verify, negotiate to a settle. Everything past
+that is additive: M4's walk-away and M5's dual-trail split-screen are the highest-impact things to add
+next, and M6 is what makes it all watchable. Stop at any milestone and you still have something real
+to show.
 
 ## 10. Glossary
 

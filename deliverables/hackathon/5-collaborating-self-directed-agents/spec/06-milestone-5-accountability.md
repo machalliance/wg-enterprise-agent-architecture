@@ -54,6 +54,11 @@ GenAI semantic conventions). Signing rides on the M2 DID keys.
    the exchange **before** either `CONFIRM`. Record it in both trails so an arbitration path has a
    starting point. *(An out-of-mandate or unverified commitment is void by protocol — M4 Tier 4 — so it
    should never reach a dispute.)*
+   - **Settlement receipt (if M7 is built).** When payment executes, append a `SETTLEMENT` record to
+     both half-trails carrying the Stripe payment-intent ID and, for a stablecoin payout, the on-chain
+     transaction hash. This is the one record neither organization owns — an on-chain settlement is a
+     neutral, tamper-evident third proof both half-trails can reference, which is exactly the
+     "shared substrate no single party controls" property applied to money. See `08-milestone-7-settlement.md`.
 4. **OTel instrumentation.** Wrap the reasoning loop and each message send/receive in spans following
    the AGNTCY observability schema; one trace per `negotiationId`. Export to a local collector. The
    buyer instruments itself fully and records only **protocol-level evidence** (the signed messages) for

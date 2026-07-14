@@ -58,9 +58,12 @@ accountability layer, and a demo layer on top of the book's foundation.
 | — | **Policy (mandate)** | Private policy store + mandate tiers | `05-milestone-4-mandate-policy.md` |
 | 4 | **Accountability** | Signed, correlated trails + Observe SDK / OTel | `06-milestone-5-accountability.md` |
 | — | *(demo experience)* | Dual half-trail dashboard + runbook | `07-milestone-6-demo-experience.md` |
+| — | **Settlement** *(optional extension)* | Stripe Machine Payments Protocol + stablecoin financial account | `08-milestone-7-settlement.md` |
 
 Read the milestones in order — each adds **exactly one thing** to the one before it, and each ends at
-a **demoable checkpoint** so a team can stop at any milestone and still show something real.
+a **demoable checkpoint** so a team can stop at any milestone and still show something real. Milestone 7
+(settlement) is an optional extension: it turns the `SETTLE` state from a no-op into real money moving
+across the boundary, and is only worth building once M0–M5 work.
 
 ## 4. Architecture
 
@@ -156,7 +159,8 @@ meridian-crossing/
 │   ├── supplier-summit/ # cooperative selling agent   (settles)
 │   ├── supplier-alpine/ # firm selling agent          (escalates)
 │   ├── supplier-ridge/  # adversarial selling agent   (walk-away)
-│   └── dashboard/       # dual half-trail viewer + kill switch
+│   ├── dashboard/       # dual half-trail viewer + kill switch
+│   └── settlement/      # (M7, optional) Stripe MPP client + stablecoin financial account adapter
 ├── infra/
 │   ├── slim/            # local SLIM node (docker-compose) + gRPC fallback config
 │   ├── dir/             # AGNTCY Agent Directory (docker-compose)
@@ -193,8 +197,12 @@ the *only* code the buyer and suppliers share — a shared vocabulary, never sha
 **In scope:** discovery, cross-org identity verification, a real A2A negotiation contract, a private
 mandate policy engine, adversarial-counterparty defenses, dual signed decision trails, and a dashboard.
 
+**Optional in-scope (Milestone 7):**
+- **Settlement rails.** Base build stops at `CONFIRM` (no payment). The optional settlement milestone
+  moves real money across the boundary via **Stripe** — card/ACH or, more interestingly, **stablecoin**
+  — always in Stripe **test mode** / testnet, never live funds.
+
 **Out of scope (and why it's fine):**
-- **Real money / settlement rails.** The `SETTLE` message is the terminal state; no payment executes.
 - **Real supplier ERPs.** Suppliers are mock agents with seeded catalogs (the book's "integration is
   the real cost" point is acknowledged in `01`, not solved here).
 - **Production dispute arbitration.** We *reference* pre-agreed dispute terms in the protocol and

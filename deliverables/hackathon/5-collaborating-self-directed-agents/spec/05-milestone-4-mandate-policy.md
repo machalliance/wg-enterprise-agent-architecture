@@ -89,10 +89,14 @@ const budget = { maxRounds: 6, maxWallClockMs: 60_000 };
 
 ## Inherited Archetype-4 safeguards, extended outward
 - **Kill switch:** a buyer endpoint that severs **all** active negotiations (`WALKAWAY` to each) and
-  revokes any in-flight, not-yet-`CONFIRM`ed `ACCEPT`. Wired to a dashboard button in M6.
+  revokes any in-flight, not-yet-`CONFIRM`ed `ACCEPT`. Wired to a dashboard button in M6. **If M7
+  (settlement) is built, the kill switch also revokes the scoped payment authorization and halts any
+  pending transfer** — so a halt reaches the money layer, not just the negotiation state.
 - **Cross-deal spend cap:** before any `ACCEPT`, check `sum(committed) + thisDeal ≤ maxTotalCommittedUsd`.
   A deal that would breach the cap escalates instead of settling — the cap is *across* concurrent deals,
-  not per deal.
+  not per deal. In M7 this same cap becomes the bound on the agent's **scoped payment authorization**
+  (Stripe Shared Payment Token), so the policy that governs what the agent may *commit to* and the
+  credential that governs what it can *spend* are the same number, enforced twice.
 - **Suspend on disconnect:** if the oversight/notify channel is down, new commitments are suspended
   (negotiations may continue to non-terminal states, but no `ACCEPT` is sent).
 - **Drift detection:** compare settled terms per counterparty over time; flag a counterparty whose

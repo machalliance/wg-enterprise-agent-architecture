@@ -37,7 +37,7 @@ Part Two: The Five Archetypes
 4. Autonomous, policy-guided agents — *autonomous*
 5. Collaborating, self-directed agents — *collaborating*
 
-  Each chapter follows the same structure, so you can jump to the part you need: *What changes here · Running example · Architecture · Policy · Readiness checklist · Bridging to the next archetype.*
+  Each chapter follows the same structure, so you can jump to the part you need: *What changes here · Running example · Architecture · Policy · Other examples that fit · Readiness checklist · Bridging to the next archetype.*
 
 Part Three: Putting It Together
 - One domain, all five: the procurement ladder
@@ -46,6 +46,8 @@ Part Three: Putting It Together
 - Readiness reference (consolidated architecture and policy tables)
 
 Closing: Where most organizations sit, and how to contribute
+
+Glossary
 
 References and further reading
 
@@ -80,7 +82,7 @@ These are archetypes, not levels on a ladder. None is a trophy for outgrowing th
 
 Three moves a leadership team can make now, without a single line of code:
 
-- **Name where your solutions actually sit.** This week, pick one live initiative and run the short diagnostic in "Locating your solution" on it, component by component. It takes an afternoon and needs no code. Most enterprises are in archetypes 1 and 2 today, with early goal-directed agents. Knowing which archetypes a given initiative uses tells you what it will demand and what it is worth.
+- **Name where your solutions actually sit.** Most enterprises are in archetypes 1 and 2 today, with early goal-directed agents. Knowing which archetypes a given initiative uses tells you what it will demand and what it is worth, and the one-initiative worksheet in Part Three turns that into an afternoon's work with no code.
 - **Fund governance in step with capability.** The Gartner cancellation reasons are a checklist in disguise. Before approving an agentic initiative, ask whether the risk controls, the cost model, and the business case scale with the autonomy you are buying. If they do not, you are funding a future write-off.
 - **Refuse "agentic" as an answer.** Ask a vendor which archetype their system is, and what it demands of you. A precise answer is a sign of a real product. A wave at "agentic" is a sign of agent washing.
 
@@ -125,7 +127,7 @@ Policy determines what a system is *allowed* to do. It is identity, governance, 
 
 The two dimensions have to move in step. A sophisticated architecture with weak policy is a system that can act faster than anyone can supervise it. Rigorous policy with a thin architecture is a system so constrained it delivers friction instead of value. Getting the two out of balance is a common way agentic pilots fail. They either build capability they cannot govern or governance around a capability that was never there.
 
-The failure shows up in the numbers. Gartner predicts that over 40% of agentic AI projects will be canceled by the end of 2027, and names three causes: escalating costs, unclear business value, and inadequate risk controls ([Gartner, June 2025](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027)). Read those three together and they describe one condition: architecture and policy that were never matched to each other or to the business case. Cost and value are what you get wrong when you reach for more autonomy than the problem needs; risk control is what you get wrong when policy lags the capability you built. This is why the two dimensions frame every chapter that follows.
+The failure shows up in the numbers. The three causes behind Gartner's cancellation forecast — escalating costs, unclear business value, and inadequate risk controls — read together as one condition: architecture and policy that were never matched to each other or to the business case. Cost and value are what you get wrong when you reach for more autonomy than the problem needs; risk control is what you get wrong when policy lags the capability you built. This is why the two dimensions frame every chapter that follows.
 
 Every archetype in Part Two is described along these same two axes. For each one, ask what the system can do and what it is permitted to do, and make sure your investment in the second keeps pace with your ambition in the first.
 
@@ -134,7 +136,7 @@ Every archetype in Part Two is described along these same two axes. For each one
 
 The archetypes run from more structured, where a human directs the system, to more autonomous, where the system directs itself.
 
-![Horizontal arrow from "More Structured / Human direction" on the left to "More Autonomous / System direction" on the right, marking five stages. 1: LLM-assisted workflows (not yet agents). 2: LLM-directed workflows. 3: Goal-directed, task-oriented agents. 4: Long running, policy driven. 5: Collaborating across domains and organizations.](diagram-degrees-of-agency.png)
+![Horizontal arrow from "More Structured / Human direction" on the left to "More Autonomous / System direction" on the right, marking five stages. 1: LLM-assisted workflows (not yet agents). 2: LLM-directed workflows. 3: Goal-directed, task-oriented agents. 4: Autonomous, policy-guided agents. 5: Collaborating, self-directed agents.](diagram-degrees-of-agency.png)
 
 The whole model on one screen:
 
@@ -157,23 +159,23 @@ Each is the best choice for a given class of problem, and most production system
 These are not hypotheticals. Enterprises are running systems all along this range today, with measured results. The examples below are drawn from MACH Alliance Agentic Achievement Award deployments ([The First Wave of Agentic AI](https://machalliance.org/insights-hub/The-First-Wave-of-Agentic-AI), 2026).
 
 - **Bash, customer-facing commerce.** The South African retailer's shopping agent watches for hesitating shoppers, decides on its own when to engage, and recommends products in natural language, acting continuously within its configured policy. In a Black Friday A/B test it lifted conversion by 35% and revenue per visit by 40% against a control group, configured rather than coded, with no engineering from the retailer ([case study](https://machalliance.org/case-studies/bash-tfg-group-agentic-commerce-at-scale-with-a-conversational-shopping-agent)).
-- **AmerCareRoyal, operations.** The distributor's order agent reads unstructured purchase-order PDFs, scores its own confidence, and submits clean orders straight to a legacy ERP, closing the confident cases end to end without a human. It cut processing from about eight minutes to under sixty seconds, now runs roughly 99% of structured orders through untouched, and freed roughly 267 staff hours a month ([case study](https://machalliance.org/case-studies/acr-amercareroyal-from-8-minutes-to-60-seconds-with-autonomous-b2b-order-processing)).
+- **AmerCareRoyal, operations.** The distributor's order agent reads unstructured purchase-order PDFs, scores its own confidence, and submits clean orders straight to a legacy ERP, closing the confident cases end to end without a human. It cut processing from about eight minutes to under sixty seconds, now runs roughly 99% of structured orders through untouched, and freed roughly 267 staff hours a month ([case study](https://machalliance.org/case-studies/acr-amercareroyal-from-8-minutes-to-60-seconds-with-autonomous-b2b-order-processing)). It is also a live example of the composition this book argues for: the extraction step reads and structures inside a fixed path, and the confidence score that decides whether an order goes straight through or to a human is a separate, model-driven routing decision. One deployment, two archetypes, each governed differently.
 - **Wyze, cross-organization commerce.** External AI assistants discover and buy the smart-home brand's products, and an orchestration layer routes fulfillment autonomously, agents transacting across organizational lines with no shared orchestrator. It more than halved click-to-delivery time and opened a new sales channel at near-zero added cost ([case study](https://machalliance.org/case-studies/wyze)).
 
-Between them these deployments span the model end to end, from a bounded task closed without a human, to an agent acting continuously within policy, to agents transacting across organizational lines. The through-line is the one this book argues: each result came from scoping the work tightly to a real bottleneck, on composable, API-first foundations, with governance in place before scale.
+Between them these deployments cover the more autonomous half of the model, from a bounded task closed without a human, to an agent acting continuously within policy, to agents transacting across organizational lines. The through-line is the one this book argues: each result came from scoping the work tightly to a real bottleneck, on composable, API-first foundations, with governance in place before scale.
 
 
 ## Composition: why real solutions blend archetypes
 
 The archetypes are patterns, and a real solution rarely lives in just one of them. It composes several, because different parts of the same job have different shapes. And it composes them cleanly only on composable, connected foundations: a content step you can call as a service, a policy engine you can gate any action through, an identity you can scope and revoke on its own. Where the foundation is a monolith, every archetype you add inherits its limits.
 
-Take the autonomous revenue optimization agent from archetype 4. It runs continuously and reprices within policy, which is squarely archetype 4 work. But when it needs to draft the merchandising note that explains a price change, it calls a content-generation step that belongs to archetype 1. When it decides whether a flagged SKU goes to human review or proceeds, it is making the kind of routed decision that defines archetype 2. One deployed system, three archetypes, each governing a different component.
+Take something ordinary: a workflow that handles inbound customer email. A model reads each message and drafts a reply, which is archetype 1 work — language production inside a fixed path. But the same system also decides what to do with each message: answer it directly, ask the customer for more detail, or hand it to a human specialist. That decision changes what the system does next, which puts it above the agency line and squarely in archetype 2. One modest deployment, two archetypes, and the parts have almost nothing in common.
 
-This matters because the demands attach to each component separately. The content-generation step needs prompt versioning and output validation. The routed decision needs a confidence threshold and a fallback. The continuous loop needs durable identity, circuit breakers, and a decision trail. If you reason about the system as "an archetype 4 agent" and stop there, you will govern the loop and forget that the content step can still publish an unsupported claim.
+That is the point, because the demands attach to each component separately. The drafting step needs prompt versioning and output validation, so a reply cannot promise a refund policy that does not exist. The routing step needs a confidence threshold and a defined fallback, so an ambiguous complaint reaches a person instead of getting a confident wrong answer. Neither control protects the other. A team that describes this as "our AI support tool" and governs it as one thing will govern whichever half it happened to think about first.
 
-So the framing question is not "which archetype is my solution?" It is "which archetypes does my solution use, and am I resourced for each one?" A solution that spans three archetypes inherits the readiness requirements of all three. Naming them separately is what lets you see the full obligation instead of the loudest part of it.
+So the framing question is not "which archetype is my solution?" It is "which archetypes does my solution use, and am I resourced for each one?" A solution that spans three archetypes inherits the readiness requirements of all three, applied per component. Naming them separately is what lets you see the full obligation instead of the loudest part of it.
 
-The next section gives you a way to do that naming quickly.
+The next section gives you a way to do that naming quickly, and Part Three works a larger system — four archetypes in one deployment — all the way through.
 
 
 ## Locating your solution
@@ -210,7 +212,7 @@ Now read back the set. If your solution touched more than one archetype, list ea
 
 Then, for each archetype in play, ask whether you are resourced for it. Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement; Part Three consolidates them into a single checklist.
 
-**Do this once, this week.** Pick one initiative that is live or about to be, and run the build-language questions above against each of its components. Write down the archetype each component lands in and the one readiness item you are least sure you have. That single page — initiative, components, archetypes, weakest link — is the whole diagnostic, and the one-initiative worksheet in Part Three's readiness reference gives you a grid to fill in. Running it on one real thing teaches the model faster than reading the rest of the book.
+The one-initiative worksheet in Part Three's readiness reference gives you a grid for recording the answers, and running these questions against one real initiative teaches the model faster than reading the rest of the book.
 
 
 # Part Two · The Five Archetypes
@@ -220,6 +222,12 @@ Then, for each archetype in play, ask whether you are resourced for it. Capabili
 Every chapter in Part Two uses one fictional retailer, so the examples connect into a single operation rather than five unrelated demos. Meridian Outfitters is a mid-market omnichannel outdoor-and-apparel retailer: roughly $800M in revenue, 120 stores and a growing e-commerce channel, tens of thousands of SKUs, and several hundred suppliers.
 
 Across the chapters, Meridian is preparing and running its **spring outdoor line launch**, a few thousand new and returning products across tents, packs, footwear, and apparel. Each archetype is a different system in Meridian's stack touching that launch. The chapters appear in order of autonomy. Part Three puts the systems back in the order the work actually happens and shows them working together.
+
+### A note on the readiness checklists
+
+Every chapter ends with a readiness checklist split two ways. **Minimum to launch** is the set that has to be true before a first production deployment, because without it the system can cause harm you cannot see or undo. **Required at scale** is what running it at volume, across more categories, or for longer adds: the reliability, cost, and drift machinery that a pilot can defer and a production platform cannot.
+
+The split matters because the full list, read as a single gate, stops good first projects. Several of the production deployments cited in Part One shipped their first version without the whole list, and earned the rest as they grew. What is not negotiable is knowing which items you have deferred, and to when.
 
 ## Archetype 1: LLM-assisted workflows (not yet agents) — *assisted*
 
@@ -342,17 +350,22 @@ Customer support reply drafting, localization and market adaptation, meeting and
 
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Model calls run as steps inside a deterministic workflow engine, never as the orchestrator
 - [ ] Context packages assembled from approved sources only
-- [ ] Prompts versioned, tested, and rollback-able
+- [ ] Prompts versioned and rollback-able
 - [ ] Output validators enforce schema, limits, and prohibited content before anything leaves the workflow
-- [ ] Deterministic work kept out of the model; outputs cached where inputs are stable
 
-Policy:
+Architecture — required at scale:
+- [ ] Deterministic work kept out of the model; outputs cached where inputs are stable
+- [ ] Prompt test cases maintained alongside the prompts themselves
+
+Policy — minimum to launch:
 - [ ] Data classes permitted to reach the model are defined, with approved vendors per class
 - [ ] Named owner for approval of every generated artifact
 - [ ] Claim-handling rules in place, with regulated claims routed to review
+
+Policy — required at scale:
 - [ ] Golden test sets and regression checks run on prompt or model change
 - [ ] Content provenance captured: model, prompt version, sources, validators, approver, publication
 
@@ -383,7 +396,7 @@ The value: adaptive behavior without open-ended model control.
 
 ### Running example: triaging inbound spring-line data
 
-Before Meridian's enrichment workflow from Chapter 1 can do its job, the raw product data has to be sorted. Spring-line data is landing from hundreds of suppliers through ERPs, spreadsheets, syndication tools, marketplaces, and the PIM, and it is messy: missing attributes, inconsistent categories, unsupported claims, weak descriptions, duplicate SKUs. Meridian runs a product data quality triage workflow ahead of enrichment. An archetype 1 workflow might rewrite a description. This archetype 2 workflow asks the model to decide which predefined remediation path each incoming record should follow:
+Before Meridian's enrichment workflow from archetype 1 can do its job, the raw product data has to be sorted. Spring-line data is landing from hundreds of suppliers through ERPs, spreadsheets, syndication tools, marketplaces, and the PIM, and it is messy: missing attributes, inconsistent categories, unsupported claims, weak descriptions, duplicate SKUs. Meridian runs a product data quality triage workflow ahead of enrichment. An archetype 1 workflow might rewrite a description. This archetype 2 workflow asks the model to decide which predefined remediation path each incoming record should follow:
 
 - **Publish** when the record is complete and low risk.
 - **Content enrichment** when the attributes are good but the copy is weak.
@@ -515,19 +528,24 @@ Support ticket routing, adaptive content review, commerce exception handling for
 
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Allowed route set defined before the model is introduced, with required inputs per route
 - [ ] Model emits a structured, schema-validated route recommendation; a separate evaluator gates it
-- [ ] Deterministic work kept out of the model
 - [ ] Confidence thresholds and a defined fallback for every uncertainty class
 - [ ] Any evaluation loop bounded by an explicit revision cap and escalation
-- [ ] Per-decision trace captured and replayable
+- [ ] Per-decision trace captured
 
-Policy:
+Architecture — required at scale:
+- [ ] Deterministic work kept out of the model
+- [ ] Traces replayable against a recorded decision set
+
+Policy — minimum to launch:
 - [ ] Route permissions defined per model, brand, region, and category
 - [ ] Escalations carry rationale and evidence to the reviewer
-- [ ] Routing prompts and models under change control with expected-route test sets
 - [ ] Data reaching the model minimized to the decision at hand
+
+Policy — required at scale:
+- [ ] Routing prompts and models under change control with expected-route test sets
 - [ ] Route and confidence drift monitored over time
 - [ ] Audit record captures decision plus surrounding control checks
 
@@ -558,7 +576,7 @@ The value: real autonomy, where the agent solves problems you did not script, wi
 
 ### Running example: resolving a failing spring-line feed
 
-Two weeks before launch, one of Meridian's footwear suppliers pushes an updated spring-line feed and it starts failing validation across hundreds of records. The triage workflow from Chapter 2 can route those records to a correction path, but someone still has to work out what actually went wrong and fix it. Instead of routing each bad record to a queue, Meridian hands an agent a goal:
+Two weeks before launch, one of Meridian's footwear suppliers pushes an updated spring-line feed and it starts failing validation across hundreds of records. The triage workflow from archetype 2 can route those records to a correction path, but someone still has to work out what actually went wrong and fix it. Instead of routing each bad record to a queue, Meridian hands an agent a goal:
 
 > "This supplier's product feed is failing validation. Find out why, and fix what you can safely fix."
 
@@ -680,20 +698,25 @@ Coding agents that edit across files and iterate until tests pass, codebase rese
 
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Tool allow-list scoped, with read and write separated and independently bounded
 - [ ] Tool definitions written with the care of a docstring
 - [ ] Explicit stop conditions for done, stuck, and out-of-budget
-- [ ] Error recovery built into the loop as normal behavior
 - [ ] Full-sequence reasoning trace captured per run
 - [ ] Ephemeral, task-scoped credentials; no standing identity
 
-Policy:
+Architecture — required at scale:
+- [ ] Error recovery built into the loop as normal behavior
+- [ ] Per-task cost and iteration budgets enforced, not just observed
+
+Policy — minimum to launch:
 - [ ] Permission boundary enforces the meaning of "safely," not the model
 - [ ] Human checkpoints assigned by reversibility and risk
-- [ ] Traces support after-the-fact review of any action the agent took
-- [ ] Tool additions are a reviewed, approved event
 - [ ] Sandbox and dry-run evaluation completed before live write access
+
+Policy — required at scale:
+- [ ] Traces reviewed on a standing cadence, not only after an incident
+- [ ] Tool additions are a reviewed, approved event
 
 ### Bridging to archetype 4
 
@@ -715,9 +738,11 @@ This is a difference in kind, not degree. The moment an agent operates independe
 - **Accountability becomes continuous.** You cannot reconstruct why the agent took action X at time T from a post-mortem, so decision trails must be first-class infrastructure rather than afterthought logging.
 - **Policy becomes the operating system.** Without task-by-task human approval, the policies you define are the supervision. They have to be precise, enforceable, and auditable.
 
+The value: continuous optimization of a domain that moves faster and wider than a team can watch by hand. The price is a standing governance and identity function that runs as continuously as the agent does.
+
 ### Running example: pricing the spring line through the season
 
-The spring line is live. Now Meridian has to price it across a full season of shifting demand, weather, competitor moves, and inventory levels, on thousands of SKUs at once. That is more repricing than a merchandising team can do by hand, so Meridian runs a revenue optimization agent over the category. Unlike the catalog agent in Chapter 3, this one does not finish. It:
+The spring line is live. Now Meridian has to price it across a full season of shifting demand, weather, competitor moves, and inventory levels, on thousands of SKUs at once. That is more repricing than a merchandising team can do by hand, so Meridian runs a revenue optimization agent over the category. Unlike the catalog agent in archetype 3, this one does not finish. It:
 
 - **Monitors** pricing signals, inventory levels, competitor pricing, demand forecasts, and margin targets. Continuously.
 - **Decides** when to adjust pricing, trigger promotions, or flag conditions for human review.
@@ -845,20 +870,33 @@ These tiers live in a policy store rather than in code, so they can be adjusted 
 
 **Drift detection and compliance.** Watch both sides. Agent drift: is the agent still within its boundaries, or has it found edge cases that pass policy checks but violate intent? Policy drift: are the policies still appropriate, or is the agent faithfully following outdated ones? Periodic compliance attestation verifies that actual behavior matches declared boundaries, and gaps trigger review.
 
+### Other examples that fit archetype 4
+
+Inventory replenishment that reorders continuously within policy, fraud and anomaly monitoring that acts on what it detects, infrastructure remediation agents that watch a fleet and correct drift, continuous bid and budget optimization in paid media, and supply-chain exception monitoring that reroutes shipments as conditions change. In each, no one assigns the work: the agent decides that a condition warrants action and acts within boundaries its operators set.
+
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Dedicated, durable machine identity with granular scoped permissions
-- [ ] Automated credential rotation that does not interrupt operation
-- [ ] Checkpointing and state versioning for durable, recoverable context
-- [ ] Baseline behavioral profiles with real-time anomaly comparison, including semantic drift
-- [ ] Append-only, tamper-evident, queryable decision trail with causal chains
 - [ ] Policy evaluation gates every action; no reasoning-to-action path skips it
+- [ ] Checkpointing and state versioning for durable, recoverable context
+- [ ] Append-only, tamper-evident decision records
 
-Policy:
-- [ ] Full identity lifecycle owned and documented, provisioning through decommissioning
+Architecture — required at scale:
+- [ ] Automated credential rotation that does not interrupt operation
+- [ ] Baseline behavioral profiles with real-time anomaly comparison, including semantic drift
+- [ ] Decision trail queryable, with causal chains linking decisions to prior ones
+- [ ] Model versions pinned, with changes tested against recorded decisions before rollout
+
+Policy — minimum to launch:
+- [ ] Identity lifecycle owned through revocation, with a named owner for the agent
 - [ ] Permission tiers defined in a policy store, adjustable without redeploy
-- [ ] Rate limiters, magnitude limiters, dead man's switch, and manual kill switch in place
+- [ ] Rate limiters, magnitude limiters, and a manual kill switch in place
+- [ ] On-call coverage and a runbook for pausing the agent and reconstructing what it did
+
+Policy — required at scale:
+- [ ] Full lifecycle documented through decommissioning
+- [ ] Dead man's switch covering the case where the agent runs but oversight is blind
 - [ ] Agent-drift and policy-drift detection running
 - [ ] Periodic compliance attestation against declared boundaries
 
@@ -886,11 +924,13 @@ Four questions become unavoidable the moment an agent must interact with an agen
 - **Protocol.** What shared message contract lets independently built agents negotiate, counteroffer, and settle across a network neither side owns?
 - **Accountability.** When two organizations' agents produce an outcome neither operator intended, whose decision trail is authoritative, and how is the dispute resolved?
 
+The value: reach beyond your own walls, to supply, demand, and terms your systems could never touch on their own. The price is a dependency on trust infrastructure the industry is still building, and on counterparties whose incentives are not yours.
+
 Part Three walks Meridian's replenishment through all five archetypes, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last step: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
 
 ### Running example: sourcing a spring-line reorder across organizations
 
-A hero product from the spring line, a lightweight three-season tent, sells through far faster than forecast. Meridian's pricing agent from Chapter 4 can protect margin, but it cannot conjure more stock. Meridian needs to reorder fast, and the original supplier cannot cover the full quantity in time. Every step so far has lived inside Meridian's own walls. This one crosses the boundary: Meridian's procurement agent must source the shortfall and negotiate terms with several independent suppliers' selling agents, none of which it controls. The procurement agent:
+A hero product from the spring line, a lightweight three-season tent, sells through far faster than forecast. Meridian's pricing agent from archetype 4 can protect margin, but it cannot conjure more stock. Meridian needs to reorder fast, and the original supplier cannot cover the full quantity in time. Every step so far has lived inside Meridian's own walls. This one crosses the boundary: Meridian's procurement agent must source the shortfall and negotiate terms with several independent suppliers' selling agents, none of which it controls. The procurement agent:
 
 - **Discovers** candidate supplier agents through a directory rather than a hardcoded list of endpoints.
 - **Verifies** each counterparty's identity and its claims before exchanging anything of value.
@@ -899,7 +939,7 @@ A hero product from the spring line, a lightweight three-season tent, sells thro
 
 ### Architecture
 
-No box in this picture is owned by both organizations. The trust substrate in the middle is shared infrastructure, open protocols and a directory that no single party controls. Each organization runs its own agent, its own policy engine, and its own decision store, and they meet only through verified, mediated exchange.
+No box in this picture is under one party's control. The trust substrate in the middle is shared infrastructure, open protocols and a directory that no single party owns. Each organization runs its own agent, its own policy engine, and its own decision store, and they meet only through verified, mediated exchange.
 
 ```mermaid
 graph TB
@@ -919,14 +959,16 @@ graph TB
 
     subgraph "Supplier Organization A"
         SAGENT[Selling Agent A]
-        SPOLICY[Supplier A Policy]
-        SIDENT[Supplier A Identity]
+        SPOLICY[Supplier A Policy and Mandate]
+        SIDENT[Supplier A Identity / Credentials]
+        SLEDGER[Supplier A Decision Trail]
     end
 
     subgraph "Supplier Organization B"
         SAGENT2[Selling Agent B]
-        SPOLICY2[Supplier B Policy]
-        SIDENT2[Supplier B Identity]
+        SPOLICY2[Supplier B Policy and Mandate]
+        SIDENT2[Supplier B Identity / Credentials]
+        SLEDGER2[Supplier B Decision Trail]
     end
 
     BAGENT -->|find counterparties| DIR
@@ -946,9 +988,11 @@ graph TB
     SPOLICY --> SAGENT
     SPOLICY2 --> SAGENT2
     BAGENT --> BLEDGER
+    SAGENT --> SLEDGER
+    SAGENT2 --> SLEDGER2
 ```
 
-The buyer's internal stack (policy, identity, decision trail) is the archetype 4 architecture, intact. What is new is the substrate: a directory for discovery, identity verification that works across organizations, a secure transport for messages crossing a network neither side owns, and a shared negotiation protocol that gives both agents the same vocabulary for offers and counteroffers. Each agent consults its own policy engine privately; neither can see the other's mandate, reservation price, or escalation rules. Three terminal branches make up the decision space: settle within mandate, escalate beyond it, or walk away. Walk-away matters here in a way it never did inside one organization, because a counterparty can refuse, stall, or behave adversarially, and your agent has to disengage cleanly rather than concede.
+The buyer's internal stack (policy, identity, decision trail) is the archetype 4 architecture, intact. What is new is the substrate: a directory for discovery, identity verification that works across organizations, a secure transport for messages crossing a network neither side owns, and a shared negotiation protocol that gives both agents the same vocabulary for offers and counteroffers. Each agent consults its own policy engine privately; neither can see the other's mandate, reservation price, or escalation rules. Note that every organization keeps its own decision trail and the trails never merge, which is the structural reason accountability is hard here: there is no combined record, only halves that have to be reconciled after the fact. Three terminal branches make up the decision space: settle within mandate, escalate beyond it, or walk away. Walk-away matters here in a way it never did inside one organization, because a counterparty can refuse, stall, or behave adversarially, and your agent has to disengage cleanly rather than concede.
 
 A word on maturity, and on how to read the diagram, before the specifics. The boxes above name *capabilities*, not products: discovery, cross-organization identity, a shared negotiation contract, secure transport, and correlatable accountability. Those capabilities are what matter and will persist. The specific standards and implementations that fill each slot are still moving, and no enterprise should treat any of them as settled infrastructure yet.
 
@@ -987,21 +1031,32 @@ The reservation price, term limits, and approved-counterparty list live in a pol
 
 **Dispute and arbitration.** When two organizations' agents produce an outcome neither operator intended, "whose policy wins?" has no local answer. Pre-agreed dispute terms should be referenced in the protocol exchange before either agent commits. Correlated, non-repudiable trails from both sides feed a defined arbitration path, human, contractual, or a trusted third party, rather than a stalemate of two partial logs. Liability mapping should be clear in advance, and an unverified or out-of-mandate commitment should be void by protocol, so it never reaches litigation.
 
+### Other examples that fit archetype 5
+
+An external AI assistant discovering and buying from your catalog on a shopper's behalf, freight and logistics capacity booked agent-to-agent across carriers, insurance claims settled between a carrier's agent and a repair network's, advertising inventory negotiated between buy-side and sell-side agents, and — at the cooperative end of the range — agents built by different vendors or internal teams coordinating on a shared objective across systems neither team owns. The cooperative cases are the realistic near-term work; the adversarial ones are where the trust infrastructure has to be complete.
+
 ### Readiness checklist
 
-Architecture:
-- [ ] Agent directory for discovery, with machine-readable capability descriptions (e.g., OASF, or A2A Agent Cards)
+Architecture — minimum to launch:
 - [ ] Cross-organization identity verification, cryptographic rather than self-asserted (e.g., W3C DIDs and Verifiable Credentials, or AGNTCY Identity)
 - [ ] Shared negotiation protocol (e.g., A2A) over secure transport (e.g., SLIM or gRPC), kept separable
 - [ ] Non-repudiable, signed exchange with shared correlation identifiers
-- [ ] Your side fully instrumented; protocol-level evidence relied on for the counterparty
+- [ ] Your side fully instrumented
 
-Policy:
+Architecture — required at scale:
+- [ ] Agent directory for discovery, with machine-readable capability descriptions (e.g., OASF, or A2A Agent Cards) — a first deployment can run against a short vetted counterparty list instead
+- [ ] Protocol-level evidence collected and reconcilable against the counterparty's half of the trail
+
+Policy — minimum to launch:
 - [ ] Mandate tiers defining what the agent may commit you to, held in a private policy store
 - [ ] Counterparty cannot infer your mandate or reservation price
-- [ ] Round and time budgets, information minimization, and counterparty reputation in place
+- [ ] Round and time budgets, and information minimization per turn
 - [ ] Kill switch severs live negotiations and in-flight commitments; spend capped across all deals
 - [ ] Pre-agreed dispute terms, arbitration path, and liability mapping defined before commitment
+
+Policy — required at scale:
+- [ ] Counterparty reputation tracked, down-weighting agents that stall, renege, or probe
+- [ ] Relationship-level drift detection on terms settled with each counterparty over time
 
 ### Where this leaves the model
 
@@ -1035,7 +1090,7 @@ The procurement ladder shows the archetypes as separate settings of one dial. Re
 
 ### The system
 
-Meridian runs an **autonomous merchandising agent** that keeps its spring-line category priced and stocked. It watches demand, competitor pricing, and inventory, and it acts continuously within policy. That much is archetype 4. But trace a single day of its operation and three other archetypes are doing work underneath it.
+Meridian's **revenue optimization agent** from archetype 4 keeps its spring-line category priced and stocked. It watches demand, competitor pricing, and inventory, and it acts continuously within policy. That much is archetype 4. But trace a single day of its operation and three other archetypes are doing work underneath it.
 
 **The continuous loop is archetype 4.** The agent runs on its own schedule, holds durable state about what has worked, reprices within permission tiers, and self-corrects when a change underperforms. This component needs a durable machine identity, checkpointed state, circuit breakers, and a tamper-evident decision trail. These are the archetype 4 requirements, and they are the ones most teams remember.
 
@@ -1047,9 +1102,9 @@ Meridian runs an **autonomous merchandising agent** that keeps its spring-line c
 
 ### Why naming the blend matters
 
-If you reason about this system as "our archetype 4 pricing agent," you will build the identity, state, and circuit-breaker machinery and feel covered. You will be exposed in three places. The router can misroute without ever tripping a circuit breaker. The note can publish an unsupported claim that no pricing control inspects. The sourcing path can commit you to an external deal that your internal policy tiers were never written to bound.
+Part One made this point with a two-part support workflow. The stakes rise with the system. If you reason about this one as "our archetype 4 pricing agent," you will build the identity, state, and circuit-breaker machinery and feel covered. You will be exposed in three places. The router can misroute without ever tripping a circuit breaker. The note can publish an unsupported claim that no pricing control inspects. The sourcing path can commit you to an external deal that your internal policy tiers were never written to bound.
 
-The readiness obligation of a composed system is the union of the obligations of every archetype in it, applied per component. The merchandising agent above must satisfy the archetype 1 checklist for its note generator, the archetype 2 checklist for its router, the archetype 4 checklist for its loop, and the archetype 5 checklist for its sourcing path. Miss one and you have governed the loudest component and left the quiet ones ungoverned.
+The readiness obligation of a composed system is the union of the obligations of every archetype in it, applied per component. The agent above must satisfy the archetype 1 checklist for its note generator, the archetype 2 checklist for its router, the archetype 4 checklist for its loop, and the archetype 5 checklist for its sourcing path. Miss one and you have governed the loudest component and left the quiet ones ungoverned.
 
 This is the practical payoff of the whole model. Decomposing a system into archetypes is not taxonomy for its own sake. It is how you find every place the system can act, name what each place demands, and make sure your investment in policy keeps pace with your reach in architecture, one component at a time.
 
@@ -1090,7 +1145,7 @@ Non-deterministic systems break the testing habits built for deterministic ones.
 
 An agent that acts at machine speed needs an operating model to match. Someone owns each agent. Someone is on call when a circuit breaker trips at 2am. There are runbooks for pausing an agent, revoking its identity, and reconstructing what it did, and an incident process that treats an agent's bad action like a production incident, because that is what it is. The human-oversight box in every architecture diagram stands for a team and a set of procedures. That capacity has to be staffed and planned; it does not emerge on its own.
 
-Timelines should be set accordingly. Archetypes 1 and 2 can deliver value in weeks. A goal-directed agent trustworthy enough for live write access is a matter of months, most of it spent in sandbox and evaluation. An autonomous agent with its own identity, durable state, and governance is a program measured in quarters, and the collaborating case depends partly on infrastructure the industry is still building. "Start now" is fair advice. "Transform overnight" is how projects join the 40% that get canceled.
+Timelines should be set accordingly. Archetypes 1 and 2 can deliver value in weeks. A goal-directed agent trustworthy enough for live write access is a matter of months, most of it spent in sandbox and evaluation. An autonomous agent with its own identity, durable state, and governance is a program measured in quarters, and the collaborating case depends partly on infrastructure the industry is still building. "Start now" is fair advice. "Transform overnight" is how projects end up cancelled.
 
 
 ## Readiness reference
@@ -1119,7 +1174,9 @@ A consolidated view of the readiness requirements from all five archetypes, on t
 
 ### How to use it
 
-Run the diagnostic in "Locating your solution" first, component by component. For each component, find its archetype row and treat both the architecture and policy cells as the minimum bar for that component. A component clears the bar only when both cells are satisfied, because capability without matching governance is the failure mode from Part One.
+Run the diagnostic in "Locating your solution" first, component by component. For each component, find its archetype row and read both cells: capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
+
+The tables above are the full requirement, which is the standard to hold at scale rather than the gate for a first deployment. Part Two splits each chapter's checklist into **minimum to launch** — what has to be true before a system reaches production, because without it the system can cause harm you cannot see or undo — and **required at scale**, the reliability, cost, and drift machinery that a pilot can defer and a platform cannot. Use the per-chapter split to decide what ships; use the tables here to decide what you still owe. A deferred item is acceptable. An unnamed deferred item is how the gap becomes an incident.
 
 Then read the whole set for your system. The obligations compound as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one. It is the crack the higher one is built on.
 
@@ -1137,7 +1194,7 @@ The fastest way to make this model yours is to run it once, on one real initiati
 Three rules make it useful:
 
 - **One row per component, not per system.** A single deployment usually spans several archetypes; the point is to see each one. If every row says the same archetype, you have probably described the system, not its components.
-- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture-or-policy item you are least confident you have today. That single item is where the initiative is exposed.
+- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture-or-policy item you are least confident you have today, and whether Part Two treats it as a launch item or a scale item. A missing launch item blocks the deployment. A missing scale item is a dated commitment.
 - **Assign an owner to every row.** Capability without an accountable owner is the failure mode from Part One in miniature.
 
 When the grid is full you have a one-page readiness map: what the initiative is, what each part demands, and the specific gaps to close before you scale. Bring that page to the funding conversation and the vendor conversation both.
@@ -1151,7 +1208,7 @@ The organizations that move well across this range share a habit: they do their 
 
 So the work is not to rush toward the agents that never stop. It is to match each part of a solution to the right archetype and build that part well, with the means constrained and the reasoning visible.
 
-If you take one action from this book, take this one: pick a single live initiative this week and run the diagnostic on it, component by component, using the worksheet in the readiness reference. Naming where one real solution actually sits — and where its weakest readiness link is — will teach you more than reading any chapter twice, and it is the fastest way to turn this vocabulary into a decision.
+If you take one action from this book, take this one: fill in the one-initiative worksheet for something you are actually building. Naming where one real solution sits, and where its weakest readiness link is, turns this vocabulary into a decision.
 
 ## This is a working framework
 
@@ -1160,11 +1217,76 @@ The model here is grounded in established work from [Anthropic](https://www.anth
 If something here does not map to what you are seeing in practice, or there is a gap we should fill, we want to hear it. The working group's charter, members, and ongoing work are public. Questions, feedback, and suggestions are welcome at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture).
 
 
+# Glossary
+
+Terms as this book uses them. Where a term first becomes load-bearing in a particular archetype, that is noted.
+
+**A2A (Agent2Agent).** An open protocol defining how independently built agents exchange structured messages and take turns, independent of how either is implemented. Started at Google, donated to the Linux Foundation in 2025, now governed by a multi-vendor technical steering committee. Archetype 5.
+
+**Agent directory.** Shared infrastructure where agents publish machine-readable descriptions of what they can do, so other organizations' agents can find and evaluate them without a human wiring the connection first. Archetype 5.
+
+**Agentic system.** A system where an AI model evaluates context and makes decisions that shape the system's behavior. A model that only generates or transforms content inside a fixed path is *LLM-assisted*, not agentic. This is the line the whole model is built on.
+
+**Archetype.** A recurring pattern of agentic system with its own best-fit problems, its own architecture demands, and its own policy demands. Deliberately not a *level* or *maturity stage*: there is no top, and most real solutions compose several archetypes at once.
+
+**Architecture.** In this book, one of the two dimensions: what a system *can* do — reasoning, coordination, state, and the tools and integrations through which it acts on the world.
+
+**Blast radius.** The worst outcome an agent's permissions allow, independent of how well it reasons. Scoping tools and write access is how you bound it.
+
+**Checkpointing.** Periodically persisting an agent's full accumulated context so a crash resumes from the last good state rather than from zero. Archetype 4.
+
+**Circuit breaker.** A machine-speed automatic halt triggered by rate or cumulative-magnitude limits rather than by the validity of any individual action. Distinct from a **kill switch**, which is an operator's immediate, unconditional manual halt. Archetype 4.
+
+**Confidence threshold.** The score below which a model's recommendation is not acted on, routing instead to a defined fallback. Archetype 2.
+
+**Context package.** The curated set of data a workflow assembles and passes to a model: approved attributes, terminology rules, constraints, prior approved examples, prohibited claims. The model sees only this, so a weak package produces weak output regardless of model quality. Archetype 1.
+
+**Dead man's switch.** A control that pauses an agent if it has not checked in with oversight within a defined interval, covering the case where the agent is running but observability has failed. Archetype 4.
+
+**Decentralized identifier (DID) and verifiable credential.** W3C standards letting an identity and its claims be checked cryptographically rather than accepted on assertion — the general technique behind cross-organization identity verification. Archetype 5.
+
+**Decision trail.** An append-only, tamper-evident record of each decision: the triggering observation, the reasoning, the proposed action, the policy result, the outcome, and the post-action observation. At archetype 4 it is infrastructure, not logging.
+
+**Drift.** Behavior changing over time while each individual decision still looks plausible. *Route drift*: the distribution of routing decisions shifts (archetype 2). *Agent drift*: the agent finds edge cases that pass policy but violate intent. *Policy drift*: the policies are stale and the agent is faithfully following them. *Semantic drift*: stated rationales become repetitive, circular, or disconnected from what was observed.
+
+**Durable execution.** Frameworks (Temporal, AWS Step Functions, Restate and similar) that persist workflow state across failures and restarts — one common way to implement archetype 4's durable state.
+
+**Ephemeral credential.** A short-lived, task-scoped credential that exists for the life of a single run and expires with it. The cleanest fault line between archetype 3 and archetype 4, which needs a standing identity instead.
+
+**Exfiltration.** Data leaving your boundary through an agent that has both broad read access and some external action. The mirror risk to prompt injection.
+
+**Golden test set.** A fixed set of representative inputs with known-good outputs or resolutions, run as a regression check whenever a prompt or model changes. The substitute for asserting one correct output in a non-deterministic system.
+
+**Machine identity.** A durable, dedicated credential belonging to the agent itself — distinct from a shared service account or a delegated human session — with its own provisioning, rotation, scoping, monitoring, revocation, and decommissioning. Archetype 4.
+
+**Mandate.** Policy governing what an agent may commit *you* to in a deal with an outside party, as distinct from what it may do to your own systems. Held privately; a counterparty who can infer your mandate can exploit it. Archetype 5.
+
+**MCP (Model Context Protocol).** A standard interface for exposing tools and context to a single agent. Not an alternative to A2A: it sits at a different layer and complements it.
+
+**Non-repudiable.** Signed and tied to a verified identity, so neither party can later deny having made or accepted an offer. Archetype 5.
+
+**OASF (Open Agentic Schema Framework).** A machine-readable format for describing an agent's capabilities and identity independent of vendor or framework, used for directory publication and discovery. Part of AGNTCY.
+
+**Policy.** In this book, the second of the two dimensions: what a system is *allowed* to do — identity, governance, permissions, and oversight. It has to scale in step with architecture.
+
+**Policy engine.** The component that evaluates every proposed action against stored policy before execution, returning permit, escalate, or halt. At archetype 4 no path from reasoning to action may bypass it.
+
+**Prompt injection.** A malicious instruction hidden in content an agent reads — a document, a web page, a supplier feed — which the agent may treat as a goal. Not a fringe case for agents whose job is ingesting external content. Contained by permission boundaries, not by the model's judgment.
+
+**Reasoning trace.** A per-run record of each step, its rationale, the tool call it produced, and the result. Treat it as evidence rather than proof: a model's stated rationale is its account of what it did, not a guaranteed-faithful log of the computation, so pair it with the tool-call log and observed results. Archetype 3.
+
+**Reservation price.** The least favourable price your agent is authorized to accept. Part of the mandate, and never disclosed to a counterparty. Archetype 5.
+
+**Route set.** The explicit, enumerated list of paths a model may choose among, defined before the model is introduced, with required inputs and unavailability conditions for each. Defining it is the primary act of architecture at archetype 2.
+
+**SLIM (Secure Low-Latency Interactive Messaging).** One encrypted transport that can carry a negotiation protocol between organizations; plain gRPC or a message bus can play the same role. Part of AGNTCY.
+
+**Tool allow-list.** The enumerated set of tools an agent may call, with read and write scoped separately. Everything an agent can do is the union of its tools, so this is the action surface. Archetype 3.
+
 # References and further reading
 
 - Gartner, [Over 40% of Agentic AI Projects Will Be Canceled by End of 2027](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027) (June 2025)
 - Anthropic, [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)
-- Anthropic, [SWE-bench: Sonnet](https://www.anthropic.com/research/swe-bench-sonnet)
 - AGNTCY, [agntcy.org](https://agntcy.org) and the [Internet of Agents](https://agntcy.org)
 - AGNTCY, [Identity](https://github.com/agntcy/identity), the [Open Agentic Schema Framework (OASF)](https://docs.agntcy.org/), and the [Observe SDK](https://docs.agntcy.org/)
 - [A2A (Agent-to-Agent) protocol](https://a2a-protocol.org)
@@ -1177,7 +1299,6 @@ Agentic AI in production (MACH Alliance):
 - [ACR (AmerCareRoyal): From 8 Minutes to 60 Seconds with Autonomous B2B Order Processing](https://machalliance.org/case-studies/acr-amercareroyal-from-8-minutes-to-60-seconds-with-autonomous-b2b-order-processing)
 - [Wyze: End-to-End Agentic Commerce from AI-Powered Discovery to Doorstep Delivery](https://machalliance.org/case-studies/wyze)
 - [CarParts.com: Building a Multi-Agent Ecosystem for Agentic Automotive Commerce](https://machalliance.org/case-studies/carparts-com)
-- [Altitude Sports: From Monolith to Agentic Commerce](https://machalliance.org/case-studies/altitude-sports-from-monolith-to-agentic-commerce)
 
 # Contributors
 

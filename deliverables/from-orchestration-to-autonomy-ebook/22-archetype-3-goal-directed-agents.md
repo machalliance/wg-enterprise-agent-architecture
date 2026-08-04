@@ -20,7 +20,7 @@ The value: real autonomy, where the agent solves problems you did not script, wi
 
 ### Running example: resolving a failing spring-line feed
 
-Two weeks before launch, one of Meridian's footwear suppliers pushes an updated spring-line feed and it starts failing validation across hundreds of records. The triage workflow from Chapter 2 can route those records to a correction path, but someone still has to work out what actually went wrong and fix it. Instead of routing each bad record to a queue, Meridian hands an agent a goal:
+Two weeks before launch, one of Meridian's footwear suppliers pushes an updated spring-line feed and it starts failing validation across hundreds of records. The triage workflow from archetype 2 can route those records to a correction path, but someone still has to work out what actually went wrong and fix it. Instead of routing each bad record to a queue, Meridian hands an agent a goal:
 
 > "This supplier's product feed is failing validation. Find out why, and fix what you can safely fix."
 
@@ -142,20 +142,25 @@ Coding agents that edit across files and iterate until tests pass, codebase rese
 
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Tool allow-list scoped, with read and write separated and independently bounded
 - [ ] Tool definitions written with the care of a docstring
 - [ ] Explicit stop conditions for done, stuck, and out-of-budget
-- [ ] Error recovery built into the loop as normal behavior
 - [ ] Full-sequence reasoning trace captured per run
 - [ ] Ephemeral, task-scoped credentials; no standing identity
 
-Policy:
+Architecture — required at scale:
+- [ ] Error recovery built into the loop as normal behavior
+- [ ] Per-task cost and iteration budgets enforced, not just observed
+
+Policy — minimum to launch:
 - [ ] Permission boundary enforces the meaning of "safely," not the model
 - [ ] Human checkpoints assigned by reversibility and risk
-- [ ] Traces support after-the-fact review of any action the agent took
-- [ ] Tool additions are a reviewed, approved event
 - [ ] Sandbox and dry-run evaluation completed before live write access
+
+Policy — required at scale:
+- [ ] Traces reviewed on a standing cadence, not only after an incident
+- [ ] Tool additions are a reviewed, approved event
 
 ### Bridging to archetype 4
 

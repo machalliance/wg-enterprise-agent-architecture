@@ -13,9 +13,11 @@ This is a difference in kind, not degree. The moment an agent operates independe
 - **Accountability becomes continuous.** You cannot reconstruct why the agent took action X at time T from a post-mortem, so decision trails must be first-class infrastructure rather than afterthought logging.
 - **Policy becomes the operating system.** Without task-by-task human approval, the policies you define are the supervision. They have to be precise, enforceable, and auditable.
 
+The value: continuous optimization of a domain that moves faster and wider than a team can watch by hand. The price is a standing governance and identity function that runs as continuously as the agent does.
+
 ### Running example: pricing the spring line through the season
 
-The spring line is live. Now Meridian has to price it across a full season of shifting demand, weather, competitor moves, and inventory levels, on thousands of SKUs at once. That is more repricing than a merchandising team can do by hand, so Meridian runs a revenue optimization agent over the category. Unlike the catalog agent in Chapter 3, this one does not finish. It:
+The spring line is live. Now Meridian has to price it across a full season of shifting demand, weather, competitor moves, and inventory levels, on thousands of SKUs at once. That is more repricing than a merchandising team can do by hand, so Meridian runs a revenue optimization agent over the category. Unlike the catalog agent in archetype 3, this one does not finish. It:
 
 - **Monitors** pricing signals, inventory levels, competitor pricing, demand forecasts, and margin targets. Continuously.
 - **Decides** when to adjust pricing, trigger promotions, or flag conditions for human review.
@@ -143,20 +145,33 @@ These tiers live in a policy store rather than in code, so they can be adjusted 
 
 **Drift detection and compliance.** Watch both sides. Agent drift: is the agent still within its boundaries, or has it found edge cases that pass policy checks but violate intent? Policy drift: are the policies still appropriate, or is the agent faithfully following outdated ones? Periodic compliance attestation verifies that actual behavior matches declared boundaries, and gaps trigger review.
 
+### Other examples that fit archetype 4
+
+Inventory replenishment that reorders continuously within policy, fraud and anomaly monitoring that acts on what it detects, infrastructure remediation agents that watch a fleet and correct drift, continuous bid and budget optimization in paid media, and supply-chain exception monitoring that reroutes shipments as conditions change. In each, no one assigns the work: the agent decides that a condition warrants action and acts within boundaries its operators set.
+
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Dedicated, durable machine identity with granular scoped permissions
-- [ ] Automated credential rotation that does not interrupt operation
-- [ ] Checkpointing and state versioning for durable, recoverable context
-- [ ] Baseline behavioral profiles with real-time anomaly comparison, including semantic drift
-- [ ] Append-only, tamper-evident, queryable decision trail with causal chains
 - [ ] Policy evaluation gates every action; no reasoning-to-action path skips it
+- [ ] Checkpointing and state versioning for durable, recoverable context
+- [ ] Append-only, tamper-evident decision records
 
-Policy:
-- [ ] Full identity lifecycle owned and documented, provisioning through decommissioning
+Architecture — required at scale:
+- [ ] Automated credential rotation that does not interrupt operation
+- [ ] Baseline behavioral profiles with real-time anomaly comparison, including semantic drift
+- [ ] Decision trail queryable, with causal chains linking decisions to prior ones
+- [ ] Model versions pinned, with changes tested against recorded decisions before rollout
+
+Policy — minimum to launch:
+- [ ] Identity lifecycle owned through revocation, with a named owner for the agent
 - [ ] Permission tiers defined in a policy store, adjustable without redeploy
-- [ ] Rate limiters, magnitude limiters, dead man's switch, and manual kill switch in place
+- [ ] Rate limiters, magnitude limiters, and a manual kill switch in place
+- [ ] On-call coverage and a runbook for pausing the agent and reconstructing what it did
+
+Policy — required at scale:
+- [ ] Full lifecycle documented through decommissioning
+- [ ] Dead man's switch covering the case where the agent runs but oversight is blind
 - [ ] Agent-drift and policy-drift detection running
 - [ ] Periodic compliance attestation against declared boundaries
 

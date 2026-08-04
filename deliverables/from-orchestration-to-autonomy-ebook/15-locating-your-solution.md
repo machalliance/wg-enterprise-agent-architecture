@@ -32,4 +32,4 @@ Now read back the set. If your solution touched more than one archetype, list ea
 
 Then, for each archetype in play, ask whether you are resourced for it. Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement; Part Three consolidates them into a single checklist.
 
-**Do this once, this week.** Pick one initiative that is live or about to be, and run the build-language questions above against each of its components. Write down the archetype each component lands in and the one readiness item you are least sure you have. That single page — initiative, components, archetypes, weakest link — is the whole diagnostic, and the one-initiative worksheet in Part Three's readiness reference gives you a grid to fill in. Running it on one real thing teaches the model faster than reading the rest of the book.
+The one-initiative worksheet in Part Three's readiness reference gives you a grid for recording the answers, and running these questions against one real initiative teaches the model faster than reading the rest of the book.

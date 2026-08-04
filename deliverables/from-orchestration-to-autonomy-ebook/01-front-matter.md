@@ -37,7 +37,7 @@ Part Two: The Five Archetypes
 4. Autonomous, policy-guided agents — *autonomous*
 5. Collaborating, self-directed agents — *collaborating*
 
-  Each chapter follows the same structure, so you can jump to the part you need: *What changes here · Running example · Architecture · Policy · Readiness checklist · Bridging to the next archetype.*
+  Each chapter follows the same structure, so you can jump to the part you need: *What changes here · Running example · Architecture · Policy · Other examples that fit · Readiness checklist · Bridging to the next archetype.*
 
 Part Three: Putting It Together
 - One domain, all five: the procurement ladder
@@ -46,5 +46,7 @@ Part Three: Putting It Together
 - Readiness reference (consolidated architecture and policy tables)
 
 Closing: Where most organizations sit, and how to contribute
+
+Glossary
 
 References and further reading

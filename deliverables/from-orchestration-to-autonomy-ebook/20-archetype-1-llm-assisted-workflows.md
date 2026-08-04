@@ -6,6 +6,12 @@ Every chapter in Part Two uses one fictional retailer, so the examples connect i
 
 Across the chapters, Meridian is preparing and running its **spring outdoor line launch**, a few thousand new and returning products across tents, packs, footwear, and apparel. Each archetype is a different system in Meridian's stack touching that launch. The chapters appear in order of autonomy. Part Three puts the systems back in the order the work actually happens and shows them working together.
 
+### A note on the readiness checklists
+
+Every chapter ends with a readiness checklist split two ways. **Minimum to launch** is the set that has to be true before a first production deployment, because without it the system can cause harm you cannot see or undo. **Required at scale** is what running it at volume, across more categories, or for longer adds: the reliability, cost, and drift machinery that a pilot can defer and a production platform cannot.
+
+The split matters because the full list, read as a single gate, stops good first projects. Several of the production deployments cited in Part One shipped their first version without the whole list, and earned the rest as they grew. What is not negotiable is knowing which items you have deferred, and to when.
+
 ## Archetype 1: LLM-assisted workflows (not yet agents) — *assisted*
 
 *The model helps with language and structure. The workflow still decides everything.*
@@ -127,17 +133,22 @@ Customer support reply drafting, localization and market adaptation, meeting and
 
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Model calls run as steps inside a deterministic workflow engine, never as the orchestrator
 - [ ] Context packages assembled from approved sources only
-- [ ] Prompts versioned, tested, and rollback-able
+- [ ] Prompts versioned and rollback-able
 - [ ] Output validators enforce schema, limits, and prohibited content before anything leaves the workflow
-- [ ] Deterministic work kept out of the model; outputs cached where inputs are stable
 
-Policy:
+Architecture — required at scale:
+- [ ] Deterministic work kept out of the model; outputs cached where inputs are stable
+- [ ] Prompt test cases maintained alongside the prompts themselves
+
+Policy — minimum to launch:
 - [ ] Data classes permitted to reach the model are defined, with approved vendors per class
 - [ ] Named owner for approval of every generated artifact
 - [ ] Claim-handling rules in place, with regulated claims routed to review
+
+Policy — required at scale:
 - [ ] Golden test sets and regression checks run on prompt or model change
 - [ ] Content provenance captured: model, prompt version, sources, validators, approver, publication
 

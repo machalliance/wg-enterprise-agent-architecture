@@ -28,7 +28,7 @@ These are archetypes, not levels on a ladder. None is a trophy for outgrowing th
 
 Three moves a leadership team can make now, without a single line of code:
 
-- **Name where your solutions actually sit.** This week, pick one live initiative and run the short diagnostic in "Locating your solution" on it, component by component. It takes an afternoon and needs no code. Most enterprises are in archetypes 1 and 2 today, with early goal-directed agents. Knowing which archetypes a given initiative uses tells you what it will demand and what it is worth.
+- **Name where your solutions actually sit.** Most enterprises are in archetypes 1 and 2 today, with early goal-directed agents. Knowing which archetypes a given initiative uses tells you what it will demand and what it is worth, and the one-initiative worksheet in Part Three turns that into an afternoon's work with no code.
 - **Fund governance in step with capability.** The Gartner cancellation reasons are a checklist in disguise. Before approving an agentic initiative, ask whether the risk controls, the cost model, and the business case scale with the autonomy you are buying. If they do not, you are funding a future write-off.
 - **Refuse "agentic" as an answer.** Ask a vendor which archetype their system is, and what it demands of you. A precise answer is a sign of a real product. A wave at "agentic" is a sign of agent washing.
 

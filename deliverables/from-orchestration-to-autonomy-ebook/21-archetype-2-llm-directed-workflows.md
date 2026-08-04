@@ -20,7 +20,7 @@ The value: adaptive behavior without open-ended model control.
 
 ### Running example: triaging inbound spring-line data
 
-Before Meridian's enrichment workflow from Chapter 1 can do its job, the raw product data has to be sorted. Spring-line data is landing from hundreds of suppliers through ERPs, spreadsheets, syndication tools, marketplaces, and the PIM, and it is messy: missing attributes, inconsistent categories, unsupported claims, weak descriptions, duplicate SKUs. Meridian runs a product data quality triage workflow ahead of enrichment. An archetype 1 workflow might rewrite a description. This archetype 2 workflow asks the model to decide which predefined remediation path each incoming record should follow:
+Before Meridian's enrichment workflow from archetype 1 can do its job, the raw product data has to be sorted. Spring-line data is landing from hundreds of suppliers through ERPs, spreadsheets, syndication tools, marketplaces, and the PIM, and it is messy: missing attributes, inconsistent categories, unsupported claims, weak descriptions, duplicate SKUs. Meridian runs a product data quality triage workflow ahead of enrichment. An archetype 1 workflow might rewrite a description. This archetype 2 workflow asks the model to decide which predefined remediation path each incoming record should follow:
 
 - **Publish** when the record is complete and low risk.
 - **Content enrichment** when the attributes are good but the copy is weak.
@@ -152,19 +152,24 @@ Support ticket routing, adaptive content review, commerce exception handling for
 
 ### Readiness checklist
 
-Architecture:
+Architecture — minimum to launch:
 - [ ] Allowed route set defined before the model is introduced, with required inputs per route
 - [ ] Model emits a structured, schema-validated route recommendation; a separate evaluator gates it
-- [ ] Deterministic work kept out of the model
 - [ ] Confidence thresholds and a defined fallback for every uncertainty class
 - [ ] Any evaluation loop bounded by an explicit revision cap and escalation
-- [ ] Per-decision trace captured and replayable
+- [ ] Per-decision trace captured
 
-Policy:
+Architecture — required at scale:
+- [ ] Deterministic work kept out of the model
+- [ ] Traces replayable against a recorded decision set
+
+Policy — minimum to launch:
 - [ ] Route permissions defined per model, brand, region, and category
 - [ ] Escalations carry rationale and evidence to the reviewer
-- [ ] Routing prompts and models under change control with expected-route test sets
 - [ ] Data reaching the model minimized to the decision at hand
+
+Policy — required at scale:
+- [ ] Routing prompts and models under change control with expected-route test sets
 - [ ] Route and confidence drift monitored over time
 - [ ] Audit record captures decision plus surrounding control checks
 

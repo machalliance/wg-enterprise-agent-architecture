@@ -17,11 +17,13 @@ Four questions become unavoidable the moment an agent must interact with an agen
 - **Protocol.** What shared message contract lets independently built agents negotiate, counteroffer, and settle across a network neither side owns?
 - **Accountability.** When two organizations' agents produce an outcome neither operator intended, whose decision trail is authoritative, and how is the dispute resolved?
 
+The value: reach beyond your own walls, to supply, demand, and terms your systems could never touch on their own. The price is a dependency on trust infrastructure the industry is still building, and on counterparties whose incentives are not yours.
+
 Part Three walks Meridian's replenishment through all five archetypes, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last step: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
 
 ### Running example: sourcing a spring-line reorder across organizations
 
-A hero product from the spring line, a lightweight three-season tent, sells through far faster than forecast. Meridian's pricing agent from Chapter 4 can protect margin, but it cannot conjure more stock. Meridian needs to reorder fast, and the original supplier cannot cover the full quantity in time. Every step so far has lived inside Meridian's own walls. This one crosses the boundary: Meridian's procurement agent must source the shortfall and negotiate terms with several independent suppliers' selling agents, none of which it controls. The procurement agent:
+A hero product from the spring line, a lightweight three-season tent, sells through far faster than forecast. Meridian's pricing agent from archetype 4 can protect margin, but it cannot conjure more stock. Meridian needs to reorder fast, and the original supplier cannot cover the full quantity in time. Every step so far has lived inside Meridian's own walls. This one crosses the boundary: Meridian's procurement agent must source the shortfall and negotiate terms with several independent suppliers' selling agents, none of which it controls. The procurement agent:
 
 - **Discovers** candidate supplier agents through a directory rather than a hardcoded list of endpoints.
 - **Verifies** each counterparty's identity and its claims before exchanging anything of value.
@@ -30,7 +32,7 @@ A hero product from the spring line, a lightweight three-season tent, sells thro
 
 ### Architecture
 
-No box in this picture is owned by both organizations. The trust substrate in the middle is shared infrastructure, open protocols and a directory that no single party controls. Each organization runs its own agent, its own policy engine, and its own decision store, and they meet only through verified, mediated exchange.
+No box in this picture is under one party's control. The trust substrate in the middle is shared infrastructure, open protocols and a directory that no single party owns. Each organization runs its own agent, its own policy engine, and its own decision store, and they meet only through verified, mediated exchange.
 
 ```mermaid
 graph TB
@@ -50,14 +52,16 @@ graph TB
 
     subgraph "Supplier Organization A"
         SAGENT[Selling Agent A]
-        SPOLICY[Supplier A Policy]
-        SIDENT[Supplier A Identity]
+        SPOLICY[Supplier A Policy and Mandate]
+        SIDENT[Supplier A Identity / Credentials]
+        SLEDGER[Supplier A Decision Trail]
     end
 
     subgraph "Supplier Organization B"
         SAGENT2[Selling Agent B]
-        SPOLICY2[Supplier B Policy]
-        SIDENT2[Supplier B Identity]
+        SPOLICY2[Supplier B Policy and Mandate]
+        SIDENT2[Supplier B Identity / Credentials]
+        SLEDGER2[Supplier B Decision Trail]
     end
 
     BAGENT -->|find counterparties| DIR
@@ -77,9 +81,11 @@ graph TB
     SPOLICY --> SAGENT
     SPOLICY2 --> SAGENT2
     BAGENT --> BLEDGER
+    SAGENT --> SLEDGER
+    SAGENT2 --> SLEDGER2
 ```
 
-The buyer's internal stack (policy, identity, decision trail) is the archetype 4 architecture, intact. What is new is the substrate: a directory for discovery, identity verification that works across organizations, a secure transport for messages crossing a network neither side owns, and a shared negotiation protocol that gives both agents the same vocabulary for offers and counteroffers. Each agent consults its own policy engine privately; neither can see the other's mandate, reservation price, or escalation rules. Three terminal branches make up the decision space: settle within mandate, escalate beyond it, or walk away. Walk-away matters here in a way it never did inside one organization, because a counterparty can refuse, stall, or behave adversarially, and your agent has to disengage cleanly rather than concede.
+The buyer's internal stack (policy, identity, decision trail) is the archetype 4 architecture, intact. What is new is the substrate: a directory for discovery, identity verification that works across organizations, a secure transport for messages crossing a network neither side owns, and a shared negotiation protocol that gives both agents the same vocabulary for offers and counteroffers. Each agent consults its own policy engine privately; neither can see the other's mandate, reservation price, or escalation rules. Note that every organization keeps its own decision trail and the trails never merge, which is the structural reason accountability is hard here: there is no combined record, only halves that have to be reconciled after the fact. Three terminal branches make up the decision space: settle within mandate, escalate beyond it, or walk away. Walk-away matters here in a way it never did inside one organization, because a counterparty can refuse, stall, or behave adversarially, and your agent has to disengage cleanly rather than concede.
 
 A word on maturity, and on how to read the diagram, before the specifics. The boxes above name *capabilities*, not products: discovery, cross-organization identity, a shared negotiation contract, secure transport, and correlatable accountability. Those capabilities are what matter and will persist. The specific standards and implementations that fill each slot are still moving, and no enterprise should treat any of them as settled infrastructure yet.
 
@@ -118,21 +124,32 @@ The reservation price, term limits, and approved-counterparty list live in a pol
 
 **Dispute and arbitration.** When two organizations' agents produce an outcome neither operator intended, "whose policy wins?" has no local answer. Pre-agreed dispute terms should be referenced in the protocol exchange before either agent commits. Correlated, non-repudiable trails from both sides feed a defined arbitration path, human, contractual, or a trusted third party, rather than a stalemate of two partial logs. Liability mapping should be clear in advance, and an unverified or out-of-mandate commitment should be void by protocol, so it never reaches litigation.
 
+### Other examples that fit archetype 5
+
+An external AI assistant discovering and buying from your catalog on a shopper's behalf, freight and logistics capacity booked agent-to-agent across carriers, insurance claims settled between a carrier's agent and a repair network's, advertising inventory negotiated between buy-side and sell-side agents, and — at the cooperative end of the range — agents built by different vendors or internal teams coordinating on a shared objective across systems neither team owns. The cooperative cases are the realistic near-term work; the adversarial ones are where the trust infrastructure has to be complete.
+
 ### Readiness checklist
 
-Architecture:
-- [ ] Agent directory for discovery, with machine-readable capability descriptions (e.g., OASF, or A2A Agent Cards)
+Architecture — minimum to launch:
 - [ ] Cross-organization identity verification, cryptographic rather than self-asserted (e.g., W3C DIDs and Verifiable Credentials, or AGNTCY Identity)
 - [ ] Shared negotiation protocol (e.g., A2A) over secure transport (e.g., SLIM or gRPC), kept separable
 - [ ] Non-repudiable, signed exchange with shared correlation identifiers
-- [ ] Your side fully instrumented; protocol-level evidence relied on for the counterparty
+- [ ] Your side fully instrumented
 
-Policy:
+Architecture — required at scale:
+- [ ] Agent directory for discovery, with machine-readable capability descriptions (e.g., OASF, or A2A Agent Cards) — a first deployment can run against a short vetted counterparty list instead
+- [ ] Protocol-level evidence collected and reconcilable against the counterparty's half of the trail
+
+Policy — minimum to launch:
 - [ ] Mandate tiers defining what the agent may commit you to, held in a private policy store
 - [ ] Counterparty cannot infer your mandate or reservation price
-- [ ] Round and time budgets, information minimization, and counterparty reputation in place
+- [ ] Round and time budgets, and information minimization per turn
 - [ ] Kill switch severs live negotiations and in-flight commitments; spend capped across all deals
 - [ ] Pre-agreed dispute terms, arbitration path, and liability mapping defined before commitment
+
+Policy — required at scale:
+- [ ] Counterparty reputation tracked, down-weighting agents that stall, renege, or probe
+- [ ] Relationship-level drift detection on terms settled with each counterparty over time
 
 ### Where this leaves the model
 

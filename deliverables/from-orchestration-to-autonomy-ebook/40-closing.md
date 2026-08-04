@@ -6,7 +6,7 @@ The organizations that move well across this range share a habit: they do their 
 
 So the work is not to rush toward the agents that never stop. It is to match each part of a solution to the right archetype and build that part well, with the means constrained and the reasoning visible.
 
-If you take one action from this book, take this one: pick a single live initiative this week and run the diagnostic on it, component by component, using the worksheet in the readiness reference. Naming where one real solution actually sits — and where its weakest readiness link is — will teach you more than reading any chapter twice, and it is the fastest way to turn this vocabulary into a decision.
+If you take one action from this book, take this one: fill in the one-initiative worksheet for something you are actually building. Naming where one real solution sits, and where its weakest readiness link is, turns this vocabulary into a decision.
 
 ## This is a working framework
 

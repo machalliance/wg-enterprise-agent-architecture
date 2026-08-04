@@ -24,7 +24,9 @@ A consolidated view of the readiness requirements from all five archetypes, on t
 
 ### How to use it
 
-Run the diagnostic in "Locating your solution" first, component by component. For each component, find its archetype row and treat both the architecture and policy cells as the minimum bar for that component. A component clears the bar only when both cells are satisfied, because capability without matching governance is the failure mode from Part One.
+Run the diagnostic in "Locating your solution" first, component by component. For each component, find its archetype row and read both cells: capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
+
+The tables above are the full requirement, which is the standard to hold at scale rather than the gate for a first deployment. Part Two splits each chapter's checklist into **minimum to launch** — what has to be true before a system reaches production, because without it the system can cause harm you cannot see or undo — and **required at scale**, the reliability, cost, and drift machinery that a pilot can defer and a platform cannot. Use the per-chapter split to decide what ships; use the tables here to decide what you still owe. A deferred item is acceptable. An unnamed deferred item is how the gap becomes an incident.
 
 Then read the whole set for your system. The obligations compound as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one. It is the crack the higher one is built on.
 
@@ -42,7 +44,7 @@ The fastest way to make this model yours is to run it once, on one real initiati
 Three rules make it useful:
 
 - **One row per component, not per system.** A single deployment usually spans several archetypes; the point is to see each one. If every row says the same archetype, you have probably described the system, not its components.
-- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture-or-policy item you are least confident you have today. That single item is where the initiative is exposed.
+- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture-or-policy item you are least confident you have today, and whether Part Two treats it as a launch item or a scale item. A missing launch item blocks the deployment. A missing scale item is a dated commitment.
 - **Assign an owner to every row.** Capability without an accountable owner is the failure mode from Part One in miniature.
 
 When the grid is full you have a one-page readiness map: what the initiative is, what each part demands, and the specific gaps to close before you scale. Bring that page to the funding conversation and the vendor conversation both.

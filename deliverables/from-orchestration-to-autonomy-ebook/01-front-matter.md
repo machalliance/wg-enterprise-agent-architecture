@@ -12,11 +12,7 @@ The word "agentic" now covers everything from a workflow that calls a language m
 
 This book offers a shared vocabulary: five agent archetypes, arranged from more structured and human-directed to more autonomous and system-directed. They are patterns you compose with, and most real solutions use several at once.
 
-It is written for two readers at once. Part One gives an executive account of the model, readable on its own. Part Two goes deep on each archetype for the people who build. Part Three shows the archetypes working together in a single domain and gives you a consolidated readiness reference.
-
-## How to read it
-
-Read Part One for the whole argument. Stop there and you will have the model. Read Part Two when you need the architecture and policy detail for a specific archetype. Use Part Three to see how the pieces combine and to check your own readiness.
+It is written for two readers at once. Part One gives an executive account of the model; stop there and you will have the model. Part Two goes deep on each archetype for the people who build. Part Three shows the archetypes working together in a single domain and gives you a consolidated readiness reference to check your own position against.
 
 ## A note on terms
 

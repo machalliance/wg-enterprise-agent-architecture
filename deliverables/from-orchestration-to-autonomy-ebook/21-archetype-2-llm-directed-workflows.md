@@ -119,7 +119,7 @@ The evaluator validates this shape before anything happens. An out-of-set route 
 
 The fallback path is part of the design. Treat it as expected behavior.
 
-**Bounded evaluation loops.** The other common shape here is a decision about whether to continue. A generate-evaluate-revise loop sits directly on top of archetype 1's content workflow: a generator drafts a description, a separate evaluator call scores it against a rubric, and a passing draft ships while a failing one returns for revision. The loop is bounded by a fixed revision cap; if the draft still fails on the last attempt, it escalates to a human. The agency is not which path, it is whether to go again. Everything that bounds the loop, the rubric, the cap, the escalation, is human-designed. That is what keeps it here and out of archetype 3: the model decides only whether the output is good enough, while the goal and the attempt budget stay fixed by people. Loops without budgets drift toward archetype 3 behavior.
+**Bounded evaluation loops.** The other common shape here is a decision about whether to continue. A generate-evaluate-revise loop sits directly on top of archetype 1's content workflow: a generator drafts a description, a separate evaluator call scores it against a rubric, and a passing draft ships while a failing one returns for revision. The loop is bounded by a fixed revision cap; if the draft still fails on the last attempt, it escalates to a human. What the model exercises judgment over here is whether to go again, rather than which path to take. Everything that bounds the loop, the rubric, the cap, the escalation, is human-designed, which is what keeps it here and out of archetype 3: the model decides only whether the output is good enough, while the goal and the attempt budget stay fixed by people. Loops without budgets drift toward archetype 3 behavior.
 
 **Decision traces and replay.** Once the model chooses a route, the choice must be reconstructable: what context the model saw, which route it chose, what confidence and evidence it gave, which policy checks passed, whether a human overrode it, and what happened next. This is more than ordinary application logging. The workflow decision is now part of system behavior.
 
@@ -136,7 +136,7 @@ The fallback path is part of the design. Treat it as expected behavior.
 | Compliance review | Require for regulated or unsupported claims | Avoid legal exposure |
 | Human exception | Always available | Provide a safe fallback |
 
-**Human escalation.** Trigger review on risk, novelty, ambiguity, or low confidence, and give the reviewer the model's rationale and evidence alongside the selected route. Good escalation design helps humans move faster. Bad escalation design creates a queue of mysterious decisions nobody trusts.
+**Human escalation.** Trigger review on risk, novelty, ambiguity, or low confidence, and give the reviewer the model's rationale and evidence alongside the selected route. Designed well, escalation helps a reviewer move faster; designed badly, it produces a queue of mysterious decisions nobody trusts.
 
 **Prompt and model change control.** Changing the prompt or model can change routing behavior. Treat routing prompts like production decision logic: version them, track model versions, keep test sets with expected routes, roll out by percentage or category, and compare old and new behavior before committing.
 

@@ -4,7 +4,7 @@ Most enterprises today are working in archetypes 1 and 2. Content generation, su
 
 The organizations that move well across this range share a habit: they do their current archetype properly before reaching for the next one. They get reliable checkpoint-and-rollback in place. They establish machine identity governance. They build reasoning traces into their observability stack rather than bolting logging on afterward. Those foundations compound. The context packaging and prompt governance you build for archetype 1 become the raw material for archetype 2. The scoped tools and reasoning traces you build for archetype 3 are what an autonomous agent extends when it stops stopping. The durable identity and decision trails you build for archetype 4 are the credential the rest of the ecosystem checks you against in archetype 5.
 
-So the work is not to rush toward the agents that never stop. It is to match each part of a solution to the right archetype and build that part well, with the means constrained and the reasoning visible.
+So the work is to match each part of a solution to the right archetype and build that part well, with the means constrained and the reasoning visible, rather than to rush toward the agents that never stop.
 
 If you take one action from this book, take this one: fill in the one-initiative worksheet for something you are actually building. Naming where one real solution sits, and where its weakest readiness link is, turns this vocabulary into a decision.
 

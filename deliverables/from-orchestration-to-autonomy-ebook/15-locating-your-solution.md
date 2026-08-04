@@ -34,4 +34,4 @@ Then, for each archetype in play, ask whether you are resourced for it. Capabili
 
 The one-initiative worksheet in Part Three's readiness reference gives you a grid for recording the answers, and running these questions against one real initiative teaches the model faster than reading the rest of the book.
 
-There is one more answer the diagnostic can return, and it is the one most worth hearing: that a component needs no model at all. The next section is the test for that.
+The diagnostic can also return one further answer, which is that a component needs no model at all. The next section is the test for that.

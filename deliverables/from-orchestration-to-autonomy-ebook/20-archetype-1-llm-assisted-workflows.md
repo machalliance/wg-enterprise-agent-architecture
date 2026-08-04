@@ -10,7 +10,7 @@ Across the chapters, Meridian is preparing and running its **spring outdoor line
 
 Every chapter ends with a readiness checklist split two ways. **Minimum to launch** is the set that has to be true before a first production deployment, because without it the system can cause harm you cannot see or undo. **Required at scale** is what running it at volume, across more categories, or for longer adds: the reliability, cost, and drift machinery that a pilot can defer and a production platform cannot.
 
-The split matters because the full list, read as a single gate, stops good first projects. Several of the production deployments cited in Part One shipped their first version without the whole list, and earned the rest as they grew. What is not negotiable is knowing which items you have deferred, and to when.
+Read as a single gate, the full list stops good first projects. Several of the production deployments cited in Part One shipped their first version without all of it and earned the rest as they grew. What you cannot defer is knowing which items you have deferred, and to when.
 
 ## Archetype 1: LLM-assisted workflows (not yet agents) — *assisted*
 
@@ -20,7 +20,7 @@ The split matters because the full list, read as a single gate, stops good first
 
 This is the simplest and most common place to start. A deterministic workflow calls a model to synthesize, extract, summarize, translate, classify, or draft content. The model does useful work, but it does not decide what happens next. A person or a human-authored system still defines the sequence, the routing, the checks, and the final action. The model is used like any other capability in the stack: given this context, produce this output.
 
-That is why this archetype sits below the agency line. The model does not shape the behavior of the system. It generates or transforms information inside a path that was already designed. Calling this "agentic" is exactly what creates the vendor confusion the model in Part One is trying to resolve.
+That is why this archetype sits below the agency line. The model does not shape the behavior of the system. It generates or transforms information inside a path that was already designed. Calling this "agentic" is what creates the vendor confusion Part One sets out to resolve.
 
 Adopting it still introduces real engineering concerns:
 
@@ -96,7 +96,7 @@ graph TB
     REVIEW --> AUDIT
 ```
 
-The architecture is deliberately boring, and that is the point. There is no step where the model chooses a route. The workflow may retry, reject, publish, or escalate, but rules and human review decide those branches. The model never does.
+The architecture is deliberately boring. There is no step where the model chooses a route. The workflow may retry, reject, publish, or escalate, but rules and human review decide those branches. The model never does.
 
 A few practices carry most of the quality:
 

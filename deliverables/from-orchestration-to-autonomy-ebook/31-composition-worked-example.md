@@ -20,4 +20,4 @@ Part One made this point with a two-part support workflow. The stakes rise with 
 
 The readiness obligation of a composed system is the union of the obligations of every archetype in it, applied per component. The agent above must satisfy the archetype 1 checklist for its note generator, the archetype 2 checklist for its router, the archetype 4 checklist for its loop, and the archetype 5 checklist for its sourcing path. Miss one and you have governed the loudest component and left the quiet ones ungoverned.
 
-This is the practical payoff of the whole model. Decomposing a system into archetypes is not taxonomy for its own sake. It is how you find every place the system can act, name what each place demands, and make sure your investment in policy keeps pace with your reach in architecture, one component at a time.
+This is the practical payoff of the whole model. Decomposing a system into archetypes earns its keep rather than serving taxonomy: it is how you find every place the system can act, name what each place demands, and make sure your investment in policy keeps pace with your reach in architecture, one component at a time.

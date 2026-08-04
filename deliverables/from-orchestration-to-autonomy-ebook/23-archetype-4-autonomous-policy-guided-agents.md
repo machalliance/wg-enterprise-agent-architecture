@@ -13,7 +13,7 @@ This is a difference in kind, not degree. The moment an agent operates independe
 - **Accountability becomes continuous.** You cannot reconstruct why the agent took action X at time T from a post-mortem, so decision trails must be first-class infrastructure rather than afterthought logging.
 - **Policy becomes the operating system.** Without task-by-task human approval, the policies you define are the supervision. They have to be precise, enforceable, and auditable.
 
-The value: continuous optimization of a domain that moves faster and wider than a team can watch by hand. The price is a standing governance and identity function that runs as continuously as the agent does.
+The value: continuous optimization of a domain that moves faster and wider than a team can watch by hand, bought at the cost of a standing governance and identity function that has to run as continuously as the agent does.
 
 ### Running example: pricing the spring line through the season
 
@@ -113,7 +113,7 @@ During a single cycle the agent perceives signals, loads accumulated context, re
 
 **Behavioral anomaly detection.** An agent that runs continuously can drift, slowly or suddenly. Establish baseline behavioral profiles: frequency of actions, magnitude of changes, distribution of decision types. Compare every action against the baseline. A pricing agent that normally makes 5 to 15 adjustments per hour suddenly making 200 is anomalous regardless of whether each individual action passes policy. Graduated response escalates from logging to alerts to circuit breakers. Watch semantic drift too: are the rationales in the decision traces becoming repetitive, circular, or disconnected from the observations that triggered them?
 
-The economics of running continuously and the data-residency questions a persistent agent raises are treated in full under Cross-cutting concerns in Part Three; evaluating a system whose behaviour has to be watched rather than tested is covered in "Evaluating agentic systems." All three are first-order design constraints at this archetype.
+The economics of running continuously and the data-residency questions a persistent agent raises are treated in full under Cross-cutting concerns in Part Three; evaluating a system whose behavior has to be watched rather than tested is covered in "Evaluating agentic systems." All three are first-order design constraints at this archetype.
 
 **Untrusted signals and exfiltration.** A continuous agent lives on a diet of external data: competitor pages, supplier feeds, demand signals. Any of it can carry a prompt-injection payload aimed at steering the agent, and because no human approves each action, a successful injection acts at machine speed. The exposure runs both ways. An agent with broad read access and an external action can be turned into an exfiltration path, reading something sensitive and writing it somewhere it should not. Defenses are architectural: separate instructions from data, keep the agent's read scope and write scope as narrow as the job allows, and route any action that moves data across a trust boundary through the policy engine rather than trusting the reasoning that proposed it. The circuit breakers below are the backstop when an injection gets through.
 

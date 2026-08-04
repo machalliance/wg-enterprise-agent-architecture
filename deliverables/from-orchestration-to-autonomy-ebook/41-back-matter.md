@@ -58,11 +58,11 @@ Terms as this book uses them. Where a term first becomes load-bearing in a parti
 
 **Reasoning trace.** A per-run record of each step, its rationale, the tool call it produced, and the result. Treat it as evidence rather than proof: a model's stated rationale is its account of what it did, not a guaranteed-faithful log of the computation, so pair it with the tool-call log and observed results. Archetype 3.
 
-**Reservation price.** The least favourable price your agent is authorized to accept. Part of the mandate, and never disclosed to a counterparty. Archetype 5.
+**Reservation price.** The least favorable price your agent is authorized to accept. Part of the mandate, and never disclosed to a counterparty. Archetype 5.
 
 **Route set.** The explicit, enumerated list of paths a model may choose among, defined before the model is introduced, with required inputs and unavailability conditions for each. Defining it is the primary act of architecture at archetype 2.
 
-**Shadow run.** A new prompt, model, or configuration processing live traffic without acting on it, so its behaviour can be compared against the live system before promotion. Catches what replay against recorded results cannot.
+**Shadow run.** A new prompt, model, or configuration processing live traffic without acting on it, so its behavior can be compared against the live system before promotion. Catches what replay against recorded results cannot.
 
 **SLIM (Secure Low-Latency Interactive Messaging).** One encrypted transport that can carry a negotiation protocol between organizations; plain gRPC or a message bus can play the same role. Part of AGNTCY.
 

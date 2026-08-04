@@ -38,6 +38,8 @@ Terms as this book uses them. Where a term first becomes load-bearing in a parti
 
 **Golden test set.** A fixed set of representative inputs with known-good outputs or resolutions, run as a regression check whenever a prompt or model changes. The substitute for asserting one correct output in a non-deterministic system.
 
+**LLM-as-judge.** Using a model to score another model's output against a rubric, at volumes humans cannot review. Sound when the judge is calibrated against human labels and independent of the generator; circular when it shares the generator's model, prompt lineage, or blind spots. It can assess whether a claim looks supported, never whether it is true.
+
 **Machine identity.** A durable, dedicated credential belonging to the agent itself — distinct from a shared service account or a delegated human session — with its own provisioning, rotation, scoping, monitoring, revocation, and decommissioning. Archetype 4.
 
 **Mandate.** Policy governing what an agent may commit *you* to in a deal with an outside party, as distinct from what it may do to your own systems. Held privately; a counterparty who can infer your mandate can exploit it. Archetype 5.
@@ -60,9 +62,13 @@ Terms as this book uses them. Where a term first becomes load-bearing in a parti
 
 **Route set.** The explicit, enumerated list of paths a model may choose among, defined before the model is introduced, with required inputs and unavailability conditions for each. Defining it is the primary act of architecture at archetype 2.
 
+**Shadow run.** A new prompt, model, or configuration processing live traffic without acting on it, so its behaviour can be compared against the live system before promotion. Catches what replay against recorded results cannot.
+
 **SLIM (Secure Low-Latency Interactive Messaging).** One encrypted transport that can carry a negotiation protocol between organizations; plain gRPC or a message bus can play the same role. Part of AGNTCY.
 
 **Tool allow-list.** The enumerated set of tools an agent may call, with read and write scoped separately. Everything an agent can do is the union of its tools, so this is the action surface. Archetype 3.
+
+**Trajectory evaluation.** Scoring *how* an agent reached its result — steps taken, tools called, errors recovered, cost, escalations — as distinct from whether the result was correct. An agent can produce the right outcome by an unacceptable route, which outcome-only evaluation records as a pass.
 
 # References and further reading
 

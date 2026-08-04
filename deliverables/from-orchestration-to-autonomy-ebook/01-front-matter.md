@@ -29,6 +29,7 @@ Part One: The Model
 - The five archetypes at a glance (with summary table)
 - Composition: why real solutions blend archetypes
 - Locating your solution (business-language and build-language diagnostics)
+- When not to build an agent
 
 Part Two: The Five Archetypes
 1. LLM-assisted workflows (not yet agents) — *assisted*
@@ -43,6 +44,7 @@ Part Three: Putting It Together
 - One domain, all five: the procurement ladder
 - A composition worked example
 - Cross-cutting concerns: integration and legacy · security and the attack surface · regulatory and data-residency compliance · cost and latency · evaluation and testing · operating model and timelines
+- Evaluating agentic systems
 - Readiness reference (consolidated architecture and policy tables)
 
 Closing: Where most organizations sit, and how to contribute

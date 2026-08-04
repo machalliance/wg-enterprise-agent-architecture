@@ -28,7 +28,7 @@ Autonomy has an economic profile that a single model call does not. A goal-direc
 
 ### Evaluation and testing
 
-Non-deterministic systems break the testing habits built for deterministic ones. The same input can produce a different path twice, so you cannot validate an agent by asserting one correct output. Evaluation becomes its own discipline: golden sets of representative inputs with known-good resolutions, dry-run and sandbox modes that let an agent propose actions without committing them, regression tests that run when a prompt or model changes, and offline replay against recorded decisions. Beyond correctness, you need to measure drift over time, both the quantitative kind (an agent doing far more or far less than its baseline) and the semantic kind (reasoning that has become repetitive or disconnected from what it observed). This is the hardest operational problem in the space, and it is the one most likely to be underfunded, because it produces no visible feature.
+Non-deterministic systems break the testing habits built for deterministic ones. The same input can produce a different path twice, so you cannot validate an agent by asserting one correct output, and "correct" stops being a single value you can assert at all. This is the hardest operational problem in the space and the one most likely to be underfunded, because it produces no visible feature. It is also the concern that differs most sharply from archetype to archetype, so it gets its own section, next.
 
 ### Operating model and timelines
 

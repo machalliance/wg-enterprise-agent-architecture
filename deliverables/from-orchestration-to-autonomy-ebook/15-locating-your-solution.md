@@ -33,3 +33,5 @@ Now read back the set. If your solution touched more than one archetype, list ea
 Then, for each archetype in play, ask whether you are resourced for it. Capability you cannot govern is the failure mode from the architecture-and-policy section, one component at a time. Part Two gives you the detail behind each readiness requirement; Part Three consolidates them into a single checklist.
 
 The one-initiative worksheet in Part Three's readiness reference gives you a grid for recording the answers, and running these questions against one real initiative teaches the model faster than reading the rest of the book.
+
+There is one more answer the diagnostic can return, and it is the one most worth hearing: that a component needs no model at all. The next section is the test for that.

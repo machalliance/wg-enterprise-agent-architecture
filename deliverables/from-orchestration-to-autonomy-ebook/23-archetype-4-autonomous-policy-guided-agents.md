@@ -4,31 +4,31 @@
 
 ### What changes here
 
-A goal-directed agent receives a task, works out how to accomplish it, and finishes. Clear start, clear end. An autonomous, policy-guided agent does not wait for assignments. It persists. It monitors a domain, detects conditions that warrant action, decides what to do, acts, observes the result, and self-corrects. Continuously. Without a human in the loop for each decision.
+A goal-directed agent gets a task, works out how to do it, and finishes. Clear start, clear end. An autonomous, policy-guided agent does not wait to be given work. It keeps running. It watches a domain, spots conditions that call for action, decides what to do, acts, checks the result, and corrects itself. Continuously. With no human in the loop for each decision.
 
-This is a difference in kind, not degree. The moment an agent operates independently over extended durations, four problems arrive at once:
+This is a difference in kind, not degree. The moment an agent runs on its own for long stretches, four problems arrive at once:
 
-- **Identity becomes infrastructure.** The agent needs a durable machine identity with its own lifecycle, provisioned, rotated, scoped, and revocable independently of any human session.
-- **State becomes critical path.** The agent accumulates context over hours, days, or weeks. Losing that state mid-operation is a correctness failure that corrupts every decision after it.
-- **Accountability becomes continuous.** You cannot reconstruct why the agent took action X at time T from a post-mortem, so decision trails must be first-class infrastructure rather than afterthought logging.
-- **Policy becomes the operating system.** Without task-by-task human approval, the policies you define are the supervision. They have to be precise, enforceable, and auditable.
+- **Identity becomes infrastructure.** The agent needs a lasting machine identity with its own lifecycle: created, rotated, scoped, and revocable on its own, apart from any human session.
+- **State becomes critical path.** The agent builds up context over hours, days, or weeks. Losing that state mid-run is a correctness failure that poisons every decision after it.
+- **Accountability becomes continuous.** A post-mortem will not tell you why the agent took action X at time T, so decision trails have to be built-in infrastructure rather than logging bolted on later.
+- **Policy becomes the operating system.** Without human approval task by task, the policies you write are the supervision. They have to be precise, enforceable, and auditable.
 
-The value: continuous optimization of a domain that moves faster and wider than a team can watch by hand, bought at the cost of a standing governance and identity function that has to run as continuously as the agent does.
+The value: continuous tuning of a domain that moves faster and wider than a team can watch by hand. The price is a standing governance and identity function that has to run as continuously as the agent does.
 
 ### Running example: pricing the spring line through the season
 
 The spring line is live. Now Meridian has to price it across a full season of shifting demand, weather, competitor moves, and inventory levels, on thousands of SKUs at once. That is more repricing than a merchandising team can do by hand, so Meridian runs a revenue optimization agent over the category. Unlike the catalog agent in archetype 3, this one does not finish. It:
 
 - **Monitors** pricing signals, inventory levels, competitor pricing, demand forecasts, and margin targets. Continuously.
-- **Decides** when to adjust pricing, trigger promotions, or flag conditions for human review.
+- **Decides** when to adjust pricing, run a promotion, or flag conditions for human review.
 - **Acts** by pushing price changes to commerce platforms, updating promotion engines, or escalating to merchandising.
-- **Self-corrects** when it observes that an action produced an unexpected result, such as a price change that tanked conversion instead of improving margin.
+- **Self-corrects** when an action turns out badly, such as a price change that tanked conversion instead of improving margin.
 
-This agent runs around the clock. It does not wait for an "optimize pricing" task. It watches, reasons, and acts within the boundaries its operators define.
+This agent runs around the clock. It does not wait for an "optimize pricing" task. It watches, reasons, and acts within the boundaries its operators set.
 
 ### Architecture
 
-Every proposed action passes through policy evaluation before execution. There is no path from reasoning to action that skips this gate. Durable state preserves context across cycles. Observability detects drift. Human oversight keeps final authority.
+Every proposed action goes through policy evaluation before it runs. No path from reasoning to action skips that gate. Durable state carries context across cycles. Observability catches drift. Human oversight keeps the final say.
 
 ```mermaid
 graph TB
@@ -103,78 +103,78 @@ graph TB
     REVIEW --> HUD
 ```
 
-During a single cycle the agent perceives signals, loads accumulated context, reasons, and proposes an action. The policy evaluator produces one of three outcomes: permit and execute, escalate for approval, or halt via circuit breaker. That is the full decision space.
+In a single cycle the agent reads signals, loads the context it has built up, reasons, and proposes an action. The policy evaluator returns one of three answers: allow and run, escalate for approval, or halt through a circuit breaker. That is the whole decision space.
 
-**Persistent machine identity and lifecycle.** The agent runs as a persistent entity that authenticates to commerce platforms, pricing engines, and data feeds continuously, rather than a function that fires when called. That requires a dedicated machine identity of its own, distinct from any shared service account or delegated human credential. Permissions are granular and auditable: the agent may read pricing data from all channels but write price changes only to specific SKU categories. Credentials rotate automatically, on schedule, without interrupting operation. If the agent is compromised or misbehaving, its identity can be revoked in one operation, severing access to all downstream systems.
+**Standing machine identity and lifecycle.** The agent runs as a standing participant that signs in to commerce platforms, pricing engines, and data feeds continuously, rather than a function that fires when called. That takes a machine identity of its own, separate from any shared service account or borrowed human credential. Permissions are fine-grained and auditable: the agent may read pricing data from all channels but write price changes only to certain SKU categories. Credentials rotate automatically, on schedule, without interrupting the work. If the agent is compromised or misbehaving, its identity can be revoked in one step, cutting off access to every downstream system.
 
-**Long-running durable state.** The agent builds context over time: which strategies have worked, how competitors respond, which SKUs are sensitive, what time-of-day patterns matter. Checkpointing persists its full context periodically, so a crash resumes from the last checkpoint rather than from zero. State versioning retains prior versions for rollback and forensic reconstruction. Short-term working memory is kept distinct from long-term learned context, with different retention guarantees.
+**Long-running durable state.** The agent builds context over time: which strategies have worked, how competitors respond, which SKUs are sensitive, what time-of-day patterns matter. Checkpoints save its full context at intervals, so a crash resumes from the last one rather than from zero. Versioned state keeps earlier copies for rollback and for piecing together what happened. Short-term working memory is kept apart from long-term learned context, and the two are held for different lengths of time.
 
-**Memory and model management.** Durable state raises two architecture decisions that a bounded agent never had to make. The first is memory: an agent that accumulates weeks of observations cannot hold them all in a context window, so it needs a retrieval layer that decides what to surface for the current decision, and a policy for what to keep, summarize, and forget. Poor retrieval is a silent correctness problem, because the agent reasons confidently over whatever it was given. The second is the model itself. Prompts are versioned in earlier archetypes; here the underlying model is also a managed dependency, because a model swap can shift behavior across the whole running fleet at once. Pin model versions, test a change against recorded decisions before rolling it out, and treat a model upgrade as the behavior-altering event it is.
+**Memory and model management.** Durable state raises two design decisions a bounded agent never had to make. The first is memory. An agent that piles up weeks of observations cannot hold them all in a context window. It needs a retrieval layer that picks what to surface for the decision at hand, and a rule for what to keep, what to summarize, and what to drop. Poor retrieval is a silent correctness problem, because the agent reasons confidently over whatever it was handed. The second is the model itself. Earlier archetypes version their prompts; here the model is a managed dependency too, because swapping it can shift behavior across every running instance at once. Pin model versions, test a change against recorded decisions before rolling it out, and treat a model upgrade as the behavior-changing event it is.
 
-**Behavioral anomaly detection.** An agent that runs continuously can drift, slowly or suddenly. Establish baseline behavioral profiles: frequency of actions, magnitude of changes, distribution of decision types. Compare every action against the baseline. A pricing agent that normally makes 5 to 15 adjustments per hour suddenly making 200 is anomalous regardless of whether each individual action passes policy. Graduated response escalates from logging to alerts to circuit breakers. Watch semantic drift too: are the rationales in the decision traces becoming repetitive, circular, or disconnected from the observations that triggered them?
+**Watching for odd behavior.** An agent that runs continuously can drift, slowly or suddenly. Build a baseline profile of normal: how often it acts, how large the changes are, what mix of decision types it makes. Compare every action against that baseline. A pricing agent that normally makes 5 to 15 adjustments an hour and suddenly makes 200 is off, whether or not each single action passes policy. Step the response up from logging to alerts to circuit breakers. Watch the reasoning too: are the explanations in the decision traces getting repetitive, circular, or disconnected from what set them off?
 
-The economics of running continuously are treated in full under Cross-cutting concerns in Part Three, and evaluating a system whose behavior has to be watched rather than tested is covered in "Evaluating agentic systems." Both are first-order design constraints at this archetype.
+What it costs to run continuously is covered in full under Cross-cutting concerns in Part Three. How to evaluate a system whose behavior has to be watched rather than tested is covered in "Evaluating agentic systems." Both are first-order design constraints here.
 
-**Untrusted signals and exfiltration.** A continuous agent lives on a diet of external data: competitor pages, supplier feeds, demand signals. Any of it can carry a prompt-injection payload aimed at steering the agent, and because no human approves each action, a successful injection acts at machine speed. The exposure runs both ways. An agent with broad read access and an external action can be turned into an exfiltration path, reading something sensitive and writing it somewhere it should not. Defenses are architectural: separate instructions from data, keep the agent's read scope and write scope as narrow as the job allows, and route any action that moves data across a trust boundary through the policy engine rather than trusting the reasoning that proposed it. The circuit breakers below are the backstop when an injection gets through.
+**Untrusted signals and data leaks.** A continuous agent lives on a diet of outside data: competitor pages, supplier feeds, demand signals. Any of it can carry a prompt-injection payload meant to steer the agent, and because no human approves each action, a successful injection acts at machine speed. The exposure runs both ways. An agent with broad read access and any outward action can be turned into a leak, reading something sensitive and writing it somewhere it should not go. The defenses are architectural. Keep instructions separate from data. Keep read scope and write scope as narrow as the job allows. Route any action that moves data across a trust boundary through the policy engine rather than trusting the reasoning that proposed it. The circuit breakers below are the backstop when an injection gets through.
 
-**Auditable decision trails.** Every decision must be reconstructable after the fact, including why. Structured decision records capture the triggering observation, the reasoning, the proposed action, the policy result, the outcome, and the post-action observation. Causal chains preserve the links between decisions: "I raised the price on SKU-4521 because my earlier reduction on SKU-4519 shifted demand, and the margin target required rebalancing." Storage is append-only and tamper-evident, and the trail is queryable, so an operator can ask for every pricing decision in a category over 48 hours where the margin impact exceeded 2 percent.
+**Auditable decision trails.** You have to be able to rebuild every decision after the fact, including the why. Structured decision records capture the observation that triggered it, the reasoning, the proposed action, the policy result, the outcome, and what was observed afterward. The links between decisions are kept, so the chain of cause survives: "I raised the price on SKU-4521 because my earlier cut on SKU-4519 shifted demand, and the margin target needed rebalancing." Storage is append-only and tamper-evident. The trail can be queried too, so an operator can ask for every pricing decision in a category over 48 hours where margin moved more than 2 percent.
 
 ### Policy
 
-**Identity governance.** Machine identity here means full lifecycle management. Creating a service account and forgetting it is the anti-pattern.
+**Identity governance.** Machine identity here means managing the whole lifecycle. Creating a service account and forgetting it is the anti-pattern.
 
 | Lifecycle stage | What happens | Responsible |
 |---|---|---|
 | Provisioning | Identity created with scoped permissions | Platform team and agent owner |
-| Authentication | Agent authenticates using its own credentials | Agent runtime |
+| Authentication | Agent signs in with its own credentials | Agent runtime |
 | Rotation | Credentials rotated on schedule without interruption | Automated by platform |
-| Monitoring | Authentication patterns watched for anomalies | Security / observability |
-| Revocation | Identity revoked, all sessions terminated | Security team or automated |
+| Monitoring | Sign-in patterns watched for anomalies | Security / observability |
+| Revocation | Identity revoked, all sessions ended | Security team or automated |
 | Decommissioning | Identity retired, audit trail preserved | Platform team |
 
-**Permission boundaries and escalation tiers.** The agent operates within a defined action space; anything outside it escalates.
+**Permission boundaries and escalation tiers.** The agent works inside a defined action space; anything outside it escalates.
 
 - **Tier 1, autonomous:** adjust prices within ±5% for non-flagged SKUs. No approval.
-- **Tier 2, notify:** adjust prices ±5–15%. Execute immediately but notify merchandising.
-- **Tier 3, approve:** adjust beyond ±15%, or touch flagged or regulated SKUs. Queue for approval before execution.
-- **Tier 4, prohibited:** actions that cross compliance boundaries, such as pricing below cost where that is illegal. Hard block, no override without legal review.
+- **Tier 2, notify:** adjust prices ±5–15%. Run it immediately, but notify merchandising.
+- **Tier 3, approve:** adjust beyond ±15%, or touch flagged or regulated SKUs. Queue for approval before it runs.
+- **Tier 4, prohibited:** actions that cross compliance lines, such as pricing below cost where that is illegal. Hard block, no override without legal review.
 
 These tiers live in a policy store rather than in code, so they can be adjusted as trust grows or conditions change without redeploying the agent.
 
-**Kill switches and circuit breakers.** When things go wrong at machine speed, you need machine-speed safeguards. Rate limiters cap actions per time window. Magnitude limiters cap cumulative impact: moving total revenue exposure past a threshold in an hour triggers a pause regardless of individual action validity. A dead man's switch pauses the agent if it has not checked in with oversight within a defined interval, covering the case where the agent runs but observability is broken. A manual kill switch gives operators an immediate, unconditional halt that preserves state.
+**Kill switches and circuit breakers.** When things go wrong at machine speed, you need safeguards that work at machine speed. Rate limiters cap actions per time window. Size limiters cap the total impact: if total revenue at stake passes a threshold within an hour, the agent pauses, however valid each single action was. A dead man's switch pauses the agent if it has not checked in with oversight inside a set interval, which covers the case where the agent is running but observability is broken. A manual kill switch gives operators an immediate, unconditional halt that keeps state.
 
-**Drift detection and compliance.** Watch both sides. Agent drift: is the agent still within its boundaries, or has it found edge cases that pass policy checks but violate intent? Policy drift: are the policies still appropriate, or is the agent faithfully following outdated ones? Periodic compliance attestation verifies that actual behavior matches declared boundaries, and gaps trigger review.
+**Drift detection and compliance.** Watch both sides. Agent drift: is the agent still inside its boundaries, or has it found edge cases that pass the policy checks but break the intent behind them? Policy drift: are the policies still right, or is the agent faithfully following ones that have gone stale? A regular compliance check confirms that real behavior matches the declared boundaries, and any gap triggers review.
 
 ### Other examples that fit archetype 4
 
-Inventory replenishment that reorders continuously within policy, fraud and anomaly monitoring that acts on what it detects, infrastructure remediation agents that watch a fleet and correct drift, continuous bid and budget optimization in paid media, and supply-chain exception monitoring that reroutes shipments as conditions change. In each, no one assigns the work: the agent decides that a condition warrants action and acts within boundaries its operators set.
+Inventory replenishment that reorders continuously within policy. Fraud and anomaly monitoring that acts on what it finds. Infrastructure agents that watch a fleet and correct drift. Continuous bid and budget tuning in paid media. Supply-chain monitoring that reroutes shipments as conditions change. In each, nobody assigns the work: the agent decides that a condition calls for action and acts within the boundaries its operators set.
 
 ### Readiness checklist
 
 Architecture — minimum to launch:
-- [ ] Dedicated, durable machine identity with granular scoped permissions
+- [ ] Dedicated, durable machine identity with fine-grained scoped permissions
 - [ ] Policy evaluation gates every action; no reasoning-to-action path skips it
-- [ ] Checkpointing and state versioning for durable, recoverable context
+- [ ] Checkpoints and versioned state for durable, recoverable context
 - [ ] Append-only, tamper-evident decision records
 
 Architecture — required at scale:
-- [ ] Automated credential rotation that does not interrupt operation
-- [ ] Baseline behavioral profiles with real-time anomaly comparison, including semantic drift
-- [ ] Decision trail queryable, with causal chains linking decisions to prior ones
+- [ ] Automated credential rotation that does not interrupt the work
+- [ ] Baseline behavior profiles with real-time comparison, including drift in the reasoning itself
+- [ ] Decision trail queryable, with the links between decisions preserved
 - [ ] Model versions pinned, with changes tested against recorded decisions before rollout
 
 Policy — minimum to launch:
 - [ ] Identity lifecycle owned through revocation, with a named owner for the agent
 - [ ] Permission tiers defined in a policy store, adjustable without redeploy
-- [ ] Rate limiters, magnitude limiters, and a manual kill switch in place
-- [ ] On-call coverage and a runbook for pausing the agent and reconstructing what it did
+- [ ] Rate limiters, size limiters, and a manual kill switch in place
+- [ ] On-call coverage and a runbook for pausing the agent and rebuilding what it did
 
 Policy — required at scale:
 - [ ] Full lifecycle documented through decommissioning
 - [ ] Dead man's switch covering the case where the agent runs but oversight is blind
 - [ ] Agent-drift and policy-drift detection running
-- [ ] Periodic compliance attestation against declared boundaries
+- [ ] Regular compliance checks against declared boundaries
 
 ### Bridging to archetype 5
 
-Everything here assumes a single agent inside one organization's boundary; archetype 5 begins where the agent must deal with agents it does not control, and it extends the identity and decision trails you built here rather than replacing them.
+Everything here assumes a single agent inside one organization's boundary. Archetype 5 begins where the agent has to deal with agents it does not control, and it extends the identity and decision trails you built here rather than replacing them.

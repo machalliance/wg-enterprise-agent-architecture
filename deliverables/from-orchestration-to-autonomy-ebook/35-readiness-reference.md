@@ -1,34 +1,34 @@
 ## Readiness reference
 
-A consolidated view of the readiness requirements from all five archetypes, on the two dimensions from Part One. Use it as a standalone reference. For a composed system, apply the rows for every archetype in play, per component.
+A single view of the readiness requirements from all five archetypes, on the two dimensions from Part One. Use it as a standalone reference. For a composed system, apply the rows for every archetype in play, per component.
 
 ### Architecture readiness
 
 | Archetype | What the system can do | Core architecture requirements |
 |---|---|---|
-| 1. LLM-assisted | Generate or transform content in a fixed path | Model runs as a workflow step under deterministic orchestration; curated context packages; versioned prompts; output validators; deterministic work kept out of the model |
+| 1. LLM-assisted | Write or reshape content in a fixed path | Model runs as a workflow step under deterministic orchestration; curated context packages; versioned prompts; output validators; deterministic work kept out of the model |
 | 2. LLM-directed | Choose among designed paths, or loop | Explicit route set; structured, schema-validated output; separate decision evaluator; confidence thresholds and fallbacks; bounded loops; per-decision trace |
-| 3. Goal-directed | Plan and execute a bounded task | Scoped tool allow-list with read/write separated; carefully specified tools; explicit stop conditions; in-loop error recovery; full-sequence reasoning trace; ephemeral session identity |
-| 4. Autonomous | Persist, monitor, and act continuously | Durable machine identity; automated credential rotation; checkpointed, versioned state; behavioral anomaly detection; append-only tamper-evident decision trail; policy gate on every action |
-| 5. Collaborating | Interact with agents it does not control | Agent directory and machine-readable capability descriptions; cross-org identity verification; shared negotiation protocol over secure transport; non-repudiable, correlatable exchange |
+| 3. Goal-directed | Plan and run a bounded task | Scoped tool allow-list with read and write separated; carefully written tools; explicit stop conditions; error recovery inside the loop; full-sequence reasoning trace; short-lived session identity |
+| 4. Autonomous | Keep running, watch, and act continuously | Durable machine identity; automated credential rotation; checkpointed, versioned state; behavior baselines and anomaly detection; append-only tamper-evident decision trail; policy gate on every action |
+| 5. Collaborating | Deal with agents it does not control | Agent directory and machine-readable capability descriptions; cross-org identity checks; shared negotiation protocol over secure transport; signed exchange that both sides can match up |
 
 ### Policy readiness
 
 | Archetype | What the system is allowed to do | Core policy requirements |
 |---|---|---|
 | 1. LLM-assisted | Draft, never decide | Data minimization and approved models per data class; named approval owner; claim-handling rules; golden test sets; content provenance |
-| 2. LLM-directed | Select from permitted routes | Route permissions per model, brand, region; escalations carry rationale and evidence; prompt/model change control; route-drift monitoring; decision audit record |
-| 3. Goal-directed | Act within a scoped task | Permission boundary enforces "safely"; human checkpoints by reversibility and risk; after-the-fact trace review; tool additions reviewed; sandbox evaluation before live write access |
-| 4. Autonomous | Act without per-task approval | Full identity lifecycle ownership; permission tiers in a policy store; rate and magnitude limiters, dead man's and manual kill switches; agent- and policy-drift detection; compliance attestation |
-| 5. Collaborating | Commit you to outside parties | Mandate tiers held privately; counterparty cannot infer mandate; round/time budgets and counterparty reputation; kill switch severs live deals and caps total spend; pre-agreed dispute and liability terms |
+| 2. LLM-directed | Select from permitted routes | Route permissions per model, brand, region; escalations carry reasoning and evidence; prompt and model change control; route-drift monitoring; decision audit record |
+| 3. Goal-directed | Act within a scoped task | Permission boundary enforces "safely"; human checkpoints by reversibility and risk; traces reviewed after the fact; new tools reviewed; sandbox evaluation before live write access |
+| 4. Autonomous | Act without per-task approval | Full identity lifecycle ownership; permission tiers in a policy store; rate and size limiters, dead man's and manual kill switches; agent- and policy-drift detection; regular compliance checks |
+| 5. Collaborating | Commit you to outside parties | Mandate tiers held privately; counterparty cannot work out your mandate; round and time budgets and counterparty reputation; kill switch cuts off live deals and caps total spend; dispute and liability terms agreed in advance |
 
 ### How to use it
 
-Work through your system component by component, a component being any distinct point where it decides or acts. For each one, find its archetype row and read both cells: capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
+Work through your system component by component, a component being any distinct point where it decides or acts. For each one, find its archetype row and read both cells. Capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
 
-The tables above are the full requirement, which is the standard to hold at scale rather than the gate for a first deployment. Part Two splits each chapter's checklist into **minimum to launch** — what has to be true before a system reaches production, because without it the system can cause harm you cannot see or undo — and **required at scale**, the reliability, cost, and drift machinery that a pilot can defer and a platform cannot. Use the per-chapter split to decide what ships, and the tables here to decide what you still owe. Deferring an item is acceptable; leaving it unnamed is how the gap turns into an incident.
+The tables above are the full requirement. That is the standard to hold at scale, not the gate for a first deployment. Part Two splits each chapter's checklist into **minimum to launch** — what has to be true before a system reaches production, because without it the system can cause harm you cannot see or undo — and **required at scale**, the reliability, cost, and drift machinery that a pilot can defer and a platform cannot. Use the per-chapter split to decide what ships, and the tables here to decide what you still owe. Deferring an item is acceptable. Leaving it unnamed is how the gap turns into an incident.
 
-Then read the whole set for your system. The obligations compound as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one. It is the crack the higher one is built on.
+Then read the whole set for your system. The obligations pile up as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one. It is the crack the higher one is built on.
 
 ### One-initiative worksheet
 
@@ -43,8 +43,8 @@ The fastest way to make this model yours is to run it once, on one real initiati
 
 Three rules make it useful:
 
-- **One row per component, not per system.** A single deployment usually spans several archetypes; the point is to see each one. If every row says the same archetype, you have probably described the system, not its components.
-- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture-or-policy item you are least confident you have today, and whether Part Two treats it as a launch item or a scale item. A missing launch item blocks the deployment. A missing scale item is a dated commitment.
-- **Assign an owner to every row.** Capability without an accountable owner is the failure mode from Part One in miniature.
+- **One row per component, not per system.** A single deployment usually spans several archetypes, and the point is to see each one. If every row says the same archetype, you have probably described the system rather than its components.
+- **Name the weakest link, not the whole checklist.** For each component, find its row in the tables above and write down the one architecture or policy item you are least confident you have today, and whether Part Two treats it as a launch item or a scale item. A missing launch item blocks the deployment. A missing scale item is a dated commitment.
+- **Assign an owner to every row.** Capability with nobody accountable for it is the failure mode from Part One in miniature.
 
 When the grid is full you have a one-page readiness map: what the initiative is, what each part demands, and the specific gaps to close before you scale. Bring that page to the funding conversation and the vendor conversation both.

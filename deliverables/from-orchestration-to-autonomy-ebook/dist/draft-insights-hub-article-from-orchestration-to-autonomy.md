@@ -24,7 +24,7 @@ Most real systems blend several archetypes, so the obligation attaches component
 
 ## What separates the projects that ship
 
-The agentic systems already running in production point the same way. A retailer ran a shopping agent through Black Friday and lifted conversion by 35%. A B2B distributor cut order processing from eight minutes to under sixty seconds. A smart-home brand opened an agent-driven sales channel at near-zero added cost. None of them deployed "agentic" in the abstract. Each scoped one archetype tightly to a real bottleneck, built governance in from the start, and ran on composable, API-first foundations.
+The agentic systems already running in production point the same way. A retailer ran a shopping agent through Black Friday and lifted conversion by 35%. A B2B distributor cut order processing from eight minutes to under sixty seconds. A smart-home brand opened an agent-driven sales channel at near-zero added cost. An automaker automated 90% of metadata creation for more than 16,000 users and cut compliance validation time by 70%. An auto-parts retailer runs more than 20 agents in production and booked over $500,000 in savings inside six to eight months. None of them deployed "agentic" in the abstract. Each scoped the work tightly to a real bottleneck, governed it archetype by archetype, and ran on composable, API-first foundations.
 
 ## Grab the ebook
 

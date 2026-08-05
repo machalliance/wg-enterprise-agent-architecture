@@ -20,4 +20,4 @@ Learn more about the broader agent ecosystem vision at [agentecosystem.org](http
 
 # How to cite
 
-Enterprise Agent Architecture Working Group, *From Orchestration to Autonomy: A composable model for building across the agent ecosystem*. MACH Alliance, 2026.
+Enterprise Agent Architecture Working Group, *From Orchestration to Autonomy: A composable framework for building across the agent ecosystem*. MACH Alliance, 2026.

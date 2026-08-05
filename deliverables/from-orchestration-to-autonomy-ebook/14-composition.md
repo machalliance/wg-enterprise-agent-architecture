@@ -7,5 +7,3 @@ Take an ordinary case: a workflow that handles inbound customer email. A model r
 The demands attach to each component separately. The drafting step needs prompt versioning and output validation, so a reply cannot promise a refund policy that does not exist. The routing step needs a confidence threshold and a defined fallback, so an unclear complaint reaches a person instead of getting a confident wrong answer. Neither control does anything for the other half. A team that calls this "our AI support tool" and governs it as one thing will end up governing whichever half it happened to think about first.
 
 So the question to ask is which archetypes your solution uses, and whether you are resourced for each one. A solution that spans three archetypes inherits the readiness requirements of all three, applied per component. Naming them separately is what lets you see the whole obligation instead of the loudest part of it.
-
-Part Three's one-initiative worksheet turns this naming into a one-page readiness map for something you are actually building.

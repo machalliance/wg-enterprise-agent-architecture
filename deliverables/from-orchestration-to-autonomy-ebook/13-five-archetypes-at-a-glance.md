@@ -16,7 +16,7 @@ Part Two expands each row into a full chapter, and Part Three's readiness refere
 
 Each archetype buys a different business outcome at a different price. Archetypes 1 and 2 buy speed and consistency on high-volume work: faster content, cleaner data, quicker routing, at low risk and predictable cost. Archetype 3 buys real autonomy on bounded problems nobody had time to script. Its price is the testing and oversight a system needs when you no longer write its plan. Archetype 4 buys continuous tuning of a domain, and asks for a governance and identity function most organizations do not yet have. Archetype 5 buys reach beyond your own walls, and asks for trust infrastructure the industry is still building. More autonomy does not mean more value. It means a different value with a different bill attached, and the skill is matching the archetype to the outcome you actually need.
 
-Each is the best choice for a given class of problem, and most production systems use several at once. The next two sections make that last point concrete.
+Each is the best choice for a given class of problem, and most production systems use several at once.
 
 ### Already in production
 

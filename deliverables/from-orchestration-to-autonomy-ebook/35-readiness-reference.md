@@ -26,13 +26,13 @@ A single view of the readiness requirements from all five archetypes, on the two
 
 Work through your system component by component, a component being any distinct point where it decides or acts. For each one, find its archetype row and read both cells. Capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
 
-The tables above are the full requirement. That is the standard to hold at scale, not the gate for a first deployment. Part Two splits each chapter's checklist into **minimum to launch** — what has to be true before a system reaches production, because without it the system can cause harm you cannot see or undo — and **required at scale**, the reliability, cost, and drift machinery that a pilot can defer and a platform cannot. Use the per-chapter split to decide what ships, and the tables here to decide what you still owe. Deferring an item is acceptable. Leaving it unnamed is how the gap turns into an incident.
+The tables above are the full requirement, which is the standard to hold at scale rather than the gate for a first deployment. Use Part Two's **minimum to launch** and **required at scale** split to decide what ships, and the tables here to decide what you still owe. Deferring an item is acceptable. Leaving it unnamed is how the gap turns into an incident.
 
-Then read the whole set for your system. The obligations pile up as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one. It is the crack the higher one is built on.
+Then read the whole set for your system. The obligations pile up as autonomy grows: archetype 4 assumes you already have archetype 3's scoped tools and traces, and archetype 5 assumes you already have archetype 4's durable identity and decision trail. A gap in a lower archetype is not hidden by strength in a higher one.
 
 ### One-initiative worksheet
 
-The fastest way to make this model yours is to run it once, on one real initiative, before you finish the book. Pick something live or about to be. List its components — a component is any distinct point where the system decides or acts — and fill in a row for each:
+The fastest way to make this framework yours is to run it once, on one real initiative, before you finish the book. Pick something live or about to be. List its components — a component is any distinct point where the system decides or acts — and fill in a row for each:
 
 | Component | What it does | Archetype (1–5) | Weakest readiness item | Owner |
 |---|---|---|---|---|

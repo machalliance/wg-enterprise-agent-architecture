@@ -8,6 +8,4 @@ Policy sets what a system is *allowed* to do. It is identity, governance, permis
 
 The two have to move in step. A strong architecture with weak policy is a system that acts faster than anyone can watch it. Strict policy on a thin architecture is a system so hemmed in that it delivers friction instead of value. Losing that balance is a common way agentic pilots fail. Teams build capability they cannot govern, or governance around a capability that was never there.
 
-The failure shows up in the numbers. The three causes behind Gartner's cancellation forecast — rising costs, unclear business value, and weak risk controls — read together as one condition: architecture and policy that were never matched to each other or to the business case. You get cost and value wrong when you reach for more autonomy than the problem needs. You get risk control wrong when policy lags the capability you built. That is why these two dimensions frame every chapter that follows.
-
-Every archetype in Part Two is described along these same two axes. For each one, ask what the system can do and what it is permitted to do, and make sure your investment in the second keeps pace with your ambition in the first.
+Every archetype in Part Two is described along these same two axes.

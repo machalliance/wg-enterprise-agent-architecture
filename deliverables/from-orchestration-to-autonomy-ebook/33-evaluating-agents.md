@@ -42,7 +42,7 @@ Measure these per run, and read them as distributions rather than averages, beca
 
 Scoring open-ended output at volume needs a model in the loop, because humans cannot read every draft and no rule can score prose. A model judge is the only practical way to evaluate archetype 1 and 2 output at production scale. It is also an easy way to manufacture false confidence.
 
-It goes circular when the judge shares the generator's model, prompt lineage, or blind spots. A judge that reasons the way the generator reasons will approve exactly the errors you most need to catch, and hand them a high score with a fluent justification. Four rules keep it honest. Judge against a written rubric with explicit criteria, rather than asking whether the output is good. Calibrate the judge against human labels on a sample, measure how far the two agree, and re-calibrate whenever either model changes. Use a different model family for the judge where the stakes justify it. And never let a judge be the only gate in front of an action you cannot undo.
+It goes circular when the judge shares the generator's model, prompt lineage, or blind spots. A judge that reasons the way the generator reasons will approve exactly the errors you most need to catch, and hand them a high score with a fluent justification. Four rules keep it honest. Judge against a written rubric with explicit criteria, instead of asking whether the output is good. Calibrate the judge against human labels on a sample, measure how far the two agree, and re-calibrate whenever either model changes. Use a different model family for the judge where the stakes justify it. And never let a judge be the only gate in front of an action you cannot undo.
 
 Its hard limit matters too: a judge can assess whether a claim looks supported, not whether it is true. Facts get checked against the source system — validate the attribute against the PIM, not against a second opinion.
 
@@ -52,7 +52,7 @@ Prompt and model changes are the most frequent source of changed behavior, and t
 
 Read the disagreements rather than the pass rate. A change that agrees everywhere did nothing. A change that disagrees on 8% of cases has told you which eighty decisions to look at, and whether the new behavior is better is a judgment a human should make on those cases. This is also the only responsible way to take a model upgrade at archetype 4, where a swap shifts behavior across everything running at once.
 
-One caveat: replay re-runs the reasoning against recorded tool results, so it checks judgment rather than the live system. A changed API, a slower dependency, or a tool whose output format drifted will all get through. Pair it with a shadow run — the new setup processing live traffic without acting — before you promote it.
+One caveat: replay re-runs the reasoning against recorded tool results, so it checks judgment, not the live system. A changed API, a slower dependency, or a tool whose output format drifted will all get through. Pair it with a shadow run — the new setup processing live traffic without acting — before you promote it.
 
 ### Sandboxes, dry runs, and earning write access
 

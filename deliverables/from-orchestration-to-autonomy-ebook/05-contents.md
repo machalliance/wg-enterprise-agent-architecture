@@ -2,7 +2,7 @@
 
 Executive Summary
 
-Part One: The Model
+Part One: The Framework
 - The "agentic" problem: one word, many systems
 - A working definition: where agency begins
 - The two dimensions: architecture and policy
@@ -20,7 +20,7 @@ Part Two: The Five Archetypes
   Each chapter follows the same structure, so you can jump to the part you need: *What changes here · Running example · Architecture · Policy · Other examples that fit · Readiness checklist · Bridging to the next archetype.*
 
 Part Three: Putting It Together
-- Cross-cutting concerns: integration and legacy · security and the attack surface · cost and latency · evaluation and testing · operating model and timelines
+- Cross-cutting concerns: integration and legacy · security and the attack surface · cost and latency · operating model and timelines
 - Evaluating agentic systems
 - Readiness reference (consolidated architecture and policy tables)
 

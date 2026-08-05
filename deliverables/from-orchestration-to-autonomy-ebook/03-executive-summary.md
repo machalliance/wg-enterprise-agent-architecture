@@ -22,14 +22,18 @@ This book gives you a way to do that matching. It names five **archetypes** of a
 4. **Autonomous, policy-guided agents** (*autonomous*) run continuously, monitoring and acting within policy.
 5. **Collaborating, self-directed agents** (*collaborating*) work across organizational lines, including with parties whose interests differ from yours.
 
-These are archetypes, not levels on a ladder. None is a trophy for outgrowing the one before it: a content-generation workflow is the right architecture for a lot of high-volume language work, and plenty of production systems should never move past it. They are patterns to compose with — most real systems use several at once — and each places its own demands on your architecture (what the system can do) and your policy (what it is allowed to do).
+None of these is a trophy for outgrowing the one before it: a content-generation workflow is the right architecture for a lot of high-volume language work, and plenty of production systems should never move past it. They are patterns to compose with — most real systems use several at once — and each places its own demands on your architecture (what the system can do) and your policy (what it is allowed to do).
 
 ### What to do now
 
 Three moves a leadership team can make now, without a single line of code:
 
-- **Name where your solutions actually sit.** Most enterprises are in archetypes 1 and 2 today, with early goal-directed agents. Knowing which archetypes a given initiative uses tells you what it will demand and what it is worth, and the one-initiative worksheet in Part Three turns that into an afternoon's work with no code.
+- **Name where your solutions actually sit.** Most solutions in production today sit in archetypes 1 and 2, with early goal-directed agents appearing. Knowing which archetypes a given initiative uses tells you what it will demand and what it is worth, and the one-initiative worksheet in Part Three turns that into an afternoon's work with no code.
 - **Fund governance in step with capability.** The Gartner cancellation reasons are a checklist in disguise. Before approving an agentic initiative, ask whether the risk controls, the cost model, and the business case scale with the autonomy you are buying. If they do not, you are funding a future write-off.
 - **Refuse "agentic" as an answer.** Ask a vendor which archetype their system is, and what it demands of you. A precise answer is a sign of a real product. A wave at "agentic" is a sign of agent washing.
 
-The organizations that get value are the ones doing their current archetype well before reaching for the next. The chapters that follow give the business case in Part One and the build detail in Part Two, so the leadership team and the people who build work from the same map. This is a working framework, shaped in the open, and it gets sharper the more people build against it.
+### A note on terms
+
+We use *archetype* rather than *level* or *maturity stage* on purpose. A level implies a ladder with a top. An archetype is a recurring pattern with its own best-fit problems. Nobody is at an archetype; a solution uses them. So there are two questions to carry into the rest of the book: does this work need an agent at all, and if it does, which archetypes does the solution need and are we resourced for each one?
+
+The organizations that get value are the ones doing the archetype in front of them well before reaching for the next. Part One gives the model in business terms; stop there and you have what you need to fund and scope. Part Two goes deep on each archetype for the people who build. Part Three covers the concerns that cut across every archetype and consolidates the readiness requirements into checklists you can hold your own position against. The leadership team and the people who build work from the same map. This is a working framework, shaped in the open, and it gets sharper the more people build against it.

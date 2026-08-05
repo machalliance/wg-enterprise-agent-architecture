@@ -175,4 +175,4 @@ Policy — required at scale:
 
 ### Bridging to archetype 3
 
-This archetype ends where the designed path set ends. A record routed to compliance review is archetype 2. A system handed "clean up this supplier catalog" that decides which records to inspect, which tools to call, which fixes to make, and when it is done is archetype 3. The difference is control: here people design the paths and the model chooses; there the model controls the sequence of steps toward a goal.
+This archetype ends where the designed path set ends: here people draw the paths and the model chooses among them, and in archetype 3 the model works out the sequence of steps itself.

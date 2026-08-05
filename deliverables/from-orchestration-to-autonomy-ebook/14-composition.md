@@ -8,4 +8,4 @@ The demands attach to each component separately. The drafting step needs prompt 
 
 So the framing question is not "which archetype is my solution?" It is "which archetypes does my solution use, and am I resourced for each one?" A solution that spans three archetypes inherits the readiness requirements of all three, applied per component. Naming them separately is what lets you see the full obligation instead of the loudest part of it.
 
-The next section gives you a way to do that naming quickly, and Part Three works a larger system — four archetypes in one deployment — all the way through.
+Part Three's one-initiative worksheet turns this naming into a one-page readiness map for something you are actually building.

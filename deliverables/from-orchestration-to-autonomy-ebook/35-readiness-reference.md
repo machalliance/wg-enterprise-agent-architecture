@@ -24,7 +24,7 @@ A consolidated view of the readiness requirements from all five archetypes, on t
 
 ### How to use it
 
-Run the diagnostic in "Locating your solution" first, component by component. For each component, find its archetype row and read both cells: capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
+Work through your system component by component, a component being any distinct point where it decides or acts. For each one, find its archetype row and read both cells: capability without matching governance is the failure mode from Part One, so a gap in the policy column is as disqualifying as a gap in the architecture column.
 
 The tables above are the full requirement, which is the standard to hold at scale rather than the gate for a first deployment. Part Two splits each chapter's checklist into **minimum to launch** — what has to be true before a system reaches production, because without it the system can cause harm you cannot see or undo — and **required at scale**, the reliability, cost, and drift machinery that a pilot can defer and a platform cannot. Use the per-chapter split to decide what ships, and the tables here to decide what you still owe. Deferring an item is acceptable; leaving it unnamed is how the gap turns into an incident.
 

@@ -19,7 +19,7 @@ Four questions become unavoidable the moment an agent must interact with an agen
 
 The value: reach beyond your own walls, to supply, demand, and terms your systems could never touch on their own, bought at the cost of depending on trust infrastructure the industry is still building and on counterparties whose incentives are not yours.
 
-Part Three walks Meridian's replenishment through all five archetypes, from a model extracting purchase-order data to a procurement agent negotiating a reorder with outside suppliers. The shift to this archetype happens on the last step: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
+The shift into this archetype happens at one point: through archetype 4 the work is something one organization's agent does to its own systems, and here it becomes something multiple organizations' agents do with each other.
 
 ### Running example: sourcing a spring-line reorder across organizations
 
@@ -47,7 +47,7 @@ graph TB
         DIR[Agent Directory / Discovery]
         IDV[Cross-Org Identity Verification]
         PROTO[Negotiation Protocol]
-        SLIM[Secure Transport]
+        TRANSPORT[Secure Transport]
     end
 
     subgraph "Supplier Organization A"
@@ -75,7 +75,7 @@ graph TB
     BAGENT --> PROTO
     SAGENT --> PROTO
     SAGENT2 --> PROTO
-    PROTO --> SLIM
+    PROTO --> TRANSPORT
 
     BPOLICY --> BAGENT
     SPOLICY --> SAGENT
@@ -89,15 +89,12 @@ The buyer's internal stack (policy, identity, decision trail) is the archetype 4
 
 A word on maturity before the specifics. The boxes above name *capabilities*, not products: discovery, cross-organization identity, a shared negotiation contract, secure transport, and correlatable accountability. Those capabilities are what matter and will persist. The standards and implementations filling each slot are still moving, and no enterprise should treat any of them as settled infrastructure yet, which is why the sections below argue the capability and name implementations only as illustrations.
 
-One distinction is worth carrying into a vendor conversation, because it is about governance rather than features. A2A began at Google and was donated to the Linux Foundation in 2025, where a technical steering committee spanning AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, and ServiceNow now governs it — a genuinely multi-vendor standard. The AGNTCY-specific pieces named below (OASF, SLIM, the Observe SDK, AGNTCY Identity) are open and under Linux Foundation stewardship too, but are single-origin and far younger. A broadly adopted standard and a single-ecosystem stack are different bets with different lock-in profiles, not interchangeable leading candidates. Each slot has real alternatives — established federation such as OIDC/OAuth applied to agents, plain gRPC or a message bus for transport, OpenTelemetry for accountability — and the right move today is to keep the slots separable so you can replace any one of them.
+**Discovery.** A directory pays off inside one organization and becomes unavoidable across several: Meridian's procurement agent has no standing list of suppliers who can cover the tent shortfall, and nobody to hand-wire it to. Suppliers publish machine-readable descriptions of what they offer, and the agent queries for matches. Those descriptions function as contracts — your agent decides whether to engage from a structured, verifiable description rather than a PDF integration guide. A2A's Agent Cards are one form of this. Discovery must be filtered by policy, because finding a supplier's agent is not the same as being cleared to buy from it.
 
-**Discovery.** Inside one organization you wire agents together by hand. Across organizations that does not scale: Meridian's procurement agent has no standing list of suppliers who can cover the tent shortfall, and waiting for someone to wire one up defeats the point. An agent directory closes that gap — suppliers publish machine-readable descriptions of what they can offer, and Meridian's agent queries for the ones matching its shortfall. Those capability descriptions function as contracts: your agent decides whether to engage from a structured, verifiable description rather than a PDF integration guide. AGNTCY's [OASF](https://docs.agntcy.org/) and Agent Directory are one implementation; A2A's Agent Cards carry a similar idea. Discovery must be filtered by policy, because finding a supplier's agent is not the same as being cleared to buy from it.
+**Identity and trust across boundaries.** Archetype 4 gave your agent a durable, scoped, revocable credential. This archetype adds the harder half: verifying the identity of an agent someone else issued. The technique is decentralized identity: identifiers and credentials issued by one party and checked cryptographically by another, so claims are verified rather than accepted on assertion. Before Meridian's agent commits budget to a supplier it has never dealt with, three questions need answers: is the counterparty who it says it is, are its claims about capacity, certifications, and on-time record verifiable or merely self-asserted, and is this selling agent actually authorized to commit its supplier to a deal.
+**Protocol.** Two agents built on different stacks cannot negotiate unless they share a message contract. [A2A](https://a2a-protocol.org) defines how agents exchange structured messages and take turns, independent of how either is implemented. It is separable from the transport underneath, running unchanged over whichever one you choose, which is the property to preserve, because that layer is the piece most likely to be replaced. (The Model Context Protocol is not an alternative: it exposes tools and context to a single agent, a different layer, and complements A2A rather than substituting for it.) For Meridian's reorder, the contract must encode at minimum the structure of an offer, how counteroffers on price, quantity, and lead time reference prior turns, how a deal is committed and confirmed, and how either party signals walk-away. Ambiguity here produces a disputed tent order, with money attached.
 
-**Identity and trust across boundaries.** Archetype 4 gave your agent a durable, scoped, revocable credential. This archetype adds the harder half: verifying the identity of an agent someone else issued. The technique is decentralized identity — W3C Decentralized Identifiers and Verifiable Credentials, with [AGNTCY Identity](https://github.com/agntcy/identity) as one implementation — so claims are checked cryptographically rather than accepted on assertion. Before Meridian's agent commits budget to a supplier it has never dealt with, three questions need answers: is the counterparty who it says it is, are its claims about capacity, certifications, and on-time record verifiable or merely self-asserted, and is this selling agent actually authorized to commit its supplier to a deal. Trust is graduated. Aligned teams may need only lightweight verification; agents representing rival interests need verified identity, signed messages, and non-repudiable records, because the incentive to misrepresent is real.
-
-**Protocol.** Two agents built on different stacks cannot negotiate unless they share a message contract. [A2A](https://a2a-protocol.org) defines how agents exchange structured messages and take turns, independent of how either is implemented. It is separable from the transport underneath — SLIM, plain gRPC, or a message bus all work, and A2A runs over any of them unchanged — which is the property to preserve, because the transport is the piece most likely to be replaced. (The Model Context Protocol is not an alternative: it exposes tools and context to a single agent, a different layer, and complements A2A rather than substituting for it.) For Meridian's reorder, the contract must encode at minimum the structure of an offer, how counteroffers on price, quantity, and lead time reference prior turns, how a deal is committed and confirmed, and how either party signals walk-away. Ambiguity here produces a disputed tent order, with money attached.
-
-**Accountability when no one sees the whole picture.** In archetype 4, one operator could reconstruct the full trail. Across organizations, Meridian sees only its own half of the reorder — the RFQ it sent, the quotes it received, the terms it accepted — never the supplier's internal reasoning. Three things follow. Exchange must be non-repudiable: offers and acceptances signed and tied to verified identities, so a settled order is provable by either party independently. Trails must be correlatable: a shared identifier on every message, so two half-records can be lined up if the delivery is later disputed. And observability stops at your boundary: instrument your side fully, and rely on protocol-level evidence for the counterparty's. The telemetry itself is conventional — most implementations build on OpenTelemetry, with AGNTCY's Observe SDK as one agent-specific example.
+**Accountability when no one sees the whole picture.** In archetype 4, one operator could reconstruct the full trail. Across organizations, Meridian sees only its own half of the reorder — the RFQ it sent, the quotes it received, the terms it accepted — never the supplier's internal reasoning. Three things follow. Exchange must be non-repudiable: offers and acceptances signed and tied to verified identities, so a settled order is provable by either party independently. Trails must be correlatable: a shared identifier on every message, so two half-records can be lined up if the delivery is later disputed. And observability stops at your boundary: instrument your side fully, and rely on protocol-level evidence for the counterparty's. The telemetry itself is conventional distributed tracing; what is new is correlating it with a counterparty you cannot instrument.
 
 ### Policy
 
@@ -123,13 +120,13 @@ An external AI assistant discovering and buying from your catalog on a shopper's
 ### Readiness checklist
 
 Architecture — minimum to launch:
-- [ ] Cross-organization identity verification, cryptographic rather than self-asserted (e.g., W3C DIDs and Verifiable Credentials, or AGNTCY Identity)
-- [ ] Shared negotiation protocol (e.g., A2A) over secure transport (e.g., SLIM or gRPC), kept separable
+- [ ] Cross-organization identity verification, cryptographic rather than self-asserted
+- [ ] Shared negotiation protocol (e.g., A2A) over secure transport, kept separable
 - [ ] Non-repudiable, signed exchange with shared correlation identifiers
 - [ ] Your side fully instrumented
 
 Architecture — required at scale:
-- [ ] Agent directory for discovery, with machine-readable capability descriptions (e.g., OASF, or A2A Agent Cards) — a first deployment can run against a short vetted counterparty list instead
+- [ ] Agent directory for discovery, with machine-readable capability descriptions (e.g., A2A Agent Cards) — a first deployment can run against a short vetted counterparty list instead
 - [ ] Protocol-level evidence collected and reconcilable against the counterparty's half of the trail
 
 Policy — minimum to launch:
@@ -145,4 +142,4 @@ Policy — required at scale:
 
 ### Where this leaves the model
 
-The five archetypes were never a ladder. Each is the right tool for a class of problem, and most production systems run several at once. This archetype is where the foundations earn their keep: durable identity, auditable decision trails, and enforceable policy were good engineering inside one organization, and across organizations, with no orchestrator to fall back on, they are what makes collaboration safe rather than reckless. The far end is already being built. [MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) describes a marketplace of agents representing both sides of every transaction, which is the long-term vision behind efforts like the Linux Foundation's Agent2Agent project and the AGNTCY Internet of Agents. Early versions of the protocols exist today, though they are not yet settled infrastructure. What remains unsolved is harder than any single standard: trust between parties who do not share interests, accountability when no one sees the whole picture, and arbitration when two faithful agents reach an outcome both operators regret. The organizations that get there will be the ones that did archetypes 3 and 4 well, because in archetype 5 your internal rigor is the credential the rest of the ecosystem checks you against.
+The five archetypes were never a ladder, and most production systems run several at once. This is where the foundations earn their keep: durable identity, auditable decision trails, and enforceable policy were good engineering inside one organization; across organizations, with no orchestrator to fall back on, they are what separates collaboration from recklessness. The far end is already being built — [MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) describes a marketplace of agents representing both sides of every transaction — but what remains unsolved is harder than any standard: trust between parties who do not share interests, accountability when no one sees the whole picture, and arbitration when two faithful agents reach an outcome both operators regret. The organizations that get there will be the ones that did archetypes 3 and 4 well, because here your internal rigor is the credential the rest of the ecosystem checks you against.

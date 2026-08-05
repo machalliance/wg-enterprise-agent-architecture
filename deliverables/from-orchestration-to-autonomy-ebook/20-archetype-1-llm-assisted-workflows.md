@@ -4,13 +4,13 @@
 
 Every chapter in Part Two uses one fictional retailer, so the examples connect into a single operation rather than five unrelated demos. Meridian Outfitters is a mid-market omnichannel outdoor-and-apparel retailer: roughly $800M in revenue, 120 stores and a growing e-commerce channel, tens of thousands of SKUs, and several hundred suppliers.
 
-Across the chapters, Meridian is preparing and running its **spring outdoor line launch**, a few thousand new and returning products across tents, packs, footwear, and apparel. Each archetype is a different system in Meridian's stack touching that launch. The chapters appear in order of autonomy. Part Three puts the systems back in the order the work actually happens and shows them working together.
+Across the chapters, Meridian is preparing and running its **spring outdoor line launch**, a few thousand new and returning products across tents, packs, footwear, and apparel. Each archetype is a different system in Meridian's stack touching that launch, and the chapters appear in order of autonomy.
 
 ### A note on the readiness checklists
 
 Every chapter ends with a readiness checklist split two ways. **Minimum to launch** is the set that has to be true before a first production deployment, because without it the system can cause harm you cannot see or undo. **Required at scale** is what running it at volume, across more categories, or for longer adds: the reliability, cost, and drift machinery that a pilot can defer and a production platform cannot.
 
-Read as a single gate, the full list stops good first projects. Several of the production deployments cited in Part One shipped their first version without all of it and earned the rest as they grew. What you cannot defer is knowing which items you have deferred, and to when.
+Read as a single gate, the full list stops good first projects. What you cannot defer is knowing which items you have deferred, and to when.
 
 ## Archetype 1: LLM-assisted workflows (not yet agents) — *assisted*
 
@@ -39,7 +39,6 @@ Meridian's merchandising team has thousands of spring-line products to get live 
 - **Receives** product attributes such as title, category, material, dimensions, and specifications.
 - **Assembles** a controlled context package from approved data sources.
 - **Generates** descriptions, SEO titles, short bullets, comparison copy, accessibility text, or localized variants.
-- **Validates** the output against schema, brand, policy, and compliance checks.
 - **Queues** the result for human review or sends it into an existing publishing workflow.
 
 The model does not decide whether the product should be sold, which channel receives it, whether legal review is needed, or whether the content goes live. Those decisions stay outside the model. The model helps create the artifact; the workflow path is fixed.
@@ -154,4 +153,4 @@ Policy — required at scale:
 
 ### Bridging to archetype 2
 
-This archetype stops at generation and transformation. It becomes archetype 2 when the model's output changes the path. A generated product description is archetype 1. A model deciding that a product goes to legal review instead of copy enrichment is archetype 2. The safest way across is to promote one decision point at a time, keeping the paths explicit and the allowed outputs structured.
+This archetype stops at generation and transformation. It becomes archetype 2 the moment the model's output changes the path, and the safe way across is to promote one decision point at a time.

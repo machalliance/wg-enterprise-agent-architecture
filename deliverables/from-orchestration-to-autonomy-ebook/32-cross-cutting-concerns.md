@@ -1,3 +1,5 @@
+# Part Three · Putting It Together
+
 ## Cross-cutting concerns
 
 The archetype chapters cover what each pattern demands on its own. Five concerns cut across all of them, and they are where enterprise agentic work actually succeeds or stalls. None is optional, and all of them get harder as autonomy grows.
@@ -15,12 +17,6 @@ The production deployments that work bear this out. AmerCareRoyal put its order 
 Agents add a class of risk that traditional software does not have. Because an agent acts on the content it reads, any untrusted input can try to redirect it. Prompt injection, a malicious instruction hidden in a document, a web page, or a supplier feed, is the headline case, and it gets more dangerous as autonomy rises: a goal-directed agent can be steered mid-task, and an autonomous agent can be steered with no human in the loop to catch it. The mirror risk is exfiltration, where an agent with broad read access and any external action becomes a path for data to leave.
 
 The defenses hold across every archetype, so it is worth stating them once. Separate instructions from data in the context you assemble. Keep read scope and write scope as narrow as the task allows, so a compromised agent has a small blast radius. Route any action that crosses a trust boundary through the policy engine rather than the model's judgment. And treat tool results as untrusted input rather than ground truth to obey. Security here is a property of how the tools and permissions are scoped from the start. Bolting a review on at the end does not create it.
-
-### Regulatory and data-residency compliance
-
-For a regulated enterprise, two compliance questions sit underneath every archetype. First, where does the data go? A model call can send customer or transaction data outside your boundary, potentially outside your jurisdiction, which puts it squarely inside GDPR, sector regulation, and data-residency rules. You need to know which model runs where, what data classes may reach it, and whether any of it is retained or used for training. Second, who is accountable for the action? When an agent takes a step with legal or financial weight, the decision trail has to satisfy an auditor, not just an engineer.
-
-The teams doing this well build compliance in from the first line rather than bolting it on. CarParts.com embedded PII controls, consent management, and observability into its agent stack from day one, and General Motors runs a compliance agent that validates content against a regulatory rulebook of more than 130 fields as part of the workflow ([The First Wave of Agentic AI](https://machalliance.org/insights-hub/The-First-Wave-of-Agentic-AI), 2026). Treat data residency, retention, consent, and regulatory validation as architecture decisions made alongside the permission model, because retrofitting them after an agent is live is far more expensive than designing for them.
 
 ### Cost and latency
 

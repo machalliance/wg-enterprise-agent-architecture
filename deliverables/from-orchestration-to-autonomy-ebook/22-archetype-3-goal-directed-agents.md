@@ -14,7 +14,7 @@ New concerns appear the moment the model owns the sequence of steps:
 - **Tools become the action surface.** Everything the agent can do is the union of the tools you give it, so scoping the toolset is scoping what it may touch.
 - **Reasoning traces stop being optional.** You need to reconstruct both what the agent did and why; without that, an autonomous run is unreviewable.
 - **Termination becomes a design decision.** Done, stuck, and out-of-budget all need explicit definitions. An agent that cannot decide it is finished is an archetype 4 problem you did not intend to take on.
-- **Permissions are scoped and short-lived.** The agent runs under the credentials of the human who invoked it, for the duration of the task and no longer.
+- **Permissions are scoped and short-lived.** The agent gets its own session identity for the run, holding no more than the invoking user is entitled to and expiring when the task ends.
 
 The value: real autonomy, where the agent solves problems you did not script, without the open-ended commitment of an agent that runs forever.
 
@@ -184,4 +184,4 @@ Policy — required at scale:
 
 ### Bridging to archetype 4
 
-This archetype finishes. That is the line. Promote the catalog agent to watch the supplier's feeds continuously and fix problems as they arise, without being asked, and you have left it entirely. The difference is persistence and self-direction, not more autonomy, and persistence forces a new class of problem that defines the next archetype.
+This archetype finishes, and that is the line. Take the stop away, so the agent watches its domain and acts without being asked, and you are in archetype 4.

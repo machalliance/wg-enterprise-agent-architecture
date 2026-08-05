@@ -2,8 +2,6 @@
 
 The archetypes run from more structured, where a human directs the system, to more autonomous, where the system directs itself.
 
-![Horizontal arrow from "More Structured / Human direction" on the left to "More Autonomous / System direction" on the right, marking five stages. 1: LLM-assisted workflows (not yet agents). 2: LLM-directed workflows. 3: Goal-directed, task-oriented agents. 4: Autonomous, policy-guided agents. 5: Collaborating, self-directed agents.](diagram-degrees-of-agency.png)
-
 The whole model on one screen:
 
 | # | Archetype (handle) | In one line | Business outcome it buys | The requirement that defines it |

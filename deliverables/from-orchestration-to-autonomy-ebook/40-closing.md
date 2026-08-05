@@ -1,6 +1,6 @@
-# Closing: Where most organizations sit, and how to contribute
+# Closing: Where most solutions sit, and how to contribute
 
-Most enterprises today are working in archetypes 1 and 2. Content generation, summarization, routing, basic coding assistance. Some have early goal-directed agents in production. A smaller number are experimenting with the collaborating, self-directed work at the far end. That distribution is healthy. It reflects where the value is easiest to capture and the risk easiest to contain.
+Most solutions in production today sit in archetypes 1 and 2. Content generation, summarization, routing, basic coding assistance. Some organizations have early goal-directed agents running. A smaller number are experimenting with the collaborating, self-directed work at the far end. That distribution is healthy. It reflects where the value is easiest to capture and the risk easiest to contain.
 
 The organizations that move well across this range share a habit: they do their current archetype properly before reaching for the next one. They get reliable checkpoint-and-rollback in place. They establish machine identity governance. They build reasoning traces into their observability stack rather than bolting logging on afterward. Those foundations compound. The context packaging and prompt governance you build for archetype 1 become the raw material for archetype 2. The scoped tools and reasoning traces you build for archetype 3 are what an autonomous agent extends when it stops stopping. The durable identity and decision trails you build for archetype 4 are the credential the rest of the ecosystem checks you against in archetype 5.
 

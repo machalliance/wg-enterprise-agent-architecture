@@ -2,7 +2,7 @@
 
 The archetypes run from more structured, where a human directs the system, to more autonomous, where the system directs itself.
 
-The whole model on one screen:
+The whole framework on one screen:
 
 | # | Archetype (handle) | In one line | Business outcome it buys | The requirement that defines it |
 |---|---|---|---|---|
@@ -28,4 +28,4 @@ These are not hypotheticals. Enterprises are running systems all along this rang
 - **CarParts.com, portfolio scale.** The retailer runs more than 20 agents in production across customer-facing shopping help, internal operations, vendor communication, and product data enrichment, on five model platforms at once. A shared state layer keeps agents in step that would otherwise reason in isolation. It reports 10x faster feature prototyping, roughly two hours reclaimed per developer per day, and more than $500,000 in savings inside six to eight months ([case study](https://machalliance.org/case-studies/carparts-com)). It is the clearest case in this set for governing component by component: a fitment answer given to a customer and a draft email sent to a vendor sit in different archetypes and cannot carry the same controls.
 - **Wyze, cross-organization commerce.** Outside AI assistants find and buy the smart-home brand's products, and an orchestration layer routes fulfillment on its own. These are agents doing business across organizational lines with no shared orchestrator. It more than halved click-to-delivery time and opened a new sales channel at almost no added cost ([case study](https://machalliance.org/case-studies/wyze)).
 
-Between them, these deployments run the length of the model: content and metadata produced inside a fixed path, a bounded task closed without a human, an agent acting continuously within policy, and agents doing business across organizational lines.
+Between them, these deployments run the length of the framework: content and metadata produced inside a fixed path, a bounded task closed without a human, an agent acting continuously within policy, and agents doing business across organizational lines.

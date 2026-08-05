@@ -1,6 +1,6 @@
 # From Orchestration to Autonomy
 
-**A composable model for building across the agent ecosystem, from LLM-assisted workflows to self-directed agents.**
+**A composable framework for building across the agent ecosystem, from LLM-assisted workflows to self-directed agents.**
 
 By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [MACH Alliance](https://machalliance.org)
 
@@ -45,7 +45,7 @@ Three moves a leadership team can make now, without a single line of code:
 
 We use *archetype* rather than *level* or *maturity stage* on purpose. A level implies a ladder with a top. An archetype is a recurring pattern with its own best-fit problems. Nobody is at an archetype; a solution uses them. So carry two questions into the rest of the book. Does this work need an agent at all? And if it does, which archetypes does the solution need, and are we resourced for each one?
 
-The organizations that get value are the ones that do the archetype in front of them well before reaching for the next. Part One gives the model in business terms; stop there and you have what you need to fund and scope. Part Two goes deep on each archetype for the people who build. Part Three covers the concerns that cut across every archetype, and gathers the readiness requirements into checklists you can hold your own work against. The leadership team and the people who build work from the same map. This is a working framework, shaped in the open, and it gets sharper the more people build against it.
+The organizations that get value are the ones that do the archetype in front of them well before reaching for the next. Part One gives the framework in business terms; stop there and you have what you need to fund and scope. Part Two goes deep on each archetype for the people who build. Part Three covers the concerns that cut across every archetype, and gathers the readiness requirements into checklists you can hold your own work against. The leadership team and the people who build work from the same map. This is a working framework, shaped in the open, and it gets sharper the more people build against it.
 
 
 ## Contents
@@ -124,7 +124,7 @@ Every archetype in Part Two is described along these same two axes. For each one
 
 The archetypes run from more structured, where a human directs the system, to more autonomous, where the system directs itself.
 
-The whole model on one screen:
+The whole framework on one screen:
 
 | # | Archetype (handle) | In one line | Business outcome it buys | The requirement that defines it |
 |---|---|---|---|---|
@@ -150,7 +150,7 @@ These are not hypotheticals. Enterprises are running systems all along this rang
 - **CarParts.com, portfolio scale.** The retailer runs more than 20 agents in production across customer-facing shopping help, internal operations, vendor communication, and product data enrichment, on five model platforms at once. A shared state layer keeps agents in step that would otherwise reason in isolation. It reports 10x faster feature prototyping, roughly two hours reclaimed per developer per day, and more than $500,000 in savings inside six to eight months ([case study](https://machalliance.org/case-studies/carparts-com)). It is the clearest case in this set for governing component by component: a fitment answer given to a customer and a draft email sent to a vendor sit in different archetypes and cannot carry the same controls.
 - **Wyze, cross-organization commerce.** Outside AI assistants find and buy the smart-home brand's products, and an orchestration layer routes fulfillment on its own. These are agents doing business across organizational lines with no shared orchestrator. It more than halved click-to-delivery time and opened a new sales channel at almost no added cost ([case study](https://machalliance.org/case-studies/wyze)).
 
-Between them, these deployments run the length of the model: content and metadata produced inside a fixed path, a bounded task closed without a human, an agent acting continuously within policy, and agents doing business across organizational lines.
+Between them, these deployments run the length of the framework: content and metadata produced inside a fixed path, a bounded task closed without a human, an agent acting continuously within policy, and agents doing business across organizational lines.
 
 
 ## Composition: why real solutions blend archetypes
@@ -1216,7 +1216,7 @@ If you take one action from this book, take this one: fill in the one-initiative
 
 ## This is a working framework
 
-The model here is grounded in established work from [Anthropic](https://www.anthropic.com/engineering/building-effective-agents), [AGNTCY](https://agntcy.org), and [MIT](https://mitsloan.mit.edu). It is a working framework rather than a finished standard. The agent ecosystem only works if the people building in it share a common understanding, and that understanding sharpens with every team that tests it against real systems.
+The archetypes here are grounded in established work from [Anthropic](https://www.anthropic.com/engineering/building-effective-agents), [AGNTCY](https://agntcy.org), and [MIT](https://mitsloan.mit.edu). They form a working framework rather than a finished standard. The agent ecosystem only works if the people building in it share a common understanding, and that understanding sharpens with every team that tests it against real systems.
 
 If something here does not match what you are seeing in practice, or there is a gap we should fill, we want to hear it. The working group's charter, members, and ongoing work are public. Questions, feedback, and suggestions are welcome at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture).
 

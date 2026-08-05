@@ -10,6 +10,6 @@ If you take one action from this book, take this one: fill in the one-initiative
 
 ## This is a working framework
 
-The model here is grounded in established work from [Anthropic](https://www.anthropic.com/engineering/building-effective-agents), [AGNTCY](https://agntcy.org), and [MIT](https://mitsloan.mit.edu). It is a working framework rather than a finished standard. The agent ecosystem only works if the people building in it share a common understanding, and that understanding sharpens with every team that tests it against real systems.
+The archetypes here are grounded in established work from [Anthropic](https://www.anthropic.com/engineering/building-effective-agents), [AGNTCY](https://agntcy.org), and [MIT](https://mitsloan.mit.edu). They form a working framework rather than a finished standard. The agent ecosystem only works if the people building in it share a common understanding, and that understanding sharpens with every team that tests it against real systems.
 
 If something here does not match what you are seeing in practice, or there is a gap we should fill, we want to hear it. The working group's charter, members, and ongoing work are public. Questions, feedback, and suggestions are welcome at [github.com/machalliance/wg-enterprise-agent-architecture](https://github.com/machalliance/wg-enterprise-agent-architecture).

@@ -1,0 +1,28 @@
+# Paths semgrep should not scan, and the one finding it must not treat as a secret.
+#
+# Semgrep's default excludes are NOT inherited once this file exists — it replaces them — so the usual
+# suspects are listed explicitly below rather than assumed.
+
+# --- build output and caches (not source; scanning them reports on vendored code) --------------------
+node_modules/
+dist/
+.pnpm-store/
+.git/
+
+# --- generated identity material ----------------------------------------------------------------------
+# Recreated from seed/ + config.json by `pnpm identity:issue`, and gitignored. Contains Ed25519 private
+# keys that are deliberately public (derived from the committed KEY_DERIVATION_SEED) — see
+# meridian-crossing/infra/identity/README.md. Real secrets never live here, but key-shaped material does.
+meridian-crossing/infra/identity/generated/
+
+# --- the A2CN golden fixture --------------------------------------------------------------------------
+# `generic.secrets.security.detected-jwt-token` fires (at ERROR severity) on the `protocol_act_signature`
+# in this file. It is a real JWS, and that is the point: it is the byte-stable fixture that proves the
+# A2CN codec produces a spec-conforming signed act without a live round-trip against the Python
+# reference implementation. It signs a fabricated demo negotiation with Summit's demo key, which is
+# derived from a public seed — there is nothing to leak. Excluded by path because the file is JSON and
+# cannot carry an inline `nosemgrep` comment.
+#
+# NOTE: this excludes the whole fixture directory from scanning. If a future fixture here ever carries
+# genuinely sensitive material, that is the assumption to revisit.
+meridian-crossing/seed/a2cn/

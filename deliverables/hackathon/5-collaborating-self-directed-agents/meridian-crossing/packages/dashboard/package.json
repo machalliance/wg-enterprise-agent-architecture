@@ -1,0 +1,10 @@
+{
+  "name": "@meridian/dashboard",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Stage-prop dashboard: four panels over per-org SSE streams (no god view).",
+  "scripts": {
+    "serve": "node server.mjs"
+  }
+}

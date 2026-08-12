@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meridian Crossing — live</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  /* ============================================================
+     Waypoint design system — internalized.
+     Tier 1 primitives → Tier 2 semantics → dashboard components.
+     Product code (this file + app.js) only reads the semantic and
+     legacy-alias names; the primitives are never referenced directly.
+     ============================================================ */
+  :root {
+    /* Tier 1 · primitives (only the steps this UI uses) */
+    --wp-chalk:#FDFDFB;
+    --wp-granite-50:#F5F4EE; --wp-granite-100:#E7E9E1; --wp-granite-200:#DBDED4;
+    --wp-granite-300:#C6CCC5; --wp-granite-600:#626C65; --wp-granite-700:#4E5852;
+    --wp-granite-900:#232D27;
+    --wp-pine-50:#EDFBF3; --wp-pine-700:#2A5B45; --wp-pine-800:#224937; --wp-pine-900:#163225;
+    --wp-blaze-100:#FFE7DF; --wp-blaze-600:#B84408;
+    --wp-glacier-100:#E2EFF9; --wp-glacier-300:#B2C7D9; --wp-glacier-600:#49708E; --wp-glacier-700:#395971;
+    --wp-summit-100:#DEF3E3; --wp-summit-600:#2F7D4C; --wp-summit-700:#24643C;
+    --wp-lichen-100:#FCEACF; --wp-lichen-500:#B07C0F; --wp-lichen-700:#714E02;
+    --wp-scree-100:#FFE6E2; --wp-scree-600:#B23A2E; --wp-scree-700:#912F25;
+    --wp-contour-300:#CFC7AE; --wp-contour-400:#AFA483;
+
+    /* Tier 2 · semantics — the vocabulary the components speak */
+    --ground:var(--wp-granite-50);
+    --surface:var(--wp-chalk);
+    --fill:var(--wp-granite-100);
+    --hairline:var(--wp-granite-200);
+    --border:var(--wp-granite-300);
+    --text:var(--wp-granite-900);
+    --text-2:var(--wp-granite-700);
+    --text-3:var(--wp-granite-600);
+    --action:var(--wp-pine-700);
+    --action-hover:var(--wp-pine-800);
+    --action-active:var(--wp-pine-900);
+    --signal:var(--wp-blaze-600);
+    --signal-tint:var(--wp-blaze-100);
+    --focus:var(--wp-blaze-600);
+    --success:var(--wp-summit-600); --success-text:var(--wp-summit-700); --success-tint:var(--wp-summit-100);
+    --warn:var(--wp-lichen-500);    --warn-text:var(--wp-lichen-700);   --warn-tint:var(--wp-lichen-100);
+    --error:var(--wp-scree-600);    --error-hover:var(--wp-scree-700);  --error-tint:var(--wp-scree-100);
+    --info:var(--wp-glacier-600);   --info-text:var(--wp-glacier-700);  --info-tint:var(--wp-glacier-100);
+
+    /* Org accents — legacy alias names app.js still writes at runtime (connection dots,
+       half-trail direction). Remapped onto the Waypoint palette so each org keeps a
+       distinct, on-brand hue: buyer=glacier, summit=summit, cascade=blaze, alpine=lichen, ridge=scree.
+       Cascade reuses the blaze hue that --focus also draws from: the palette has no sixth distinct hue,
+       and the remaining candidates were a second green (confusable with summit) or a low-contrast khaki.
+       A connection dot and a focus ring are structurally different affordances, so the reuse is legible —
+       but if the palette gains a hue, give Cascade its own. */
+    --buyer:var(--wp-glacier-600);
+    --summit:var(--wp-summit-600);
+    --cascade:var(--wp-blaze-600);
+    --alpine:var(--wp-lichen-500);
+    --ridge:var(--wp-scree-600);
+    --dim:var(--wp-granite-600);
+
+    /* type / shape / motion */
+    --font-display:'Barlow Condensed', ui-sans-serif, 'Arial Narrow', sans-serif;
+    --font-body:Barlow, ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-data:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --r-control:2px; --r-card:4px; --r-pill:999px;
+    --shadow-overlay:0 8px 24px rgba(22,29,25,.2);
+    --ease:150ms ease-out;
+    --topo-line:rgba(207,199,174,.45);
+    color-scheme:light;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--text);
+    font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    /* A single faint topographic contour bleeds in from the corner — Waypoint's expedition
+       motif, kept low-contrast so it lives only in the gutters behind the opaque panels. */
+    background-image: repeating-radial-gradient(circle at 100% -8%, transparent 0 70px, var(--topo-line) 70px 71px);
+    background-attachment: fixed;
+  }
+  h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: 600; line-height: 1.05; }
+  ::selection { background: var(--signal-tint); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 1px; }
+
+  header {
+    display: flex; align-items: center; gap: 16px; padding: 14px 24px;
+    border-bottom: 2px solid var(--text); position: sticky; top: 0; background: var(--surface);
+    z-index: 5; flex-wrap: wrap;
+  }
+  header h1 { font-size: 25px; text-transform: uppercase; letter-spacing: .04em; }
+  header .sub { color: var(--text-2); font-size: 14px; max-width: 54ch; }
+  .spend { color: var(--text-2); font-size: 13px; font-family: var(--font-data); margin-left: auto; font-variant-numeric: tabular-nums; }
+  .mode {
+    font-family: var(--font-data); font-size: 11px; font-weight: 500; padding: 4px 12px;
+    border-radius: var(--r-pill); border: 1px solid var(--border); color: var(--text-3);
+    margin-left: 12px; white-space: nowrap; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .mode.llm { color: var(--success-text); border-color: var(--success); background: var(--success-tint); }
+  .mode.det { color: var(--info-text); border-color: var(--border); }
+
+  /* Buttons share the Waypoint control shape: 2px radius, 44px min target, Barlow 600 caps. */
+  .kill, .start {
+    margin-left: 12px; border: 1px solid transparent; border-radius: var(--r-control);
+    padding: 11px 20px; font-family: var(--font-body); font-weight: 600; font-size: 14px;
+    letter-spacing: .04em; text-transform: uppercase; cursor: pointer; min-height: 44px;
+    transition: background var(--ease), color var(--ease);
+  }
+  .kill { background: var(--error); color: #fff; }
+  .kill.armed:hover, .kill:hover { background: var(--error-hover); }
+  .kill:disabled { background: var(--fill); color: var(--text-3); cursor: default; }
+  .start { background: var(--action); color: #fff; }
+  .start:hover { background: var(--action-hover); }
+  .start:disabled { background: var(--fill); color: var(--text-3); cursor: default; }
+  .start[hidden] { display: none; }
+
+  .banner { padding: 12px 24px; background: var(--surface); border-bottom: 1px solid var(--hairline); color: var(--text-2); font-size: 14px; }
+  .banner b { color: var(--text); font-weight: 700; }
+
+  .legend { margin: 2px 0 12px; font-size: 12px; color: var(--text-3); }
+  .legend summary { cursor: pointer; color: var(--text-3); text-transform: uppercase; letter-spacing: .12em; font-family: var(--font-display); font-weight: 600; font-size: 12px; }
+  .legend-body { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; }
+  .legend-body .item { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 13px; }
+
+  main {
+    display: grid; grid-template-columns: 340px 1fr; grid-template-rows: auto 1fr;
+    gap: 16px; padding: 16px 24px; min-height: calc(100vh - 60px);
+  }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); padding: 16px; min-width: 0; }
+  /* Section headers get Waypoint's signature: a single blaze diamond, an uppercase Barlow
+     Condensed title, and a hairline contour rule that runs out to the edge. */
+  .panel h2 {
+    display: flex; align-items: center; gap: 12px; margin: 0 0 14px;
+    font-size: 20px; text-transform: uppercase; letter-spacing: .03em; color: var(--text);
+  }
+  .panel h2::before { content: ""; width: 9px; height: 9px; background: var(--signal); transform: rotate(45deg); flex: none; }
+  .panel h2::after { content: ""; height: 1px; background: var(--wp-contour-300); flex: 1; min-width: 16px; }
+  #discovery { grid-row: 1 / span 2; }
+  #negotiations { grid-column: 2; }
+  #reconcile { grid-column: 2; }
+  #settlement { grid-column: 1 / -1; }
+  #settlement[hidden] { display: none; }
+  .help { color: var(--text-2); font-size: 13px; margin: -2px 0 12px; line-height: 1.5; max-width: 68ch; }
+  .help b { color: var(--text); font-weight: 700; }
+
+  .cand { border: 1px solid var(--border); border-radius: var(--r-card); padding: 10px 12px; margin-bottom: 10px; background: var(--surface); }
+  .cand .did { font-family: var(--font-data); font-size: 12px; word-break: break-all; color: var(--text); }
+  .cand .reason { color: var(--text-2); font-size: 12px; margin-top: 6px; }
+
+  /* Waypoint pill badge: quiet fill by default, a leading status dot, tint+text per state. */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body);
+    font-size: 12px; font-weight: 500; padding: 3px 12px; border-radius: var(--r-pill);
+    border: 1px solid transparent; letter-spacing: .02em; background: var(--fill); color: var(--text-3);
+  }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .b-VERIFIED { background: var(--success-tint); color: var(--success-text); }
+  .b-LIMITED { background: var(--warn-tint); color: var(--warn-text); }
+  .b-REJECTED { background: transparent; color: var(--error); border-color: var(--error); }
+
+  .cols { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+  .col { flex: 0 0 340px; border: 1px solid var(--border); border-radius: var(--r-card); display: flex; flex-direction: column; max-height: 62vh; background: var(--surface); }
+  .col.severed { opacity: .45; filter: grayscale(.5); }
+  .col > .head { padding: 10px 12px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--ground); border-radius: var(--r-card) var(--r-card) 0 0; }
+  .col .name { font-weight: 700; font-size: 15px; }
+  .col .stream { padding: 10px 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+  /* Chat bubbles: the buyer's SENT turns lean on glacier (info), supplier RECV turns stay neutral. */
+  .bub { border-radius: var(--r-card); padding: 7px 10px; max-width: 88%; font-size: 13px; line-height: 1.4; }
+  .bub.sent { align-self: flex-end; background: var(--info-tint); border: 1px solid var(--wp-glacier-300); }
+  .bub.recv { align-self: flex-start; background: var(--fill); border: 1px solid var(--hairline); }
+  .bub .t { font-family: var(--font-display); font-weight: 600; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
+  .bub .terms { color: var(--text-2); margin-top: 3px; font-family: var(--font-data); font-size: 11.5px; }
+
+  .tier { font-family: var(--font-data); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: var(--r-control); letter-spacing: .02em; }
+  .tier-AUTONOMOUS_SETTLE, .tier-NOTIFY_ON_SETTLE { background: var(--success-tint); color: var(--success-text); }
+  .tier-APPROVE_BEFORE_COMMIT { background: var(--warn-tint); color: var(--warn-text); }
+  .tier-PROHIBITED { background: var(--error-tint); color: var(--error); }
+  .walk { color: var(--error); font-weight: 600; font-size: 12px; text-align: center; padding: 6px; text-transform: uppercase; letter-spacing: .08em; font-family: var(--font-display); }
+
+  .result { font-family: var(--font-display); font-weight: 600; font-size: 10px; padding: 3px 9px; border-radius: var(--r-pill); text-transform: uppercase; letter-spacing: .06em; }
+  .r-SETTLED { background: var(--success-tint); color: var(--success-text); }
+  .r-ESCALATE { background: var(--warn-tint); color: var(--warn-text); }
+  .r-WALKED { background: var(--error-tint); color: var(--error); }
+
+  .appr { border: 1px solid var(--warn); border-radius: var(--r-card); padding: 12px 14px; margin-bottom: 10px; background: var(--warn-tint); }
+  .appr .terms { font-family: var(--font-data); font-size: 12px; color: var(--text-2); margin: 6px 0; }
+  .appr button { border: 1px solid transparent; border-radius: var(--r-control); padding: 8px 14px; font-family: var(--font-body); font-weight: 600; cursor: pointer; margin-right: 8px; min-height: 40px; transition: background var(--ease); }
+  .approve { background: var(--action); color: #fff; }
+  .approve:hover { background: var(--action-hover); }
+  .reject { background: var(--error); color: #fff; }
+  .reject:hover { background: var(--error-hover); }
+  .appr.done { border-color: var(--border); opacity: .7; }
+
+  /* Approvals surface as a modal dialog — an action-required decision shouldn't hide in a side panel.
+     A blaze-adjacent warn stripe across the top marks it as "your call, paused until you decide". */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(22,29,25,.55); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+  .modal-backdrop[hidden] { display: none; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--warn); border-radius: var(--r-card); padding: 24px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-overlay); }
+  .modal h2 { margin: 0 0 8px; font-size: 20px; color: var(--text); text-transform: uppercase; letter-spacing: .03em; }
+  .modal-desc { margin: 0 0 16px; color: var(--text-2); font-size: 14px; }
+  .modal .appr:last-child { margin-bottom: 0; }
+
+  .rec-row { border: 1px solid var(--border); border-radius: var(--r-card); padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+  .rec-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .rec-head .name { font-weight: 700; font-size: 15px; }
+  .rec-row button { background: transparent; color: var(--action); border: 1px solid var(--action); border-radius: var(--r-control); padding: 8px 14px; font-family: var(--font-body); font-weight: 600; cursor: pointer; min-height: 40px; transition: background var(--ease); }
+  .rec-row button:hover { background: var(--wp-pine-50); }
+  .rec-verdict { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: 13px; }
+  .rec-verdict.match { color: var(--success-text); }
+  .rec-verdict.mismatch { color: var(--error); }
+  .rec-detail { color: var(--text-2); font-size: 12px; font-family: var(--font-data); width: 100%; margin-top: 8px; }
+  .halves { display: flex; gap: 12px; margin-top: 10px; }
+  .half { flex: 1 1 0; min-width: 0; border: 1px solid var(--border); border-radius: var(--r-control); overflow: hidden; }
+  .half-h { background: var(--ground); padding: 6px 10px; font-family: var(--font-display); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); border-bottom: 1px solid var(--hairline); }
+  .htrec { display: flex; align-items: center; gap: 8px; padding: 4px 10px; font-family: var(--font-data); font-size: 11.5px; border-bottom: 1px solid var(--hairline); color: var(--text-2); }
+  .htdir { font-weight: 700; }
+  .htdir.sent { color: var(--buyer); } .htdir.recv { color: var(--summit); }
+  .httype { font-weight: 700; min-width: 66px; color: var(--text); }
+  .htr { color: var(--text-3); }
+  .htcid { color: var(--text-3); margin-left: auto; }
+  .empty { color: var(--text-3); font-size: 13px; font-style: italic; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .live { font-family: var(--font-body); font-size: 11px; color: var(--text-3); text-transform: none; letter-spacing: normal; font-weight: 500; }
+  /* Visually hidden but available to assistive tech (live-region announcers, off-screen labels). */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  /* On-chain settlement (USDC escrow) */
+  .escrow { border: 1px solid var(--border); border-radius: var(--r-card); padding: 14px 16px; margin-bottom: 12px; background: var(--surface); }
+  .escrow-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .escrow-head .name { font-weight: 700; font-size: 15px; }
+  .escrow-addr { font-family: var(--font-data); font-size: 11px; color: var(--text-3); }
+  .e-state { font-family: var(--font-display); font-weight: 600; font-size: 10px; padding: 3px 9px; border-radius: var(--r-pill); text-transform: uppercase; letter-spacing: .06em; }
+  .e-UNFUNDED { background: var(--fill); color: var(--text-3); }
+  .e-PENDING_APPROVAL { background: var(--warn-tint); color: var(--warn-text); }
+  /* Stripe crypto PaymentIntent stages. */
+  .e-REQUIRES_DEPOSIT { background: var(--info-tint); color: var(--info-text); }
+  .e-DEPOSIT_SENT { background: var(--info-tint); color: var(--info-text); }
+  .e-SUCCEEDED { background: var(--success-tint); color: var(--success-text); }
+  .e-FAILED { background: var(--error-tint); color: var(--error); }
+  .e-REJECTED { background: var(--warn-tint); color: var(--warn-text); }
+  /* Two-tranche bar: first tranche (paid) + second (locked or resolved), sized to the split. */
+  .tranches { display: flex; height: 30px; border-radius: var(--r-control); overflow: hidden; border: 1px solid var(--border); margin: 4px 0 10px; font-family: var(--font-data); font-size: 11px; }
+  .tranche { display: flex; align-items: center; justify-content: center; color: #fff; white-space: nowrap; padding: 0 8px; }
+  .tranche.first { background: var(--success); }
+  .tranche.second.locked { background: var(--info); }
+  .tranche.second.released { background: var(--success); }
+  /* --warn-text, not --warn: the bar's text is 11px white, and white on --warn (#B07C0F) is 3.66:1 —
+     under the 4.5:1 AA threshold for normal text, and the odd one out next to .first (5.05:1) and
+     .second.locked (5.26:1), which both sit on 600-level tokens. --warn-text takes it to 7.52:1 while
+     keeping the solid-bar-with-white-text treatment its siblings use. */
+  .tranche.second.refunded { background: var(--warn-text); }
+  .escrow-note { font-size: 13px; color: var(--warn-text); background: var(--warn-tint); border: 1px solid var(--warn); border-radius: var(--r-control); padding: 8px 12px; margin-bottom: 10px; }
+  .escrow-note b { color: var(--text); font-weight: 700; }
+  /* The tranche bar previews the split before funding — hatched to read as "proposed, not yet created". */
+  .tranches.preview .tranche { opacity: .8; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.25) 0 6px, transparent 6px 12px); }
+  .escrow-meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-2); font-family: var(--font-data); margin-bottom: 10px; }
+  .escrow-meta b { color: var(--text); font-weight: 700; }
+  .escrow-actions button { border: 1px solid transparent; border-radius: var(--r-control); padding: 9px 16px; font-family: var(--font-body); font-weight: 600; cursor: pointer; margin-right: 8px; min-height: 42px; letter-spacing: .03em; text-transform: uppercase; font-size: 13px; transition: background var(--ease); }
+  .escrow-actions .release { background: var(--action); color: #fff; }
+  .escrow-actions .release:hover { background: var(--action-hover); }
+  .escrow-actions .dispute { background: transparent; color: var(--error); border-color: var(--error); }
+  .escrow-actions .dispute:hover { background: var(--error-tint); }
+  .escrow-actions button:disabled { background: var(--fill); color: var(--text-3); border-color: var(--border); cursor: default; }
+  .escrow-ruling { margin-top: 8px; font-size: 12px; color: var(--text-2); font-style: italic; }
+  .log-h { font-family: var(--font-display); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); margin: 18px 0 8px; }
+  .escrow-log { border: 1px solid var(--border); border-radius: var(--r-control); max-height: 220px; overflow-y: auto; background: var(--ground); }
+  .elog { display: flex; gap: 10px; align-items: baseline; padding: 6px 12px; border-bottom: 1px solid var(--hairline); font-size: 12.5px; }
+  .elog:last-child { border-bottom: 0; }
+  .elog .ea { font-family: var(--font-display); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: var(--r-control); background: var(--fill); color: var(--text-2); min-width: 92px; text-align: center; flex: none; }
+  .elog .ed { color: var(--text-2); flex: 1; min-width: 0; }
+  .elog .et { color: var(--text-3); font-family: var(--font-data); font-size: 11px; flex: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; grid-template-rows: none; }
+    #discovery { grid-row: auto; }
+    #negotiations, #reconcile { grid-column: 1; }
+    header .sub { flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+<!-- Live regions: routine updates (polite) and the kill switch (assertive) are announced here without
+     stealing focus. Visually hidden; screen readers speak their text whenever it changes. -->
+<div id="live" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="live-alert" class="sr-only" role="alert" aria-live="assertive" aria-atomic="true"></div>
+<header>
+  <h1>Meridian Crossing</h1>
+  <span class="sub">A buyer's AI agent negotiates with competing suppliers to restock — live, with a human able to step in</span>
+  <span class="spend" id="spend" aria-live="polite"></span>
+  <span class="mode" id="mode"></span>
+  <button class="start" id="start" hidden aria-label="START DEMO — begins the buyer's sourcing run">START DEMO</button>
+  <button class="kill armed" id="kill" aria-label="Kill switch — sever every live negotiation and revoke uncommitted deals">KILL SWITCH</button>
+</header>
+<div class="banner" id="banner">The buyer's agent sources inventory from competing suppliers in parallel — each panel below is one organization's own view, streamed live.</div>
+<main>
+  <section class="panel" id="discovery" aria-labelledby="h-discovery">
+    <h2 id="h-discovery">Discovery &amp; Verification</h2>
+    <div id="cands"><div class="empty">press Start to begin</div></div>
+  </section>
+  <section class="panel" id="negotiations" aria-labelledby="h-negotiations">
+    <h2 id="h-negotiations">Live negotiations <span class="live" id="conn"></span></h2>
+    <details class="legend">
+      <summary>What the badges mean</summary>
+      <div class="legend-body">
+        <span class="item"><span class="tier tier-AUTONOMOUS_SETTLE">AUTONOMOUS_SETTLE</span> within mandate — agent settles on its own</span>
+        <span class="item"><span class="tier tier-NOTIFY_ON_SETTLE">NOTIFY_ON_SETTLE</span> settles, then flags you</span>
+        <span class="item"><span class="tier tier-APPROVE_BEFORE_COMMIT">APPROVE_BEFORE_COMMIT</span> paused — needs your approval first</span>
+        <span class="item"><span class="tier tier-PROHIBITED">PROHIBITED</span> outside mandate — refused</span>
+        <span class="item"><span class="result r-SETTLED">SETTLED</span> deal closed</span>
+        <span class="item"><span class="result r-ESCALATE">ESCALATE</span> waiting on a human</span>
+        <span class="item"><span class="result r-WALKED">WALKED</span> walked away</span>
+      </div>
+    </details>
+    <div class="cols" id="cols"><div class="empty">no negotiations yet</div></div>
+  </section>
+  <section class="panel" id="reconcile" aria-labelledby="h-reconcile">
+    <h2 id="h-reconcile">Proof each deal really happened</h2>
+    <p class="help">The buyer and each supplier keep their <b>own</b> signed record of what they agreed —
+      there is no shared database either side could quietly edit, and neither ever reads the other's log.
+      Instead each side independently works out a <b>transaction record</b> from the messages it already
+      holds and publishes one fingerprint of it. Identical fingerprints are cryptographic proof the deal
+      is real and neither side can deny it.</p>
+    <div id="recs"><div class="empty">settle a deal, then prove it from both sides</div></div>
+  </section>
+  <!-- Stripe USDC settlement — shown only when the buyer runs with --usdc and a Stripe key is set. -->
+  <section class="panel" id="settlement" aria-labelledby="h-settlement" hidden>
+    <h2 id="h-settlement">Stripe settlement <span class="live" id="escrow-sub"></span></h2>
+    <p class="help">When a deal commits, the buyer opens a <b>Stripe crypto PaymentIntent</b> for the full
+      amount. Stripe issues a <b>USDC deposit address</b> on the <b>Tempo</b> network; the buyer agent
+      sends USDC to it, and Stripe watches the chain and <b>captures</b> the payment automatically once the
+      funds settle. A deal over the auto-pay limit waits for a human to <b>approve opening the payment</b>.</p>
+    <div id="escrows"><div class="empty">no payment yet — settle a deal to open one</div></div>
+    <h3 class="log-h" id="h-escrow-log">Event log</h3>
+    <div id="escrow-log" class="escrow-log" role="log" aria-labelledby="h-escrow-log" aria-live="polite"><div class="empty">settlement events will appear here</div></div>
+  </section>
+</main>
+<!-- Approval dialog — shown by app.js whenever a deal needs a human decision before it can commit. -->
+<div class="modal-backdrop" id="approval-backdrop" hidden>
+  <div class="modal" id="approval-modal" role="dialog" aria-modal="true" aria-labelledby="approval-title" aria-describedby="approval-desc">
+    <h2 id="approval-title">Approval needed</h2>
+    <p class="modal-desc" id="approval-desc">This deal is outside the agent's standing mandate, so it is paused until you decide. Nothing commits until you approve.</p>
+    <div id="approval-items"></div>
+  </div>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

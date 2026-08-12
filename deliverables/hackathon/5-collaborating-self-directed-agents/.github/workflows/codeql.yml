@@ -1,0 +1,94 @@
+# CodeQL static analysis.
+#
+# Why this exists alongside the other scanners: they answer different questions. Semgrep matches patterns
+# within a file; CodeQL does interprocedural dataflow, so it is the one that can follow a value from an
+# untrusted source (a counterparty's capability record, an inbound envelope body, an operator's HTTP
+# request) to a dangerous sink several functions away. This repo's whole premise is that inbound data is
+# authored by another organisation, which is exactly the shape taint analysis is for.
+#
+# CodeRabbit is deliberately NOT run here. It reviews pull requests through its GitHub App, configured by
+# `.coderabbit.yaml` at the repo root (`auto_review.enabled: true`, plus incremental review on every push).
+# Adding a CLI job would duplicate those reviews and consume extra quota for the same output.
+name: CodeQL
+
+on:
+  push:
+    # `main` ONLY, never every branch. On a feature branch a push fires alongside `pull_request` and every
+    # check ran twice for byte-identical output. A merge commit on main has no open PR for its ref, so this
+    # cannot duplicate — and without it main's Security tab would only refresh on the weekly cron below.
+    branches: [main]
+  pull_request:
+    # Any base branch: a PR into a long-lived feature branch deserves the same analysis as one into main.
+  schedule:
+    # Weekly, because CodeQL's queries and advisories change even when the code does not — a scheduled run
+    # is what surfaces a newly-published pattern in code that has not been touched in months.
+    - cron: "27 4 * * 1"
+
+# Cancel superseded runs on the same ref: analysis of an outdated commit tells nobody anything.
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Diff-informed queries (codeql-action default: true) restrict the default suite to lines the pull
+      # request touched. A PR editing only these YAML files therefore reported ZERO results while the tree
+      # carried ten open alerts — a green check that had inspected nothing. Off, so every PR sees the whole
+      # tree, matching the empty `base-ref` that dependency-review.yml pins for the same reason.
+      CODEQL_ACTION_DIFF_INFORMED_QUERIES: false
+    permissions:
+      # `security-events: write` is what lets the job upload results to the Security tab; without it the
+      # analysis runs and the findings go nowhere.
+      security-events: write
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both languages CodeQL can analyse here:
+        #   javascript-typescript — all the product code (`.ts` compiled to `dist/`, plus the `.mjs` infra).
+        #   actions               — the workflow files themselves. Worth scanning precisely BECAUSE this repo
+        #                           now has CI: the queries catch untrusted `${{ github.event.* }}`
+        #                           interpolation into `run:` blocks, over-broad `permissions`, and unpinned
+        #                           third-party actions — the class of bug that turns a workflow into a way in.
+        # There is no other language present; the rest of the tree is YAML, JSON and Markdown.
+        language: [javascript-typescript, actions]
+
+    steps:
+      # ACTIONS ARE PINNED TO COMMIT SHAs, not tags. A tag is mutable — the owner can silently repoint `v4`
+      # at new code, which is how the trivy-action and kics-github-action supply-chain compromises worked. The
+      # trailing comment records the human-readable version so a reader can tell what is pinned, and a bump is
+      # a deliberate edit (Dependabot with `package-ecosystem: github-actions` will raise those PRs).
+      #
+      # This also matches how the rest of the repo treats dependencies: exact versions, no ranges, plus a
+      # publish quarantine in pnpm-workspace.yaml.
+      - name: Checkout
+        # The trailing label said `v4` and this SHA is v7.0.1 — the point of recording the version is that a
+        # reader can tell what is pinned without resolving the SHA, and a wrong label is worse than none.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 (2026-07-17)
+        with:
+          # Do not leave the GITHUB_TOKEN in `.git/config`. checkout persists it by default so later steps
+          # can push; this job only reads, so persisting it just leaves a usable credential lying in the
+          # workspace for anything that runs afterwards — including a compromised transitive dependency.
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v3 (v3.37.6)
+        with:
+          languages: ${{ matrix.language }}
+          # security-and-quality is broader than the default security-extended: it adds the correctness and
+          # maintainability queries. Worth the extra minutes here — several real defects in this codebase
+          # were of exactly that kind (a sparse-array canonicalization bug, an unhandled 'error' event).
+          queries: security-and-quality
+
+      # No build step. CodeQL extracts JavaScript/TypeScript from source and does not need compiled output or
+      # installed dependencies, so `pnpm install` would only add minutes. (The agents DO run compiled `dist/`
+      # at runtime — see CLAUDE.md — but `dist/` is gitignored and never analysed.)
+      - name: Analyze
+        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v3 (v3.37.6)
+        with:
+          category: /language:${{ matrix.language }}

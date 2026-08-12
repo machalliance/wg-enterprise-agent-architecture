@@ -1,0 +1,72 @@
+# Dependabot.
+#
+# Two ecosystems, for two different staleness problems:
+#
+#  - github-actions, because this repo pins actions to COMMIT SHAs (see codeql.yml). A SHA pin is immune to
+#    a tag being repointed under it, which is the point — but it also never picks up a security fix on its
+#    own. Dependabot is what turns "pinned" into "pinned and maintained" rather than "pinned and forgotten".
+#  - npm, for the pnpm workspace. Versions here are exact by convention (infra/VERSIONS.md), so a bump is
+#    always a deliberate, reviewable change.
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    # Wait 7 days after a release before proposing it. A brand-new version is the window in which a
+    # compromised publish is still live — registry account takeovers are typically caught and yanked within
+    # hours to days — and nothing here is urgent enough to be the first consumer.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+    labels: [dependencies, github-actions]
+    groups:
+      # One PR for all action bumps: they are independent, low-risk, and a PR each is noise that gets ignored.
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: npm
+    # The workspace root, not the repo root — package.json and pnpm-lock.yaml live here.
+    directory: /meridian-crossing
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    # Wait 7 days after a release before proposing it. A brand-new version is the window in which a
+    # compromised publish is still live — registry account takeovers are typically caught and yanked within
+    # hours to days — and nothing here is urgent enough to be the first consumer.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: deps
+      prefix-development: deps-dev
+    labels: [dependencies]
+    # `increase` keeps the exact pins this repo requires: it rewrites the version rather than widening a
+    # range. With ranges disallowed anyway, this is the only strategy that produces a valid manifest.
+    versioning-strategy: increase
+    groups:
+      # OpenTelemetry ships its packages in lockstep; bumping them separately produces PRs that cannot pass
+      # on their own because the versions must agree.
+      opentelemetry:
+        patterns: ["@opentelemetry/*"]
+      types:
+        patterns: ["@types/*"]
+    ignore:
+      # The A2CN codec, the directory SDK and the Stripe preview API are pinned against specific reviewed
+      # specs and schemas — a major bump is a deliberate piece of work with spec re-reading attached, not
+      # something to merge from a bot. Minor/patch still come through.
+      - dependency-name: agntcy-dir
+        update-types: [version-update:semver-major]
+      - dependency-name: "@a2a-js/sdk"
+        update-types: [version-update:semver-major]
+      - dependency-name: stripe
+        update-types: [version-update:semver-major]
+    # The 7-day cooldown above is deliberately the SAME window as `minimumReleaseAge: 10080` in
+    # pnpm-workspace.yaml. They are independent mechanisms — one stops Dependabot proposing a fresh release,
+    # the other stops pnpm resolving one — and matching them is what keeps a Dependabot PR installable.
+    # Mismatched, the bot would open PRs that `pnpm install` refuses until the version ages, which reads as
+    # broken CI rather than as the supply-chain guard doing its job.

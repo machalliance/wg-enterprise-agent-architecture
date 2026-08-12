@@ -1,0 +1,32 @@
+{
+  "name": "meridian-crossing",
+  "packageManager": "pnpm@11.20.0",
+  "version": "1.0.0",
+  "description": "Reference prototype for Archetype 5: collaborating, self-directed agents (Meridian Crossing).",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b",
+    "clean": "tsc -b --clean && rm -rf packages/*/dist packages/*/tsconfig.tsbuildinfo",
+    "dir:up": "docker compose -f infra/dir/docker-compose.yml up -d",
+    "dir:down": "docker compose -f infra/dir/docker-compose.yml down",
+    "identity:issue": "node infra/identity/issue.mjs",
+    "suppliers": "pnpm build && pnpm identity:issue && concurrently -k -n summit,cascade,alpine,ridge -c green,blue,yellow,red \"node --import ./infra/env.mjs packages/supplier-summit/dist/index.js\" \"node --import ./infra/env.mjs packages/supplier-cascade/dist/index.js\" \"node --import ./infra/env.mjs packages/supplier-alpine/dist/index.js\" \"node --import ./infra/env.mjs packages/supplier-ridge/dist/index.js\"",
+    "demo": "pnpm build && pnpm identity:issue && pnpm dir:up && node --import ./infra/env.mjs infra/demo.mjs",
+    "sample": "pnpm build && pnpm identity:issue && node --import ./infra/env.mjs infra/sample.mjs",
+    "demo:reset": "rm -f trails/*.jsonl trails/*.half-trail.jsonl",
+    "test": "pnpm identity:issue && pnpm clean && pnpm build && node --test packages/*/dist/*.test.js packages/dashboard/*.test.mjs infra/*.test.mjs",
+    "sweep": "node --import ./infra/env.mjs infra/sweep.mjs"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "26.1.2",
+    "concurrently": "10.0.4",
+    "playwright": "1.62.1",
+    "typescript": "7.0.2"
+  }
+}

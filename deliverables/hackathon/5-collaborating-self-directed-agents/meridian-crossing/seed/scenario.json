@@ -1,0 +1,16 @@
+{
+  "shortfall": {
+    "sku": "MER-TENT-3S",
+    "name": "Ridgeline 3-Season Tent",
+    "product": "three-season-tent",
+    "unitsNeeded": 100,
+    "deadlineDays": 21,
+    "buyer": "did:web:meridian-outfitters.example"
+  },
+  "suppliers": [
+    { "id": "summit", "did": "did:web:summit-gear.example", "behaviour": "cooperative" },
+    { "id": "cascade", "did": "did:web:cascade-gear.example", "behaviour": "competitive" },
+    { "id": "alpine", "did": "did:web:alpine-supply.example", "behaviour": "firm" },
+    { "id": "ridge", "did": "did:web:ridgeline-trading.example", "behaviour": "adversarial" }
+  ]
+}

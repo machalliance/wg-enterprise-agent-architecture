@@ -1,0 +1,10 @@
+{
+  "_note": "Prior settled deals per counterparty (drift-detection stretch). Each entry is what a PAST negotiation with that supplier settled at. Every one of these passed per-deal policy at the time, yet Summit's price is trending UP across them — the drift detector flags the counterparty even though no single deal is out of bounds. In production this is read from the buyer's own settlement trail; here it is seeded so the flag is reproducible.",
+  "settlements": {
+    "did:web:summit-gear.example": [
+      { "at": "2026-01-14", "unitPriceUsd": 84.0, "units": 3000, "leadTimeDays": 14 },
+      { "at": "2026-03-18", "unitPriceUsd": 88.5, "units": 3000, "leadTimeDays": 14 },
+      { "at": "2026-05-27", "unitPriceUsd": 91.0, "units": 3000, "leadTimeDays": 15 }
+    ]
+  }
+}

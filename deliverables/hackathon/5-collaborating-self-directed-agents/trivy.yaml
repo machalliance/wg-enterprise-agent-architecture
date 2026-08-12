@@ -1,0 +1,53 @@
+# Trivy configuration. Picked up automatically by `trivy fs .` from the repo root; pass it explicitly
+# elsewhere with `--config trivy.yaml`.
+#
+# Mirrors the reasoning in .semgrepignore: scan OUR code, not the vendored bytes of our dependencies.
+
+scan:
+  scanners:
+    - vuln
+    - secret
+    - misconfig
+  # Dependency CACHES, not source. `.pnpm-store` is the pnpm content-addressed store and `node_modules`
+  # its materialised form — both gitignored, both full of other projects' code and fixtures. Findings in
+  # them are reports about upstream packages' own test data, and they drown out anything real.
+  #
+  # This does NOT weaken dependency scanning: the `vuln` scanner reads pnpm-lock.yaml, so every installed
+  # package is still checked for CVEs by name and version. What is skipped is byte-level secret scanning
+  # of the unpacked tarballs, which is where the noise lives (e.g. the sample JWTs a package ships in its
+  # own auth fixtures, reported as MEDIUM jwt-token hits against a blob path with no package attribution).
+  skip-dirs:
+    - "**/.pnpm-store/**"
+    - "**/node_modules/**"
+    - "**/dist/**"
+    # Generated identity material: Ed25519 private keys derived from the committed KEY_DERIVATION_SEED,
+    # recreated by `pnpm identity:issue` and gitignored. Deliberately public and worthless — the same
+    # exclusion and the same rationale as .semgrepignore's entry for this tree.
+    - "meridian-crossing/infra/identity/generated/**"
+
+pkg:
+  # Trivy suppresses dev dependencies by default, which left the vuln scan covering only the runtime
+  # graph — and that graph is small. The build and test toolchain is the larger attack surface and the
+  # likelier place for a CVE to land, so scan it too.
+  include-dev-deps: true
+
+secret:
+  # The A2CN golden fixture. `protocol_act_signature` is a REAL JWS, which is the point: it is the
+  # byte-stable fixture proving the A2CN codec emits a spec-conforming signed act without a live
+  # round-trip against the Python reference implementation. It signs a fabricated demo negotiation with
+  # Summit's demo key, itself derived from a public seed, so there is nothing to leak.
+  #
+  # Scoped to the fixture directory rather than disabling the jwt-token rule globally, so a JWT appearing
+  # anywhere else in the repo is still reported.
+  skip-paths:
+    - "meridian-crossing/seed/a2cn/**"
+
+misconfig:
+  # Enabled, but it currently has NOTHING to scan in this repo, and the summary table saying "0" must not
+  # be read as "the demo infrastructure was checked and is clean". Trivy's misconfig scanner covers
+  # Dockerfile, Kubernetes, Terraform, CloudFormation, Helm and ARM — NOT Docker Compose, which is the
+  # only infrastructure file here (`meridian-crossing/infra/dir/docker-compose.yml`). Confirmed:
+  # `trivy config meridian-crossing/infra/dir/` reports "Detected config files num=0".
+  #
+  # Left on so that adding a Dockerfile or a manifest later is covered without touching this file.
+  include-non-failures: false

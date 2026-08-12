@@ -1,0 +1,5 @@
+{
+  "ridgeFailureMode": "untrusted-issuer",
+  "_note": "RidgeLine's identity fixture. One of: 'untrusted-issuer' (VC signed by a rogue issuer), 'unresolvable-did' (no DID document), 'revoked' (VC on the revocation list), or 'none' (fully valid — re-admits RidgeLine, proving the trust gate is cryptographic, not a name check). Re-run `pnpm identity:issue` after changing this.",
+  "_modes": ["untrusted-issuer", "unresolvable-did", "revoked", "none"]
+}

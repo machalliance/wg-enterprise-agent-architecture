@@ -1,0 +1,38 @@
+{
+  "_note": "Each supplier's PRIVATE selling policy — its opening price, the floor it will not go below, and how fast it concedes. This is the seller-side mirror of seed/mandate.json: it is loaded only by that supplier's own process and is NEVER published to the directory or placed in a wire message. A buyer that learned a floor would simply bid it.",
+  "_whyHere": "These values used to be literals inside each packages/supplier-*/src/index.ts, and the sampling harness (infra/sample.mjs) kept its own copy so it could run negotiations in-process. Two copies of a number that decides every price is a measurement bug waiting to happen: change a floor in one place and the harness keeps reporting the old distribution, confidently. One file, read by both.",
+  "_notPublic": "Deliberately NOT in seed/catalogs/*.capability.json. Those are capability ADVERTISEMENTS, published to the AGNTCY directory and readable by anyone — including the buyer.",
+  "suppliers": {
+    "summit": {
+      "_role": "The cooperative supplier, and the one that usually wins. Lowest floor in the scenario, so it takes any price war pushed to the end.",
+      "behaviour": "cooperative",
+      "openingPriceUsd": 98,
+      "floorPriceUsd": 86,
+      "_concessionNote": "Slow enough that the schedule survives the round budget. At 0.06 it reached the floor by round 4 and every later round was a stall — the settled price was arithmetic, not a decision.",
+      "concessionRate": 0.02
+    },
+    "cascade": {
+      "_role": "The competitive challenger. Its job is to squeeze Summit, not the buyer: it opens BELOW Summit so the buyer has a live cheaper quote to negotiate with, but floors ABOVE Summit so Summit still wins a war pushed to the end.",
+      "behaviour": "competitive",
+      "openingPriceUsd": 95,
+      "floorPriceUsd": 89,
+      "concessionRate": 0.035
+    },
+    "alpine": {
+      "_role": "The escalation path. Its floor sits ABOVE the buyer's $94 ceiling on purpose, so its best possible price never fits and the deal must go to a human. Do not 'fix' this floor — it is the whole point of the Alpine path.",
+      "behaviour": "firm",
+      "openingPriceUsd": 108,
+      "floorPriceUsd": 95,
+      "concessionRate": 0.015
+    },
+    "ridge": {
+      "_role": "The bad-faith counterparty. Rejected at the trust gate before negotiating in the default run; when force-admitted it oscillates instead of converging, which is what the reputation gate's good-faith test is written against.",
+      "behaviour": "adversarial",
+      "openingPriceUsd": 100,
+      "floorPriceUsd": 99,
+      "concessionRate": 0,
+      "_jitterNote": "Swings the price by +/- this much on ALTERNATING REPLY ROUNDS (openingPriceUsd +/- jitterUsd, clamped to [floorPriceUsd, opening + jitter]), so it never trends down. What the buyer actually sees in the request/reply flow is the opening QUOTE at $100 followed by every COUNTER reply at $102: a supplier reply is always the round AFTER a buyer move, so its round number is always even and the +$2 branch is the only one that ever fires. The -$2 branch (which would clamp up to the $99 floor) is unreachable on this path — the oscillation is latent, and the reason the buyer walks is simply that the price goes UP from the opening and never concedes. See 'RidgeLine (admitted as verified-but-adversarial) is walked away from EARLY' in packages/buyer/src/mandate.test.ts.",
+      "jitterUsd": 2
+    }
+  }
+}

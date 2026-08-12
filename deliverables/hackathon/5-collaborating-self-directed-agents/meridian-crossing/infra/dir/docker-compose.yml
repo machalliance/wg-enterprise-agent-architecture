@@ -1,0 +1,27 @@
+# AGNTCY Agent Directory — the real service (not a stub).
+#
+# Runs standalone in a single container. The three env vars below are what it takes to avoid the
+# heavier deployment (PostgreSQL + a zot OCI registry + SPIRE) that the Helm chart assumes:
+#   - sqlite instead of the default PostgreSQL backend
+#   - an on-disk OCI layout instead of dialing an external OCI registry at :5555
+#   - the public OASF schema server for record validation
+#
+# gRPC API on :8888 (what the SDK talks to), Prometheus metrics on :9090.
+services:
+  dir:
+    image: ghcr.io/agntcy/dir-apiserver:v1.5.0
+    container_name: meridian-dir
+    environment:
+      DIRECTORY_SERVER_DATABASE_TYPE: sqlite
+      # Container-local, writable by the image's non-root user. The store is intentionally ephemeral
+      # for the demo — the directory stays up throughout a run, and suppliers re-announce on boot, so
+      # nothing depends on records surviving a `dir` restart. Mount a chowned volume here for
+      # persistence if a longer-lived directory is ever needed.
+      DIRECTORY_SERVER_STORE_OCI_LOCAL_DIR: /tmp/dir-oci
+      DIRECTORY_SERVER_OASF_API_VALIDATION_SCHEMA_URL: https://schema.oasf.outshift.com
+    # Bound to loopback: only the local Node agents (gRPC :8888) and a local scrape (metrics :9090) need
+    # this — nothing external should reach the directory, so it is not published on all host interfaces.
+    ports:
+      - "127.0.0.1:8888:8888"
+      - "127.0.0.1:9090:9090"
+    restart: unless-stopped

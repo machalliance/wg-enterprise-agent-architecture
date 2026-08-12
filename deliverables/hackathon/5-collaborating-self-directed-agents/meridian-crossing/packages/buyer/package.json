@@ -1,0 +1,19 @@
+{
+  "name": "@meridian/buyer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/server.js",
+  "scripts": {
+    "build": "tsc -b",
+    "serve": "node dist/server.js"
+  },
+  "dependencies": {
+    "@meridian/agent-runtime": "workspace:*",
+    "@meridian/protocol": "workspace:*",
+    "express": "5.2.1",
+    "express-rate-limit": "8.6.2",
+    "stripe": "22.5.0",
+    "zod": "4.4.3"
+  }
+}

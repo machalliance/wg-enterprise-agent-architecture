@@ -1,0 +1,10 @@
+{
+  "did": "did:web:cascade-gear.example",
+  "agentName": "Cascade Gear Selling Agent",
+  "product": "three-season-tent",
+  "maxUnits": 2500,
+  "minLeadTimeDays": 17,
+  "regions": ["NA"],
+  "claims": { "onTimeDeliveryRate": 0.94, "iso9001": true },
+  "a2aEndpoint": "http://localhost:41004"
+}

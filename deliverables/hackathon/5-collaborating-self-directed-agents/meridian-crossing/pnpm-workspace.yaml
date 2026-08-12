@@ -1,0 +1,31 @@
+packages:
+  - "packages/*"
+
+# Supply-chain guards. The build resolves the @buf scope from a non-default registry (see .npmrc), so
+# tighten install trust: wait out the window where a freshly published (possibly compromised) version is
+# live before it can be installed, refuse transitive deps from untrusted/exotic sources, and never let an
+# update downgrade these settings. minimumReleaseAge is in minutes (10080 = 7 days).
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+blockExoticSubdeps: true
+# Two transitive deps already pinned in the reviewed lockfile were published inside the 7-day window
+# when this policy was adopted. They are exempt by EXACT version (the vetted resolutions), so the age
+# gate still governs every other version — a future compromised release of the same package is NOT
+# waved through. Drop these once these versions have aged past the cutoff.
+#
+# `stripe@22.5.0` is exempt for a stated reason rather than convenience: 19.3.1 is DEPRECATED upstream
+# ("major bug where the Files API times out", issue 2538) and is the last stable 19.x, so the only way off
+# the deprecation is a major bump. 22.5.0 published 2026-08-10, inside the window. Taking it also aligns
+# the SDK with the API version this code already requests — 22.x bundles `2026-07-29.dahlia` against the
+# pinned `2026-07-29.preview`, where 19.3.1 bundled `2025-10-29.clover`, nine months behind. Drop this
+# line once 22.5.0 ages past the cutoff (~2026-08-17) rather than bumping to whatever is newest then.
+minimumReleaseAgeExclude:
+  - "@opentelemetry/semantic-conventions@1.43.0"
+  - "es-module-lexer@2.3.1"
+  - "stripe@22.5.0"
+
+# esbuild backs tsx (the dev runner); protobufjs backs the A2A gRPC transport. Both need their
+# install scripts to fetch/build native pieces, so they are explicitly allowed here.
+allowBuilds:
+  esbuild: true
+  protobufjs: true

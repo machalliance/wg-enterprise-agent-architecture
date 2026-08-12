@@ -1,0 +1,37 @@
+{
+  "a2cn": {
+    "a2cn_version": "0.2",
+    "deal_type": "goods_procurement",
+    "message_type": "counteroffer",
+    "message_id": "22222222-2222-4222-8222-222222222222",
+    "session_id": "11111111-1111-4111-8111-111111111111",
+    "in_reply_to": "33333333-3333-4333-8333-333333333333",
+    "round_number": 2,
+    "sequence_number": 2,
+    "sender_did": "did:web:summit-gear.example",
+    "sender_verification_method": "did:web:summit-gear.example#key-1",
+    "timestamp": "2026-07-15T12:00:00.000Z",
+    "terms": {
+      "total_value": 29400000,
+      "currency": "USD",
+      "line_items": [
+        {
+          "id": "1",
+          "description": "MER-TENT-3S",
+          "quantity": 3000,
+          "unit": "EA",
+          "unit_price": 9800,
+          "total": 29400000,
+          "internal_part_number": "MER-TENT-3S"
+        }
+      ],
+      "delivery_terms": {
+        "incoterms": "DDP"
+      },
+      "delivery_days": 14
+    },
+    "protocol_act_hash": "7trcR5ikYjESqY5H5-uF8RxOKNa7xymtT0ean037JFQ",
+    "protocol_act_signature": "eyJhbGciOiJFZERTQSIsInR5cCI6ImEyY24tYWN0In0.N3RyY1I1aWtZakVTcVk1SDUtdUY4UnhPS05hN3h5bXRUMGVhbjAzN0pGUQ.PjPguABlIWNwlewRN7j14Mj2pbUJ0jpIAkSPgnwXzEinjAnLOkniZL3l_usK9HUKO3ES8wfZVhvPThpYIT2-BQ"
+  },
+  "recipient_did": "did:web:meridian-outfitters.example"
+}

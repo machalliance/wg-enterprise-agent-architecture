@@ -1,0 +1,83 @@
+# Dependency review — vulnerable dependencies, whole tree.
+#
+# Why this exists alongside Dependabot: they are the same advisory database reached through different doors,
+# and neither door alone covers a pull request.
+#
+#   Dependabot ALERTS are computed from the dependency graph of the DEFAULT BRANCH only, on GitHub's own
+#   schedule. There is no event that makes them evaluate a branch — a PR's `pnpm-lock.yaml` is never in the
+#   graph, so a vulnerable version introduced by a PR raises nothing until after it merges. Dependabot is
+#   also not a workflow: it has no `on:` triggers, and no public API to kick it.
+#
+#   This job is the missing pre-merge check. It reads the graph through the dependency review API, which
+#   works on any ref, so a bad dependency fails the PR that proposes it.
+#
+# CodeQL answers a different question again (dataflow through our own code, see codeql.yml); it knows
+# nothing about which dependency VERSIONS carry advisories.
+name: Dependency review
+
+on:
+  push:
+    # `main` ONLY, matching codeql.yml — on a feature branch this fired alongside `pull_request` and produced
+    # two identical runs per commit. Every push to a PR is still scanned: `pull_request` defaults to
+    # `synchronize`, which is exactly that event.
+    branches: [main]
+  pull_request:
+    # Any base branch — a PR into a long-lived feature branch deserves the same check as one into main.
+
+# Cancel superseded runs on the same ref; reviewing an outdated commit's dependencies tells nobody anything.
+concurrency:
+  group: dependency-review-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  # Reading the dependency graph for both refs is all this needs. Notably NOT `pull-requests: write` — that
+  # is only required to post the summary comment, which would duplicate what the check run already shows.
+  contents: read
+
+jobs:
+  review:
+    name: Review dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # ACTIONS ARE PINNED TO COMMIT SHAs, not tags — see the longer note in codeql.yml. A tag is mutable and
+      # the owner can silently repoint it, which is how the trivy-action compromise worked.
+      - name: Checkout
+        # v7.0.1, the same pin codeql.yml uses. The v4.4.0 SHA that was here bundles a Node 20 entrypoint:
+        # the runners already force those actions onto Node 24 and annotate every run with a deprecation
+        # warning, and when the forcing is withdrawn the step stops running at all — this check would go red
+        # for a reason that has nothing to do with dependencies.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 (2026-07-17)
+        with:
+          # Same reason as codeql.yml: do not leave the GITHUB_TOKEN in `.git/config` for later steps — or a
+          # compromised transitive dependency — to find.
+          persist-credentials: false
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0 (2026-05-08)
+        with:
+          # THE POINT OF THIS JOB. The action reports dependencies added between two refs, so by default it
+          # reviews only what the diff touches — and stays silent about a vulnerable version that is already
+          # on main, because that one was not "added" here. Pointing the base at the repo's initial commit,
+          # which contains no package.json and no pnpm-lock.yaml, means every dependency in the tree reads as
+          # newly added. The result is a whole-tree scan on every run, and a pre-existing advisory cannot be
+          # silently inherited: the baseline never moves, so it keeps failing until it is actually fixed.
+          base-ref: 4514b26a4fcda63e5abd9471408dd58eaa541a19 # "Initial commit", 2026-08-07 — empty graph
+          # Explicit because `base-ref` above is pinned: the action will not infer only one end of a range, so
+          # the head has to be named too, even on `pull_request` where it could otherwise be derived.
+          head-ref: ${{ github.sha }}
+          # Fail on high and critical. Deliberately not `moderate`: with an empty baseline this evaluates the
+          # ENTIRE tree rather than a diff, so a lower floor turns every transitive advisory into a red
+          # branch, and a check that is always red is a check nobody reads.
+          fail-on-severity: high
+          # ALL THREE SCOPES, because the action's default is `runtime` ALONE — dev dependencies get reported
+          # in the summary and then quietly excluded from the pass/fail decision. That default is wrong for
+          # this repo: the build and test toolchain (tsc, the node:test runner, Playwright, the sweep harness)
+          # is entirely devDependencies, it executes on every CI run and every contributor's machine, and it
+          # reads the same lockfile — a compromised dev dependency runs with the same access as a runtime one.
+          # `unknown` is here too: a dependency the graph could not classify is precisely the one that should
+          # not get a silent exemption.
+          fail-on-scopes: runtime, development, unknown
+          # No `allow-licenses`/`deny-licenses` here, and that omission is deliberate: against an empty
+          # baseline every license in the tree counts as newly introduced, so any license policy would flag
+          # the whole dependency set on the first run. License checking belongs in a diff-scoped job.

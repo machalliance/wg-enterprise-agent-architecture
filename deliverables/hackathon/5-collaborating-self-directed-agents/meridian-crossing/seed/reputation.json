@@ -1,0 +1,9 @@
+{
+  "_note": "Seeded, static counterparty reputation per DID. In scope for the hackathon: a starting score the buyer down-weights WITHIN a session on observed stalls/reneges/probes. OUT of scope: learning it across many negotiations — that is the documented hook in packages/buyer/src/reputation.ts (persist()). Scores are 0..1; below mandate.reputationWalkawayBelow the buyer walks away early rather than spend its round budget on a bad-faith counterparty.",
+  "scores": {
+    "did:web:summit-gear.example": 0.9,
+    "did:web:cascade-gear.example": 0.85,
+    "did:web:alpine-supply.example": 0.8,
+    "did:web:ridgeline-trading.example": 0.5
+  }
+}

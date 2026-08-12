@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit configuration
+# Place this file at the ROOT of your repository, committed to `main`.
+
+language: en-US
+
+reviews:
+  profile: chill
+  request_changes_workflow: true
+  auto_review:
+    enabled: true
+    auto_incremental_review: true    # so EVERY push to the PR triggers a fresh review.
+    auto_pause_after_reviewed_commits: 0
+    # Draft PRs are skipped by default. Set to true if you also want
+    # drafts reviewed on open/push.
+    drafts: false
+    # PRs targeting `main` are reviewed automatically because `main` is the
+    # default branch. Add extra target branches here if you ever need them
+    # (regex supported, ".*" matches all):
+    # base_branches:
+    #   - "release/.*"

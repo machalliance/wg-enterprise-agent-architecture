@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/protocol" },
+    { "path": "packages/agent-runtime" },
+    { "path": "packages/buyer" },
+    { "path": "packages/supplier-summit" },
+    { "path": "packages/supplier-cascade" },
+    { "path": "packages/supplier-alpine" },
+    { "path": "packages/supplier-ridge" }
+  ]
+}

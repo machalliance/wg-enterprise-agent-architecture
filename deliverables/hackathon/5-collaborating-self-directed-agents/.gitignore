@@ -1,0 +1,23 @@
+# macOS Finder metadata — never useful to anyone cloning this.
+.DS_Store
+
+# Local environment: real gateway keys and the Stripe test secret live here. `.env.example` is the
+# committed template that lists every variable, and stays tracked.
+.env
+.env.local
+!.env.example
+
+node_modules/
+.pnpm-store/
+dist/
+*.tsbuildinfo
+
+# Per-org half-trails written at runtime (M0 handshake, M5 decision trails).
+trails/
+*.jsonl
+
+# Minted identity material: private signing keys (incl. the trust anchor's issuing key) plus the
+# derived DID docs, VCs, and revocations. All machine-generated from seed/ + config.json by
+# `pnpm identity:issue` (run automatically by demo/dev and prepended to `pnpm test`). Private keys
+# must never be committed; the rest is reproducible, so ignore the whole tree.
+infra/identity/generated/

@@ -1,0 +1,10 @@
+{
+  "did": "did:web:ridgeline-trading.example",
+  "agentName": "RidgeLine Trading Selling Agent",
+  "product": "three-season-tent",
+  "maxUnits": 5000,
+  "minLeadTimeDays": 12,
+  "regions": ["NA"],
+  "claims": { "onTimeDeliveryRate": 0.99, "iso9001": true },
+  "a2aEndpoint": "http://localhost:41003"
+}

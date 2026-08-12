@@ -1,0 +1,34 @@
+{
+  "_bidNote": "counterStepUsd is a MINIMUM move, not a fixed ladder step. Bids are reciprocal \u2014 the buyer moves roughly what the supplier just moved \u2014 because a staircase indexed by round number ignores the counterparty entirely and is not how anyone negotiates. maxBidUsd stays a hard ceiling and is framed to the reasoner as a failure condition, not a target: handed a bare ceiling an LLM bids it (measured, 4/4 runs).",
+  "_note": "The buyer's PRIVATE commercial mandate. Loaded ONLY by the buyer process; it is never published to the directory and never placed in any wire message. `reservationUnitPriceUsd` and `maxTotalCommittedUsd` in particular must never leak \u2014 a self-interested seller that learns them extracts every dollar between the buyer's bid and its bound. The no-leak lint test (packages/buyer/src/mandate.test.ts) makes that a failing test, not a code-review hope.",
+  "sku": "MER-TENT-3S",
+  "reservationUnitPriceUsd": 96.0,
+  "targetUnitPriceUsd": 82.0,
+  "maxBidUsd": 94.0,
+  "counterStepUsd": 2.0,
+  "maxUnitsPerDeal": 4000,
+  "_capNote": "maxTotalCommittedUsd is deliberately sized just above ONE settled deal (100u at the autonomous band is at most ~$9,300), so the cross-deal cap actually binds: a single deal fits, a concurrent second one is blocked and escalated. A cap far above the deal value would make the ledger a no-op in the demo.",
+  "maxTotalCommittedUsd": 10000,
+  "approvedDeliveryTerms": [
+    "DDP"
+  ],
+  "tiers": {
+    "autonomousSettle": {
+      "priceAtOrBelow": 93.0,
+      "leadTimeAtOrBelow": 18,
+      "counterparty": "VERIFIED"
+    },
+    "notifyOnSettle": {
+      "priceAtOrBelow": 94.0,
+      "leadTimeAtOrBelow": 21,
+      "counterparty": "VERIFIED"
+    }
+  },
+  "budget": {
+    "maxRounds": 20,
+    "maxWallClockMs": 180000
+  },
+  "reputationWalkawayBelow": 0.2,
+  "_budgetNote": "maxRounds is a RUNAWAY GUARD, not the stopping rule. A negotiation should end because the supplier stopped moving (minConcessionPerRoundUsd), which is how a negotiator decides; if maxRounds ever fires it means the judgement layer failed, and the buyer logs it as an anomaly. It used to be 6, which made it the de-facto stopping rule and pinned every outcome to arithmetic.",
+  "minConcessionPerRoundUsd": 0.75
+}

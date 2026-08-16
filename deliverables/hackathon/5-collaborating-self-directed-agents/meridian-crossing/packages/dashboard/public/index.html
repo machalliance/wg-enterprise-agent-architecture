@@ -160,7 +160,10 @@
   .b-REJECTED { background: transparent; color: var(--error); border-color: var(--error); }
 
   .cols { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
-  .col { flex: 0 0 340px; border: 1px solid var(--border); border-radius: var(--r-card); display: flex; flex-direction: column; max-height: 62vh; background: var(--surface); }
+  /* 240px, not 340px, so all THREE negotiations fit a 1280px-wide viewport. Video capture renders the page
+     at 1280 CSS px and scales up to 1080p, which is what makes the type readable in a feed; at 340px the
+     third column fell off the right edge and Cascade's whole negotiation was cropped out of the recording. */
+  .col { flex: 0 0 240px; border: 1px solid var(--border); border-radius: var(--r-card); display: flex; flex-direction: column; max-height: 62vh; background: var(--surface); }
   .col.severed { opacity: .45; filter: grayscale(.5); }
   .col > .head { padding: 10px 12px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--ground); border-radius: var(--r-card) var(--r-card) 0 0; }
   .col .name { font-weight: 700; font-size: 15px; }
@@ -171,7 +174,10 @@
   .bub.sent { align-self: flex-end; background: var(--info-tint); border: 1px solid var(--wp-glacier-300); }
   .bub.recv { align-self: flex-start; background: var(--fill); border: 1px solid var(--hairline); }
   .bub .t { font-family: var(--font-display); font-weight: 600; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
-  .bub .terms { color: var(--text-2); margin-top: 3px; font-family: var(--font-data); font-size: 11.5px; }
+  /* 15px, not 11.5px: the terms line carries the prices, and it is the smallest text anyone actually has to
+     READ. At 11.5px it survived a desk monitor and disappeared entirely in a video feed — roughly 3 screen
+     pixels once a 1080p capture is played back at phone width. */
+  .bub .terms { color: var(--text-2); margin-top: 3px; font-family: var(--font-data); font-size: 15px; }
 
   .tier { font-family: var(--font-data); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: var(--r-control); letter-spacing: .02em; }
   .tier-AUTONOMOUS_SETTLE, .tier-NOTIFY_ON_SETTLE { background: var(--success-tint); color: var(--success-text); }

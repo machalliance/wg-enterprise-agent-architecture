@@ -269,6 +269,12 @@ function renderNegs() {
     stream += `</div>`;
     col.innerHTML = head + stream;
     el.appendChild(col);
+    // Pin each column to its newest message. `.col` is capped at 62vh and `.stream` scrolls, so once a
+    // negotiation runs past that height every further turn was appended BELOW the visible area and the panel
+    // silently stopped showing the conversation — a long negotiation looked frozen while it was still going.
+    // Must run after appendChild: scrollHeight is 0 until the node is in the document.
+    const sc = col.querySelector(".stream");
+    if (sc) sc.scrollTop = sc.scrollHeight;
   }
 }
 

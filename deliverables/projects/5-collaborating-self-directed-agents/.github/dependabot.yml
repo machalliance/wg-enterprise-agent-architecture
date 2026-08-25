@@ -30,8 +30,8 @@ updates:
         patterns: ["*"]
 
   - package-ecosystem: npm
-    # The workspace root, not the repo root — package.json and pnpm-lock.yaml live here.
-    directory: /meridian-crossing
+    # The repo root, which is also the pnpm workspace root — package.json and pnpm-lock.yaml live here.
+    directory: /
     schedule:
       interval: weekly
       day: monday

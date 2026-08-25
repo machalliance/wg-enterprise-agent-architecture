@@ -7,7 +7,7 @@ with no orchestrator between them.
 Before you present, make sure the prototype is set up and the tests pass — see
 [`GETTING-STARTED.md`](GETTING-STARTED.md). This doc assumes that is done.
 
-For the fully annotated beat-by-beat narration, [`meridian-crossing/packages/dashboard/RUNBOOK.md`](meridian-crossing/packages/dashboard/RUNBOOK.md)
+For the fully annotated beat-by-beat narration, [`packages/dashboard/RUNBOOK.md`](packages/dashboard/RUNBOOK.md)
 has the extended script; everything you need to run the demo cold is below.
 
 ## The one important fact about ports
@@ -28,7 +28,6 @@ additionally have to expose port `41200` to your browser — see step 2.
 ## 1. Boot everything
 
 ```bash
-cd meridian-crossing
 pnpm demo --web   # builds, mints DIDs, starts the directory + all five agents + the dashboard
 ```
 
@@ -54,7 +53,7 @@ Optional — drive the agents with an LLM (any OpenAI-compatible gateway; otherw
 keys in `.env.local`, which every run command loads automatically:
 
 ```bash
-cp .env.example .env.local   # once, in meridian-crossing/
+cp .env.example .env.local   # once, at the repo root
 ```
 
 ```dotenv
@@ -95,7 +94,7 @@ unaffected. A deal over **$9,100** (`SETTLEMENT_APPROVAL_ABOVE_USD`) parks as `P
 human presses **Create payment**; the deterministic deal is **$9,168**, so the approval button is the
 default path, and pressing it mints an A2CN §14 approval receipt signed by the *operator's* key. Full
 detail — including the one sandbox substitution — is in
-[`meridian-crossing/packages/dashboard/RUNBOOK.md`](meridian-crossing/packages/dashboard/RUNBOOK.md).
+[`packages/dashboard/RUNBOOK.md`](packages/dashboard/RUNBOOK.md).
 
 > **If you are demoing human oversight, use `--web --usdc`.** It is the only mode with a human-approval
 > step in the default run — terminal `--usdc` has no button to press, so the launcher lets it approve its
@@ -125,7 +124,7 @@ externally *and* unauthenticated. Two safe routes:
   already lives:
 
   ```bash
-  # meridian-crossing/.env.local
+  # .env.local
   DASHBOARD_USER=operator
   DASHBOARD_PASS=pick-a-strong-secret
   ```
@@ -241,7 +240,7 @@ Press **Start**, then narrate as each beat lands. What to point at and what to s
 
 ## Knobs
 
-Set these in `meridian-crossing/.env.local` (copied from `.env.example`, which lists every variable with
+Set these in `.env.local` (copied from `.env.example`, which lists every variable with
 its default). Prefixing one inline on the command line still overrides the file for that run.
 
 - `TURN_DELAY_MS` (**2000 in `--web`**, 0 in the terminal — `pnpm demo` picks it from the mode) — pace of

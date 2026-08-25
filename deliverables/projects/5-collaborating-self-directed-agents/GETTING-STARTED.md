@@ -44,7 +44,6 @@ reasoners and the whole system still runs.
 ## 1. Install & build
 
 ```bash
-cd meridian-crossing
 pnpm install
 pnpm build          # tsc -b across all packages → compiled JS in each package's dist/
 ```
@@ -56,13 +55,13 @@ run the emitted `dist/`. This also matches how it would ship.
 ## 2. Configure `.env.local`
 
 Everything configurable is read from environment variables, and the place to put them is **`.env.local`**
-at the root of `meridian-crossing/`. It is gitignored — it is where your real keys live.
+at the repo root. It is gitignored — it is where your real keys live.
 
 ```bash
 cp .env.example .env.local     # then uncomment only the lines you need
 ```
 
-[`.env.example`](meridian-crossing/.env.example) is the committed template. It lists **every** variable
+[`.env.example`](.env.example) is the committed template. It lists **every** variable
 the code reads, grouped and annotated with its default, and every line is commented out — so a freshly
 copied `.env.local` changes nothing, and the prototype still runs deterministically, offline, with no
 keys at all. The full reference is also reproduced [below](#environment-variables--full-reference).
@@ -71,7 +70,7 @@ Three things worth knowing about how it is loaded:
 
 - **It is loaded automatically** by `pnpm demo`, `pnpm suppliers`, `pnpm sample` and `pnpm sweep`. Node
   reads it before any application code runs (`--import ./infra/env.mjs`, see
-  [`infra/env.mjs`](meridian-crossing/infra/env.mjs)), so no `export` and no `source` is needed.
+  [`infra/env.mjs`](infra/env.mjs)), so no `export` and no `source` is needed.
 - **The shell still wins.** A variable already set in the real environment takes precedence over the
   file, so a one-off override works unchanged: `NEGOTIATION_SEED=rehearsal pnpm demo --web`.
 - **`pnpm test` does not read it**, on purpose. The suite is offline and hermetic; a gateway key sitting
@@ -285,7 +284,7 @@ negotiation" directly against the file. Override the path with `OTEL_TRACES_FILE
 
 Every knob the code reads, with its default. Nothing here is required: with all of it unset the prototype
 runs deterministically, offline, on one host. Set them in **`.env.local`** (see
-[step 2](#2-configure-envlocal)) — [`.env.example`](meridian-crossing/.env.example) is the same list in
+[step 2](#2-configure-envlocal)) — [`.env.example`](.env.example) is the same list in
 copy-and-uncomment form. A shell variable overrides the file for a single run.
 
 **Reasoning**
@@ -375,21 +374,21 @@ used to talk a `--web` run out of asking a person before it pays.
 
 ## Layout & deeper docs
 
-- `meridian-crossing/.env.example` — the committed configuration template; copy to `.env.local`.
+- `.env.example` — the committed configuration template; copy to `.env.local`.
 - `README.md` — what the prototype is and how its capabilities fit together.
 - `HOW-TO-DEMO.md` — how to present it live from the browser dashboard.
-- `meridian-crossing/packages/dashboard/RUNBOOK.md` — the annotated stage script, plus the optional
+- `packages/dashboard/RUNBOOK.md` — the annotated stage script, plus the optional
   `--usdc` Stripe/USDC settlement layer (needs a Stripe test key; off by default).
-- `meridian-crossing/docs/a2cn-alignment.md` — the open-standard (A2CN) wire-profile mapping.
-- `meridian-crossing/infra/VERSIONS.md` — every pinned dependency version and the known binding gaps.
+- `docs/a2cn-alignment.md` — the open-standard (A2CN) wire-profile mapping.
+- `infra/VERSIONS.md` — every pinned dependency version and the known binding gaps.
 
 ## Troubleshooting
 
-- **A setting in `.env.local` seems ignored** — three things to check, in order. It must be at the root of
-  `meridian-crossing/` (next to `package.json`), not at the repo root. The line must not still be
-  commented out — `.env.example` ships everything commented. And the same variable must not already be
-  set in your shell, because the real environment wins: `env | grep LLM_` will show a stale `export` from
-  an earlier session. Note also that `pnpm test` does not read the file at all, by design.
+- **A setting in `.env.local` seems ignored** — three things to check, in order. It must be at the repo
+  root, next to `package.json`. The line must not still be commented out — `.env.example` ships
+  everything commented. And the same variable must not already be set in your shell, because the real
+  environment wins: `env | grep LLM_` will show a stale `export` from an earlier session. Note also that
+  `pnpm test` does not read the file at all, by design.
 - **`pnpm suppliers` / agents crash on boot** — the directory container must be up (`pnpm dir:up`) and
   reachable on `:8888`. Re-publishing an identical record is a no-op, so re-running is safe.
 - **A negotiation fails with `ECONNREFUSED`** — a supplier isn't up yet; the buyer retries discovery,

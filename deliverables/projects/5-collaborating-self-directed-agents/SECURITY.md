@@ -16,4 +16,4 @@ kind**, and the authors and copyright holders are not liable for any claim, dama
 arising from it. That clause is the operative one here.
 
 What the prototype deliberately does not do is listed in
-[`meridian-crossing/docs/known-limitations.md`](meridian-crossing/docs/known-limitations.md).
+[`docs/known-limitations.md`](docs/known-limitations.md).

@@ -20,11 +20,11 @@
   "rules": {},
   "ignoreExports": [
     {
-      "file": "meridian-crossing/packages/buyer/src/classify.ts",
+      "file": "packages/buyer/src/classify.ts",
       "exports": ["*"]
     },
     {
-      "file": "meridian-crossing/packages/buyer/src/mandate.ts",
+      "file": "packages/buyer/src/mandate.ts",
       "exports": ["*"]
     }
   ]

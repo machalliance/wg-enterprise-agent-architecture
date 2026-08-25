@@ -9,9 +9,9 @@ dashboard has no god view. It opens **one SSE stream per organization** and reco
 
 - Docker running (the real AGNTCY Agent Directory runs in a container).
 - Node ≥ 22, `pnpm install` already run once.
-- Configuration lives in `.env.local` in `meridian-crossing/` — the directory holding `package.json`,
-  not the git root above it (`cp .env.example .env.local` from there). It is gitignored, every run
-  command loads it automatically, and `.env.example` lists every variable with its default.
+- Configuration lives in `.env.local` at the repo root — the directory holding `package.json`
+  (`cp .env.example .env.local` from there). It is gitignored, every run command loads it
+  automatically, and `.env.example` lists every variable with its default.
 - To drive the agents with an LLM, set the gateway config there (any OpenAI-compatible gateway):
 
   ```dotenv

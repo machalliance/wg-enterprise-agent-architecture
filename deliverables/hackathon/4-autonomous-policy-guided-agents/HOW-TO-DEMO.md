@@ -2,9 +2,9 @@
 
 This is the presenter's guide: how to boot the system and talk an audience through it in about four
 minutes. The demo makes the invisible visible — a single agent runs continuously, perceives market
-signals, hits a policy gate on every write, and reaches a *different* terminal outcome for each of three
-scenarios (autonomous action, escalation to a human, and a circuit-breaker halt), while the operator
-dashboard and Grafana show it in real time.
+signals, hits a policy gate on every write, and reaches a *different* outcome for each of three
+scenarios (autonomous action, escalation to a human, and detecting & rejecting bad data), while the
+operator dashboard and Grafana show it in real time.
 
 Before you present, make sure the prototype is set up and the tests pass — see
 [`GETTING-STARTED.md`](GETTING-STARTED.md). This doc assumes that is done.
@@ -19,7 +19,9 @@ Keep both open the whole time:
 
 - **Operator dashboard — http://localhost:8090** (served by the control plane): the agent heartbeat and
   status, the live decision feed, the behavioral-metrics gauges (rate / revenue-magnitude / anomaly), the
-  escalation queue, and the kill switch. This is the screen you narrate from.
+  **autonomous-actions feed** (with a pop-up **toast** each time the agent reprices within policy — so you
+  can *see* it working even when nothing is escalated), the escalation queue, the agent-flagged anomalies
+  panel, and the kill switch. This is the screen you narrate from.
 - **Grafana — http://localhost:3001**: gateway traces (Tempo) and metrics (Prometheus) — the tool-call
   latency and rate/magnitude gauges *behind* the dashboard's headline numbers. It opens straight onto the
   Meridian Pulse dashboard (no clicking to find it).
@@ -83,24 +85,27 @@ are **five beats**, matching the talk-track below exactly:
 |---|---|---|---|
 | 1 | steady-state | ambient demand/competitor noise | small green **PERMIT** cards |
 | 2 | competitor-undercut | AlpineDirect drops the hero tent ~8% **+** its demand turns elastic | autonomous **PERMIT** |
-| 3 | demand-spike | hydration-pack demand +40% / +35% **+** inventory draws down | **ESCALATE** → you Approve |
-| 4 | flash-crash | FeedX feed glitches all competitor prices to $0.00 | breakers trip → **HALTED** |
-| 5 | recovery | FeedX restored to baseline | you Resume with a data filter |
+| 3 | demand-spike | ultralight pack **MER-PACK-UL** goes viral (+40%) — a *flagged* SKU | **ESCALATE** (flagged SKU → any change needs a human) → you Approve |
+| 4 | data-glitch | FeedX fat-fingers a 75%-off promo across its **entire** catalog | agent **flags it as bad data** → red anomaly card |
+| 5 | recovery | FeedX restored to baseline | you Resume (kill-switch story) |
 
 So the full demo is: press Enter (beat) → narrate → watch the agent react → press Enter for the next.
-The two dashboard interactions (Approve after beat 3, Resume after beat 5) are unchanged.
+The two dashboard interactions (Approve after beat 3, and the kill-switch / Resume around beat 5) are the
+manual touches.
 
-If you prefer not to use the helper, the stepper is just a friendly wrapper around an HTTP poke you can
-`curl` yourself (handy for a scripted or a future dashboard-button trigger):
+If you prefer not to use the helper, the stepper just increments a small trigger file the market-data
+driver watches — you can drive it by hand (handy for a scripted or a future dashboard-button trigger):
 
 ```bash
-curl -X POST http://127.0.0.1:8091/scenario/next     # advance one beat
-curl      http://127.0.0.1:8091/scenario/status       # the beat plan + phases
+# advance one beat = bump the integer in the trigger file
+echo $(( $(cat packages/mcp-market-data/scenario-step.trigger 2>/dev/null || echo 0) + 1 )) \
+  > packages/mcp-market-data/scenario-step.trigger
 ```
 
-The control surface is loopback-only on `SCENARIO_CONTROL_PORT` (default 8091) and exists **only** in
-manual mode. Timed mode (the default) is unchanged and remains the right choice for an unattended run or
-a quick rehearsal.
+The trigger file lives at `packages/mcp-market-data/scenario-step.trigger` (override with
+`SCENARIO_TRIGGER_FILE`) and the driver only watches it in **manual mode**. It is a file rather than a
+socket so it survives the gateway spawning the market-data MCP child more than once. Timed mode (the
+default) is unchanged and remains the right choice for an unattended run or a quick rehearsal.
 
 ## 2. The talk-track — five beats
 
@@ -123,30 +128,42 @@ beats land on your narration. Either way, narrate as each beat lands:
    repriced — within policy, no human involved. The write didn't go straight to commerce; it went through
    the gateway and the policy gate, which classified it autonomous and let it through."
 
-3. **"It asks when it should" (1:15).** *Trigger:* a heatwave drives hydration-pack demand up ~40%
-   (`MER-HYD-2L`); the optimal move exceeds the ±15% threshold. *Point at:* the escalation queue — an
-   orange **ESCALATE** entry with current price, proposed price, change %, the agent's reasoning, and the
-   tier reason. *Say:* "Demand spiked. The agent's optimal response is bigger than its autonomy allows, so
-   instead of acting it escalated and queued the change for a human. It asked, because policy said it
-   must." **Action:** click **Approve**. The change releases to commerce, moves out of the queue, and
-   appears in the feed as *executed*. *Say:* "I approve it, it executes, and the whole exchange —
-   escalation and approval — is in the decision trail."
+3. **"It asks when it should" (1:15).** *Trigger:* the ultralight pack **MER-PACK-UL** goes viral with
+   thru-hikers — demand +40%, and a competitor raises its price, giving the agent room to move. This SKU
+   is on the mandate's **flagged list**, so *any* price change to it requires a human. *Point at:* the
+   escalation queue — an orange **ESCALATE** entry (rule `ESCALATE:FLAGGED_SKU`) with current price,
+   proposed price, change %, and the agent's reasoning. *Say:* "This pack just went viral, and the agent
+   wants to reprice it. But it's a flagged, high-visibility product — policy says the agent can't touch it
+   alone, no matter how small the change. So instead of acting, it escalated and queued the change for a
+   human. It asked, because policy said it must." **Action:** click **Approve**. The change releases to
+   commerce, moves out of the queue, and appears in the feed as *executed*. *Say:* "I approve it, it
+   executes, and the whole exchange — escalation and approval — is in the decision trail."
 
-4. **"It stops itself" (2:15).** *Trigger:* a data-feed glitch reports competitor prices at $0.00; the
-   agent starts proposing a cascade of deep cuts. *Point at:* the behavioral-metrics gauges spiking **past
-   the red lines** — actions-per-hour and cumulative magnitude both blow through their limits — then the
-   pulse **stops**, the gauges freeze, and a red **HALTED** banner appears with the reason and last
-   checkpoint. *Say:* "Now bad data. A feed glitched and reported zeros, so the agent started proposing
-   deep cuts across dozens of SKUs. It never got there: the rate and magnitude limiters both fired, the
-   circuit breaker tripped, and the agent halted *itself* — independent of whether any single action
-   looked valid. This is the part you can't demo by talking about it."
+4. **"It catches bad data" (2:15).** *Trigger:* FeedX fat-fingers a promotion — a 75%-off discount meant
+   for one product gets applied to their **entire** catalog, so every FeedX competitor price collapses to
+   a quarter of its value. *Point at:* the red **⚠ Agent-flagged anomalies** panel — a card appears naming
+   the SKU, what the agent saw ("FeedX quotes ~75% below normal across the catalog"), why it's suspicious
+   ("feed pricing error, not a genuine price move"), and what it did ("flagged; no price change"). *Say:*
+   "Now bad data. A competitor's feed just slashed every price 75% — a pricing error, not a real move. A
+   naive agent would chase it and start a fire sale. Watch what this one does: it recognizes the data is
+   implausible, refuses to act, and flags it for me instead. The judgment not to act is itself a
+   first-class, recorded decision — you can see it right here, and it's in the tamper-evident trail."
 
-5. **"We recover safely" (3:00).** *Trigger:* the timeline restores the feed to baseline. **Action:** click
-   **Resume** and enter a data filter such as `ignore competitor source FeedX for 5 min`. *Point at:* the
-   pulse restarts, the breaker windows reset, and the next cycle shows green PERMIT cards again. *Say:* "As
-   the operator I review the trail, see the anomalous feed, and resume from the last checkpoint with a
-   filter that ignores the bad source. The agent restarts exactly where it left off and returns to normal.
-   It acts at machine speed but stays governable at human speed — that's the whole system."
+   > **Why this beat, not a circuit-breaker trip:** with a capable model (Claude Sonnet 5) the agent
+   > *reasons* that a 75%-catalog-wide cut is bad data and declines — so the story is the model's own
+   > judgment, which is stronger than a mechanical halt. The **circuit breaker is still there** as a
+   > backstop: if a weaker model failed to catch this and tried to push a burst of deep cuts, the
+   > rate/magnitude/anomaly breakers would trip and halt the agent. You just won't see that with this
+   > model, by design. (If you *want* to show the breaker, the kill switch in the next beat is the
+   > reliable "hard stop" moment.)
+
+5. **"We stay in control" (3:00).** *Trigger:* the timeline restores FeedX to baseline. *Point at:* the
+   kill switch. **Action (optional, the reliable hard-stop moment):** hit **■ KILL SWITCH** — the pulse
+   stops, a red **HALTED** banner appears; then **▶ RESUME** with a data filter such as `ignore competitor
+   source FeedX for 5 min`, and the agent picks up from its last checkpoint. *Say:* "The agent already
+   handled the bad data on its own. But I'm always in control: one button halts it within a second, and it
+   resumes from exactly where it left off, with a filter to ignore the bad source. It acts at machine
+   speed but stays governable at human speed — that's the whole system."
 
 ## 3. If something misbehaves live
 
@@ -160,27 +177,41 @@ beats land on your narration. Either way, narrate as each beat lands:
   `... why <id>` (why it reached its tier), or `... stats`.
 - **Grafana panels are empty.** The gateway runs fine without the OTel collector; if traces/metrics aren't
   showing, confirm the `finch compose` stack is up. The demo's core behaviour does not depend on it.
-- **Ports already in use.** A previous run is still alive:
-  `pkill -f 'agentgateway -f infra'; pkill -f 'control-plane/dist/index.js'; pkill -f run-loop.sh`, plus
-  `pkill -f 'meridian-pulse/packages/mcp-'` for any orphaned MCP servers.
+- **Anomaly card didn't appear (Beat 4).** The card is fed from `report_anomaly` → the decision trail →
+  the control plane's `/anomalies`. Check the agent actually flagged it: `node
+  packages/policy/dist/query-trail.js list` should show an `anomaly` record, and `curl
+  localhost:8090/anomalies` should return it. If the agent instead *repriced* the FeedX SKUs, it didn't
+  treat the data as anomalous — give it another cycle, or confirm the recipe's report_anomaly instruction
+  is present.
+- **Ports already in use.** A previous run is still alive. Kill by process AND reap orphaned MCP children
+  by port (a gateway-spawned child can outlive its parent as an orphan):
+  `pkill -f 'agentgateway -f infra'; pkill -f 'control-plane/dist/index.js'; pkill -f run-loop.sh`, then
+  `pkill -f 'meridian-pulse/packages/mcp-'`. If a port is still held, find and kill the holder:
+  `lsof -tiTCP:8090 -sTCP:LISTEN | xargs kill -9`.
 
 ## Knobs
 
 Set these in `meridian-pulse/.env` (copied from `.env.example`, which lists every variable with its
-default). A shell variable overrides the file for a single run.
+default). A shell variable overrides the file for a single run. **The recording setup uses:**
+`SEED_DIR=seed-demo`, `SCENARIO_MODE=manual`, `AGENT_CYCLE_INTERVAL_S=30`, `HEARTBEAT_TIMEOUT_MS=600000`.
 
+- `SEED_DIR` (default `seed`) — `seed-demo` is the recording baseline: every SKU priced at its competitor
+  median so the agent sits **calm at rest** (no baseline escalations, no self-tripped breaker) and your
+  beats are the only stimulus. The real `seed/` is untouched.
 - `NO_OBSERVABILITY=1` — skip the container stack (gateway + control plane + agent only).
 - `SCENARIO_MODE` (default `timed`) — `manual` waits for you to advance each beat (see
   [1a](#1a-recommended-for-a-live-audience-manual-mode--advance-beats-by-hand)); `timed` plays on a clock.
-- `SCENARIO_CONTROL_PORT` (default 8091) — manual mode's loopback beat-advance port (`pnpm scenario:step`
-  and `POST /scenario/next` use it).
-- `AGENT_CYCLE_INTERVAL_S` (default 8) — seconds between perceive→reason→act cycles; the audience's read
-  speed and the kill switch's live window.
+- `SCENARIO_TRIGGER_FILE` (default `packages/mcp-market-data/scenario-step.trigger`) — manual mode's
+  beat-advance trigger file; `pnpm scenario:step` increments it. A file, not a port, so it survives the
+  gateway respawning the MCP child.
+- `AGENT_CYCLE_INTERVAL_S` (default 8; **demo uses 30**) — seconds between perceive→reason→act cycles.
+  Slower keeps the agent calm between hand-paced beats and stops it churning into the burst breaker.
+- `HEARTBEAT_TIMEOUT_MS` (default 60000; **demo uses 600000**) — the dead-man's-switch window. The agent
+  heartbeats once per cycle; on Bedrock a cycle can run long and you pause to narrate, so 60s is too tight
+  for a hand-paced demo — 10 minutes is safe.
 - `AGENT_MAX_CYCLES` (default 0 = run forever) — stop after N cycles; useful for a bounded, unattended run.
-- `SCENARIO_TICK_SCALE` (default 1) — multiplier on the scenario's scheduled times: `<1` compresses the
-  timeline for a faster demo, `>1` slows it. `SCENARIO_LOOP=1` replays the timeline forever.
-- `HEARTBEAT_TIMEOUT_MS` (default 60000) — the dead-man's-switch: auto-halt if no heartbeat within this
-  window.
+- `SCENARIO_TICK_SCALE` (default 1) — multiplier on the scenario's scheduled times (timed mode only):
+  `<1` compresses the timeline, `>1` slows it. `SCENARIO_LOOP=1` replays the timeline forever.
 
 The full variable reference is in [`meridian-pulse/.env.example`](meridian-pulse/.env.example).
 

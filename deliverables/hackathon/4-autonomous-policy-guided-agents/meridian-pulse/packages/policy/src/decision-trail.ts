@@ -81,7 +81,28 @@ export interface ObservationRecord {
   hash: string;
 }
 
-type TrailRecord = DecisionRecord | ObservationRecord;
+/**
+ * An anomaly the agent detected and chose NOT to act on — e.g. a competitor
+ * price so implausible it is almost certainly bad data. This is the agent's own
+ * judgment made durable and visible: unlike a declined action that vanishes into
+ * the reasoning log, an anomaly record lands in the append-only trail (and, via
+ * the control plane, on the operator dashboard). It is not tied to a prior
+ * decision — the point is that NO price change happened.
+ */
+export interface AnomalyRecord {
+  kind: "anomaly";
+  id: string;
+  cycleNumber: number | null;
+  timestamp: string;
+  priorRecordHash: string;
+  sku: string;
+  observation: string; // what the agent saw, e.g. "FeedX quotes 75% below normal across the catalog"
+  suspectedCause: string; // why the agent thinks it is bad data, e.g. "feed error, not a real price move"
+  actionTaken: string; // what the agent did instead, e.g. "ignored; did not reprice"
+  hash: string;
+}
+
+type TrailRecord = DecisionRecord | ObservationRecord | AnomalyRecord;
 
 /** Hash over the record's content minus its own hash field, plus the prior hash. */
 function hashRecord(record: Omit<TrailRecord, "hash">): string {
@@ -139,6 +160,27 @@ export class DecisionTrail {
     };
     const hash = hashRecord(base);
     const record: ObservationRecord = { ...base, hash };
+    appendFileSync(this.path, JSON.stringify(record) + "\n");
+    return record;
+  }
+
+  /**
+   * Append an anomaly the agent flagged instead of acting on. Hash-chained like
+   * every other record, so a "the agent caught bad data and stood down" event is
+   * as tamper-evident and auditable as a price change.
+   */
+  appendAnomaly(
+    input: Omit<AnomalyRecord, "kind" | "id" | "timestamp" | "priorRecordHash" | "hash">,
+  ): AnomalyRecord {
+    const base = {
+      kind: "anomaly" as const,
+      id: randomUUID(),
+      timestamp: new Date().toISOString(),
+      priorRecordHash: this.lastHash(),
+      ...input,
+    };
+    const hash = hashRecord(base);
+    const record: AnomalyRecord = { ...base, hash };
     appendFileSync(this.path, JSON.stringify(record) + "\n");
     return record;
   }

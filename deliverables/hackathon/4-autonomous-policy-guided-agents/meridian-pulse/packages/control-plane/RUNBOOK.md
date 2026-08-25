@@ -1,6 +1,6 @@
 # Meridian Pulse — Demo Runbook (~4 minutes)
 
-This is the script for the live demo. The goal is to **make the invisible visible**: an audience watches a continuously-running agent perceive signals, hit the policy gate, and reach a different terminal outcome for each of three scenarios — autonomous action, escalation, and a circuit-breaker halt — while the operator dashboard and Grafana show it in real time.
+This is the script for the live demo. The goal is to **make the invisible visible**: an audience watches a continuously-running agent perceive signals, hit the policy gate, and reach a different outcome for each of three scenarios — autonomous action, escalation to a human, and detecting & rejecting bad data — while the operator dashboard and Grafana show it in real time.
 
 Two screens to keep open:
 
@@ -43,35 +43,35 @@ Steady-state signals (`atSeconds` 5–20) produce small, in-tier moves — the f
 
 ## Beat 3 — "It asks when it should" (1:15)
 
-**Trigger:** at ~1:15 an unseasonal heatwave drives hydration-pack demand up ~40% (`MER-HYD-2L`, then `MER-HYD-3L`). The optimal price move exceeds the ±15% threshold.
+**Trigger:** the ultralight pack `MER-PACK-UL` goes viral with thru-hikers — demand up ~40% — and a competitor raises its price, giving the agent room to move. This SKU is on the mandate's **flagged list**, so any price change to it requires human approval regardless of size.
 
-**Point at (dashboard):** the escalation queue — a hydration-pack entry appears with an orange **ESCALATE** badge, showing current price, proposed price, change %, the agent's reasoning, and the tier classification with its reason.
+**Point at (dashboard):** the escalation queue — a `MER-PACK-UL` entry appears with an orange **ESCALATE** badge (rule `ESCALATE:FLAGGED_SKU`), showing current price, proposed price, change %, and the agent's reasoning.
 
-**Say:** "Demand spiked. The agent's optimal response is bigger than its ±15% autonomy allows, so instead of acting, it escalated and queued the change for a human. It asked, because policy said it must."
+**Say:** "This pack just went viral and the agent wants to reprice it — but it's a flagged, high-visibility product, so policy says the agent can't touch it alone, no matter how small the change. Instead of acting, it escalated and queued the change for a human. It asked, because policy said it must."
 
 **Action:** click **Approve** on the escalation. The approval releases the change to commerce; watch the item move out of the queue and appear in the decision feed as **executed**.
 
 **Say:** "I approve it. Now it executes — and the whole exchange, escalation and approval, is in the decision trail."
 
-## Beat 4 — "It stops itself" (2:15)
+## Beat 4 — "It catches bad data" (2:15)
 
-**Trigger:** at ~3:00 (0:180 in the timeline) a data-feed glitch reports all FeedX competitor prices at $0.00. The agent proposes a cascade of deep cuts.
+**Trigger:** FeedX fat-fingers a promotion — a 75%-off discount meant for a single product is applied to their **entire** catalog, so every FeedX competitor price collapses to a quarter of its value.
 
-**Point at (dashboard):** the behavioral-metrics gauges spiking **past the red lines** — actions-per-hour and cumulative magnitude both blow through their limits — then the pulse **stops**, the gauges freeze, and a red **HALTED** banner appears with the reason and last checkpoint.
+**Point at (dashboard):** the red **⚠ Agent-flagged anomalies** panel — a card appears naming the SKU, what the agent observed ("FeedX quotes ~75% below normal across the catalog"), why it's suspicious ("feed pricing error, not a genuine price move"), and what it did instead ("flagged; no price change").
 
-**Point at (Grafana):** the metrics spike on the gateway/breaker panels, corroborating the dashboard's headline gauges.
+**Say:** "Now bad data. A competitor's feed just slashed every price by 75% — a pricing error, not a real move. A naive agent would chase it and start a fire sale. This one recognizes the data is implausible, refuses to act, and flags it for me instead. The decision *not* to act is itself a first-class, recorded event — you can see it here, and it's in the tamper-evident trail."
 
-**Say:** "Now bad data. A feed glitched and reported competitor prices at zero, so the agent started proposing deep cuts across dozens of SKUs. It never got there: the rate limiter and the magnitude limiter both fired, the circuit breaker tripped, and the agent halted itself — independent of whether any single action looked valid. This is the part you can't demo by talking about it."
+> **Why anomaly-detection, not a circuit-breaker trip.** With a capable model (Claude Sonnet 5) the agent *reasons* that a catalog-wide 75% cut is bad data and declines — a stronger story than a mechanical halt, because it's the model's own judgment. The **circuit breaker remains in the implementation as a backstop**: if a weaker model failed to catch this and pushed a burst of deep cuts, the rate/magnitude/anomaly breakers would trip and halt the agent. It simply doesn't fire here, by design. To show a hard stop on camera, use the kill switch (Beat 5).
 
-## Beat 5 — "We recover safely" (3:00)
+## Beat 5 — "We stay in control" (3:00)
 
-**Trigger:** the timeline restores the FeedX prices to baseline (`atSeconds` 210) once the operator applies a data filter.
+**Trigger:** the timeline restores the FeedX prices to baseline (`atSeconds` 210).
 
-**Action:** on the dashboard, click **Resume** and enter a data filter such as `ignore competitor source FeedX for 5 min` in the optional filter input.
+**Action (the reliable hard-stop moment):** on the dashboard, hit **■ KILL SWITCH** — the pulse stops and the HALTED banner appears within a second. Then click **▶ RESUME** and enter a data filter such as `ignore competitor source FeedX for 5 min`.
 
-**Point at (dashboard):** the pulse restarts, the breaker windows reset, and normal operation resumes — the next cycle appears in the decision feed with green PERMIT cards again.
+**Point at (dashboard):** the pulse stops on kill, then restarts on resume; the next cycle appears in the decision feed with green PERMIT cards again.
 
-**Say:** "As the operator I review the trail, see the anomalous feed, and resume from the last checkpoint with a filter that ignores the bad source. The agent restarts exactly where it left off, skips the glitchy feed, and returns to normal. It acts at machine speed, but it stays governable at human speed — that's the whole system."
+**Say:** "The agent already handled the bad data on its own — but I'm always in control. One button halts it within a second, and it resumes from its last checkpoint with a filter to ignore the bad source. It acts at machine speed but stays governable at human speed — that's the whole system."
 
 ---
 
@@ -80,4 +80,5 @@ Steady-state signals (`atSeconds` 5–20) produce small, in-tier moves — the f
 - **Kill switch, any time.** The red kill-switch button halts the agent within about a second: the pulse stops and the HALTED banner appears. The agent loop polls the control plane between cycles and pauses while halted; **Resume** brings it back from the last checkpoint.
 - **Escalation didn't appear.** Approve/reject and the queue read the shared `packages/policy/escalation-queue.jsonl`. From a terminal you can list and act on it directly: `node packages/policy/dist/approvals-cli.js list`, then `... approve <id>`.
 - **Need to explain a decision after the fact.** Query the decision trail: `node packages/policy/dist/query-trail.js list` (recent decisions), `... why <id>` (why it reached its tier), or `... stats`.
+- **Anomaly card didn't appear (Beat 4).** The card comes from the agent calling `report_anomaly` → the decision trail → the control plane's `/anomalies`. Confirm the agent flagged it rather than repricing: `node packages/policy/dist/query-trail.js list` should show an `anomaly` record, and `curl localhost:8090/anomalies` should return it. With a very capable model this is reliable; if it instead repriced the FeedX SKUs, give it another cycle or check the recipe's report_anomaly instruction is present.
 - **Grafana panels are empty.** The gateway runs fine without the OTel collector; if traces/metrics aren't showing, confirm the `finch compose` stack is up. The demo's core behavior does not depend on it.

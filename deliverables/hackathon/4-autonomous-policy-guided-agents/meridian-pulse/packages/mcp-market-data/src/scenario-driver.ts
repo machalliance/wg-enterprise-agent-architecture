@@ -21,12 +21,15 @@
  */
 
 import { readFileSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import type { MarketDataStore, DemandTrend } from "./store.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SEED_DIR = resolve(__dirname, "..", "..", "..", "seed");
+const SEED_DIR = process.env.SEED_DIR
+  ? resolve(process.env.SEED_DIR)
+  : resolve(__dirname, "..", "..", "..", "seed");
 
 interface TimelineEvent {
   atSeconds: number;
@@ -45,6 +48,7 @@ interface TimelineEvent {
   onHandDelta?: number;
   source?: string;
   restoreBaseline?: boolean;
+  priceMultiplier?: number;
   demoBeat?: number;
 }
 
@@ -88,6 +92,19 @@ export interface ScenarioDriverOptions {
   loop?: boolean;
   /** "timed" (default) fires on a clock; "manual" advances one beat per stepBeat(). */
   mode?: ScenarioMode;
+  /**
+   * Manual mode only: path to a trigger file whose integer contents are the
+   * number of beats the presenter has requested. The driver polls it and applies
+   * beats until applied === requested. This is how the beat trigger survives the
+   * gateway spawning this stdio child more than once: the trigger is a file, not
+   * a port, so there is no bind race and no "which instance owns the socket"
+   * ambiguity — the live instance (the one the gateway routes tools to) reads the
+   * same file the presenter writes. Omit to disable polling (tests drive
+   * stepBeat() directly).
+   */
+  triggerFile?: string;
+  /** Manual-mode trigger-file poll interval in ms (default 400). */
+  pollIntervalMs?: number;
 }
 
 export class ScenarioDriver {
@@ -100,6 +117,8 @@ export class ScenarioDriver {
   private readonly beats: Beat[];
   /** Index of the next beat stepBeat() will apply. Manual mode. */
   private nextBeatIndex = 0;
+  /** Manual-mode trigger-file poll timer, if a triggerFile was given. */
+  private pollTimer?: NodeJS.Timeout;
 
   constructor(
     private readonly store: MarketDataStore,
@@ -109,6 +128,8 @@ export class ScenarioDriver {
       tickScale: options.tickScale ?? 1,
       loop: options.loop ?? false,
       mode: options.mode ?? "timed",
+      triggerFile: options.triggerFile ?? "",
+      pollIntervalMs: options.pollIntervalMs ?? 400,
     };
     this.timeline = JSON.parse(
       readFileSync(resolve(SEED_DIR, "scenario-timeline.json"), "utf8"),
@@ -134,6 +155,12 @@ export class ScenarioDriver {
         `manual mode: ${this.beats.length} beats ready ` +
           `(${this.beats.map((b) => b.beat).join(", ")}). Advance with stepBeat().`,
       );
+      if (this.options.triggerFile) {
+        log(`watching trigger file ${this.options.triggerFile} (poll ${this.options.pollIntervalMs}ms)`);
+        this.pollTimer = setInterval(() => {
+          void this.pollTrigger();
+        }, this.options.pollIntervalMs);
+      }
       return; // nothing fires until the presenter advances
     }
 
@@ -166,6 +193,27 @@ export class ScenarioDriver {
       remaining,
       done: remaining === 0,
     };
+  }
+
+  /**
+   * Manual mode: read the trigger file's integer (beats requested) and apply
+   * beats until we have caught up. The file is the source of truth, so this is
+   * safe if the file is written by another process (the presenter/stepper or the
+   * control plane) and idempotent against re-reads — we only ever move forward,
+   * never re-apply a beat. A missing/empty/garbage file means "no steps yet".
+   */
+  private async pollTrigger(): Promise<void> {
+    let requested = 0;
+    try {
+      const raw = await readFile(this.options.triggerFile, "utf8");
+      const n = Number.parseInt(raw.trim(), 10);
+      requested = Number.isFinite(n) && n > 0 ? n : 0;
+    } catch {
+      return; // file not created yet — nothing requested
+    }
+    while (this.nextBeatIndex < requested && this.nextBeatIndex < this.beats.length) {
+      this.stepBeat();
+    }
   }
 
   private scheduleAll(): void {
@@ -230,11 +278,15 @@ export class ScenarioDriver {
         } else if (event.restoreBaseline) {
           const n = this.store.restoreCompetitorBaselineBySource(event.source);
           line = `restored ${n} ${event.source} quotes to baseline`;
+        } else if (event.priceMultiplier !== undefined) {
+          const n = this.store.bulkMultiplyCompetitorPriceBySource(event.source, event.priceMultiplier);
+          const pctOff = Math.round((1 - event.priceMultiplier) * 100);
+          line = `GLITCH: ${event.source} fat-fingered ${pctOff}% off — multiplied ${n} quotes by ${event.priceMultiplier}`;
         } else if (event.newPrice !== undefined) {
           const n = this.store.bulkSetCompetitorPriceBySource(event.source, event.newPrice);
           line = `GLITCH: set ${n} ${event.source} quotes -> $${event.newPrice}`;
         } else {
-          line = `competitor_prices_bulk_update skipped (no newPrice/restoreBaseline)`;
+          line = `competitor_prices_bulk_update skipped (no newPrice/priceMultiplier/restoreBaseline)`;
         }
         break;
       }
@@ -246,6 +298,8 @@ export class ScenarioDriver {
   stop(): void {
     for (const timer of this.timers) clearTimeout(timer);
     this.timers.length = 0;
+    if (this.pollTimer) clearInterval(this.pollTimer);
+    this.pollTimer = undefined;
     this.running = false;
     log("stopped");
   }

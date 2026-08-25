@@ -14,7 +14,9 @@ import { dirname, resolve } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 /** seed/ lives at the repo root: packages/mcp-market-data/dist -> ../../../seed */
-const SEED_DIR = resolve(__dirname, "..", "..", "..", "seed");
+const SEED_DIR = process.env.SEED_DIR
+  ? resolve(process.env.SEED_DIR)
+  : resolve(__dirname, "..", "..", "..", "seed");
 
 export interface CompetitorQuote {
   name: string;
@@ -111,12 +113,24 @@ export class MarketDataStore {
     return this.skus.has(sku);
   }
 
-  listSkus(): { sku: string; name: string; category: string; currentPrice: number }[] {
+  listSkus(): {
+    sku: string;
+    name: string;
+    category: string;
+    currentPrice: number;
+    demandTrend: DemandTrend;
+    demandMagnitude: number;
+  }[] {
     return [...this.skus.values()].map((s) => ({
       sku: s.entry.sku,
       name: s.entry.name,
       category: s.entry.category,
       currentPrice: s.entry.currentPrice,
+      // Surface the demand signal here so the agent's triage step can SEE which
+      // SKUs are moving and choose to look closer — otherwise a spike on a SKU
+      // it doesn't habitually check goes unnoticed within its per-cycle budget.
+      demandTrend: s.demand.trend,
+      demandMagnitude: s.demand.magnitude,
     }));
   }
 
@@ -181,6 +195,28 @@ export class MarketDataStore {
       for (const quote of state.competitors) {
         if (quote.name === source) {
           quote.price = newPrice;
+          quote.timestamp = now;
+          affected++;
+        }
+      }
+    }
+    return affected;
+  }
+
+  /**
+   * Multiply every competitor quote from `source` by `factor` (the M5 glitch, in
+   * its realistic form). A "they fat-fingered a 75% discount across the whole
+   * catalog" incident is each quote dropping to `factor` of its own value — not
+   * every SKU snapping to one flat number, which a capable agent spots as bogus.
+   * factor 0.25 = 75% off. Rounded to cents.
+   */
+  bulkMultiplyCompetitorPriceBySource(source: string, factor: number): number {
+    let affected = 0;
+    const now = new Date().toISOString();
+    for (const state of this.skus.values()) {
+      for (const quote of state.competitors) {
+        if (quote.name === source) {
+          quote.price = Math.round(quote.price * factor * 100) / 100;
           quote.timestamp = now;
           affected++;
         }

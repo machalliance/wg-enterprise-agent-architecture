@@ -1,0 +1,29 @@
+{
+  "_comment": "The agent's mandate: the boundaries it operates within, held outside the agent so it can be adjusted without redeploying. Tiers are evaluated by the policy service (packages/policy) on every set_price. changePct is |newPrice - currentPrice| / currentPrice * 100. Tier precedence (highest first): prohibited -> approve -> notify -> autonomous.",
+  "agent": "meridian-pulse:revenue-optimizer",
+  "tiers": {
+    "autonomous": {
+      "maxPriceChangePct": 5,
+      "categories": ["outdoor-tents", "hydration", "packs"]
+    },
+    "notify": {
+      "maxPriceChangePct": 15,
+      "notifyChannel": "merchandising-team",
+      "categories": ["outdoor-tents", "hydration", "packs"]
+    },
+    "approve": {
+      "description": "Beyond +/-15%, flagged SKUs, or premium categories",
+      "flaggedSkus": ["MER-TENT-EXP", "MER-PACK-UL"],
+      "premiumCategories": ["premium-footwear"]
+    },
+    "prohibited": {
+      "description": "Hard-blocked; no override path in the demo",
+      "rules": [
+        "price < cost (below-cost selling)",
+        "price change during active promotion without promo-manager approval"
+      ]
+    }
+  },
+  "writeScopeCategories": ["outdoor-tents", "hydration", "packs"],
+  "costFloorSource": "catalog.cost per SKU"
+}

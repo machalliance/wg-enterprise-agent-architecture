@@ -1,0 +1,508 @@
+{
+  "_comment": "Seed catalog for Meridian Pulse. ~50 SKUs across the spring outdoor line. Categories outdoor-tents, hydration, and packs are in the agent's write scope; premium-footwear and apparel are OUT of scope (used by M1 to demonstrate a rejected write). Prices in USD. cost is the per-unit floor used by the below-cost policy check (M3). estimatedWeeklyUnits feeds the M5 magnitude limiter.",
+  "skus": [
+    {
+      "sku": "MER-TENT-3S",
+      "name": "Ridgeline 3-Season Tent",
+      "category": "outdoor-tents",
+      "cost": 118,
+      "currentPrice": 201,
+      "onHand": 640,
+      "reorderPoint": 200,
+      "estimatedWeeklyUnits": 85,
+      "hero": true
+    },
+    {
+      "sku": "MER-TENT-2P",
+      "name": "Trailhead 2-Person Tent",
+      "category": "outdoor-tents",
+      "cost": 92,
+      "currentPrice": 162,
+      "onHand": 720,
+      "reorderPoint": 220,
+      "estimatedWeeklyUnits": 70
+    },
+    {
+      "sku": "MER-TENT-4P",
+      "name": "Basecamp 4-Person Tent",
+      "category": "outdoor-tents",
+      "cost": 145,
+      "currentPrice": 265,
+      "onHand": 380,
+      "reorderPoint": 120,
+      "estimatedWeeklyUnits": 40
+    },
+    {
+      "sku": "MER-TENT-UL",
+      "name": "Featherline Ultralight Tent",
+      "category": "outdoor-tents",
+      "cost": 168,
+      "currentPrice": 339,
+      "onHand": 210,
+      "reorderPoint": 80,
+      "estimatedWeeklyUnits": 22
+    },
+    {
+      "sku": "MER-TENT-EXP",
+      "name": "Expedition 4-Season Tent",
+      "category": "outdoor-tents",
+      "cost": 240,
+      "currentPrice": 479,
+      "onHand": 95,
+      "reorderPoint": 40,
+      "estimatedWeeklyUnits": 9,
+      "flagged": true
+    },
+    {
+      "sku": "MER-TENT-BP",
+      "name": "Backpacker Solo Tent",
+      "category": "outdoor-tents",
+      "cost": 78,
+      "currentPrice": 142,
+      "onHand": 540,
+      "reorderPoint": 180,
+      "estimatedWeeklyUnits": 55
+    },
+    {
+      "sku": "MER-TENT-FAM",
+      "name": "Homestead 6-Person Tent",
+      "category": "outdoor-tents",
+      "cost": 190,
+      "currentPrice": 359,
+      "onHand": 160,
+      "reorderPoint": 60,
+      "estimatedWeeklyUnits": 18
+    },
+    {
+      "sku": "MER-TENT-TARP",
+      "name": "Canopy Trail Tarp",
+      "category": "outdoor-tents",
+      "cost": 34,
+      "currentPrice": 71,
+      "onHand": 900,
+      "reorderPoint": 250,
+      "estimatedWeeklyUnits": 95
+    },
+    {
+      "sku": "MER-TENT-VEST",
+      "name": "Vestibule Add-On Shelter",
+      "category": "outdoor-tents",
+      "cost": 42,
+      "currentPrice": 82,
+      "onHand": 300,
+      "reorderPoint": 100,
+      "estimatedWeeklyUnits": 30
+    },
+    {
+      "sku": "MER-TENT-FLY",
+      "name": "Stormfly Rainfly",
+      "category": "outdoor-tents",
+      "cost": 28,
+      "currentPrice": 55,
+      "onHand": 480,
+      "reorderPoint": 150,
+      "estimatedWeeklyUnits": 48
+    },
+    {
+      "sku": "MER-HYD-2L",
+      "name": "Cascade 2L Hydration Pack",
+      "category": "hydration",
+      "cost": 22,
+      "currentPrice": 45,
+      "onHand": 1100,
+      "reorderPoint": 300,
+      "estimatedWeeklyUnits": 130
+    },
+    {
+      "sku": "MER-HYD-3L",
+      "name": "Cascade 3L Hydration Pack",
+      "category": "hydration",
+      "cost": 27,
+      "currentPrice": 56,
+      "onHand": 820,
+      "reorderPoint": 260,
+      "estimatedWeeklyUnits": 105
+    },
+    {
+      "sku": "MER-HYD-1L",
+      "name": "Trailsip 1L Hydration Pack",
+      "category": "hydration",
+      "cost": 16,
+      "currentPrice": 33,
+      "onHand": 1300,
+      "reorderPoint": 350,
+      "estimatedWeeklyUnits": 150
+    },
+    {
+      "sku": "MER-HYD-BLD",
+      "name": "FlowMax Replacement Bladder",
+      "category": "hydration",
+      "cost": 9,
+      "currentPrice": 23,
+      "onHand": 1600,
+      "reorderPoint": 400,
+      "estimatedWeeklyUnits": 180
+    },
+    {
+      "sku": "MER-HYD-BTL",
+      "name": "Summit Insulated Bottle 750ml",
+      "category": "hydration",
+      "cost": 11,
+      "currentPrice": 27,
+      "onHand": 1450,
+      "reorderPoint": 380,
+      "estimatedWeeklyUnits": 165
+    },
+    {
+      "sku": "MER-HYD-BTL1L",
+      "name": "Summit Insulated Bottle 1L",
+      "category": "hydration",
+      "cost": 13,
+      "currentPrice": 31,
+      "onHand": 1200,
+      "reorderPoint": 320,
+      "estimatedWeeklyUnits": 140
+    },
+    {
+      "sku": "MER-HYD-FLT",
+      "name": "PureFlow Inline Filter",
+      "category": "hydration",
+      "cost": 18,
+      "currentPrice": 41,
+      "onHand": 700,
+      "reorderPoint": 220,
+      "estimatedWeeklyUnits": 90
+    },
+    {
+      "sku": "MER-HYD-TAB",
+      "name": "AquaTab Purification 50pk",
+      "category": "hydration",
+      "cost": 5,
+      "currentPrice": 15,
+      "onHand": 2000,
+      "reorderPoint": 500,
+      "estimatedWeeklyUnits": 210
+    },
+    {
+      "sku": "MER-HYD-VEST",
+      "name": "Trailrun Hydration Vest",
+      "category": "hydration",
+      "cost": 34,
+      "currentPrice": 76,
+      "onHand": 460,
+      "reorderPoint": 150,
+      "estimatedWeeklyUnits": 60
+    },
+    {
+      "sku": "MER-HYD-KIDS",
+      "name": "LittleTrail Kids Hydration Pack",
+      "category": "hydration",
+      "cost": 14,
+      "currentPrice": 30,
+      "onHand": 640,
+      "reorderPoint": 200,
+      "estimatedWeeklyUnits": 72
+    },
+    {
+      "sku": "MER-PACK-30",
+      "name": "Daybreak 30L Daypack",
+      "category": "packs",
+      "cost": 38,
+      "currentPrice": 80,
+      "onHand": 880,
+      "reorderPoint": 260,
+      "estimatedWeeklyUnits": 100
+    },
+    {
+      "sku": "MER-PACK-45",
+      "name": "Wayfarer 45L Trekking Pack",
+      "category": "packs",
+      "cost": 62,
+      "currentPrice": 132,
+      "onHand": 520,
+      "reorderPoint": 170,
+      "estimatedWeeklyUnits": 65
+    },
+    {
+      "sku": "MER-PACK-65",
+      "name": "Expedition 65L Pack",
+      "category": "packs",
+      "cost": 88,
+      "currentPrice": 185,
+      "onHand": 300,
+      "reorderPoint": 110,
+      "estimatedWeeklyUnits": 38
+    },
+    {
+      "sku": "MER-PACK-UL",
+      "name": "Featherweight 40L Ultralight Pack",
+      "category": "packs",
+      "cost": 96,
+      "currentPrice": 205,
+      "onHand": 180,
+      "reorderPoint": 70,
+      "estimatedWeeklyUnits": 20,
+      "flagged": true
+    },
+    {
+      "sku": "MER-PACK-18",
+      "name": "Summit 18L Summit Pack",
+      "category": "packs",
+      "cost": 26,
+      "currentPrice": 56,
+      "onHand": 960,
+      "reorderPoint": 280,
+      "estimatedWeeklyUnits": 110
+    },
+    {
+      "sku": "MER-PACK-HYD",
+      "name": "Trailrunner 12L Hydration Pack",
+      "category": "packs",
+      "cost": 30,
+      "currentPrice": 66,
+      "onHand": 700,
+      "reorderPoint": 210,
+      "estimatedWeeklyUnits": 80
+    },
+    {
+      "sku": "MER-PACK-KID",
+      "name": "Junior Explorer 16L Pack",
+      "category": "packs",
+      "cost": 20,
+      "currentPrice": 44,
+      "onHand": 540,
+      "reorderPoint": 170,
+      "estimatedWeeklyUnits": 58
+    },
+    {
+      "sku": "MER-PACK-DUF",
+      "name": "Basecamp 60L Duffel",
+      "category": "packs",
+      "cost": 44,
+      "currentPrice": 92,
+      "onHand": 620,
+      "reorderPoint": 190,
+      "estimatedWeeklyUnits": 70
+    },
+    {
+      "sku": "MER-PACK-RAIN",
+      "name": "Packcover Rain Shell",
+      "category": "packs",
+      "cost": 12,
+      "currentPrice": 29,
+      "onHand": 1100,
+      "reorderPoint": 300,
+      "estimatedWeeklyUnits": 120
+    },
+    {
+      "sku": "MER-PACK-WST",
+      "name": "Trailwaist 4L Hip Pack",
+      "category": "packs",
+      "cost": 15,
+      "currentPrice": 36,
+      "onHand": 980,
+      "reorderPoint": 290,
+      "estimatedWeeklyUnits": 105
+    },
+    {
+      "sku": "MER-BOOT-GTX",
+      "name": "Summit Peak GTX Hiking Boot",
+      "category": "premium-footwear",
+      "cost": 92,
+      "currentPrice": 225,
+      "onHand": 240,
+      "reorderPoint": 90,
+      "estimatedWeeklyUnits": 28
+    },
+    {
+      "sku": "MER-BOOT-MID",
+      "name": "Trailhead Mid Hiking Boot",
+      "category": "premium-footwear",
+      "cost": 68,
+      "currentPrice": 165,
+      "onHand": 360,
+      "reorderPoint": 120,
+      "estimatedWeeklyUnits": 42
+    },
+    {
+      "sku": "MER-BOOT-APP",
+      "name": "Ridgewalker Approach Shoe",
+      "category": "premium-footwear",
+      "cost": 58,
+      "currentPrice": 144,
+      "onHand": 420,
+      "reorderPoint": 140,
+      "estimatedWeeklyUnits": 50
+    },
+    {
+      "sku": "MER-BOOT-TRL",
+      "name": "Swiftrun Trail Runner",
+      "category": "premium-footwear",
+      "cost": 52,
+      "currentPrice": 134,
+      "onHand": 480,
+      "reorderPoint": 150,
+      "estimatedWeeklyUnits": 55
+    },
+    {
+      "sku": "MER-BOOT-WNT",
+      "name": "Glacier Insulated Winter Boot",
+      "category": "premium-footwear",
+      "cost": 104,
+      "currentPrice": 245,
+      "onHand": 150,
+      "reorderPoint": 60,
+      "estimatedWeeklyUnits": 15
+    },
+    {
+      "sku": "MER-BOOT-SND",
+      "name": "Riverbed Hiking Sandal",
+      "category": "premium-footwear",
+      "cost": 34,
+      "currentPrice": 88,
+      "onHand": 560,
+      "reorderPoint": 170,
+      "estimatedWeeklyUnits": 64
+    },
+    {
+      "sku": "MER-APP-RAIN",
+      "name": "Stormshield Rain Jacket",
+      "category": "apparel",
+      "cost": 56,
+      "currentPrice": 144,
+      "onHand": 480,
+      "reorderPoint": 150,
+      "estimatedWeeklyUnits": 60
+    },
+    {
+      "sku": "MER-APP-DOWN",
+      "name": "Altitude Down Jacket",
+      "category": "apparel",
+      "cost": 88,
+      "currentPrice": 215,
+      "onHand": 260,
+      "reorderPoint": 90,
+      "estimatedWeeklyUnits": 30
+    },
+    {
+      "sku": "MER-APP-FLC",
+      "name": "Trailwarm Fleece Pullover",
+      "category": "apparel",
+      "cost": 32,
+      "currentPrice": 82,
+      "onHand": 700,
+      "reorderPoint": 210,
+      "estimatedWeeklyUnits": 82
+    },
+    {
+      "sku": "MER-APP-BASE",
+      "name": "Merino Base Layer Top",
+      "category": "apparel",
+      "cost": 24,
+      "currentPrice": 61,
+      "onHand": 820,
+      "reorderPoint": 240,
+      "estimatedWeeklyUnits": 95
+    },
+    {
+      "sku": "MER-APP-PANT",
+      "name": "Treklite Convertible Pant",
+      "category": "apparel",
+      "cost": 30,
+      "currentPrice": 76,
+      "onHand": 640,
+      "reorderPoint": 200,
+      "estimatedWeeklyUnits": 76
+    },
+    {
+      "sku": "MER-APP-SOCK",
+      "name": "Summit Merino Hiking Sock",
+      "category": "apparel",
+      "cost": 7,
+      "currentPrice": 20,
+      "onHand": 2200,
+      "reorderPoint": 560,
+      "estimatedWeeklyUnits": 240
+    },
+    {
+      "sku": "MER-APP-HAT",
+      "name": "Sunridge Trail Hat",
+      "category": "apparel",
+      "cost": 9,
+      "currentPrice": 28,
+      "onHand": 1300,
+      "reorderPoint": 340,
+      "estimatedWeeklyUnits": 130
+    },
+    {
+      "sku": "MER-APP-GLOV",
+      "name": "Ridgegrip Trail Gloves",
+      "category": "apparel",
+      "cost": 12,
+      "currentPrice": 35,
+      "onHand": 900,
+      "reorderPoint": 270,
+      "estimatedWeeklyUnits": 100
+    },
+    {
+      "sku": "MER-GEAR-STOVE",
+      "name": "Emberlite Camp Stove",
+      "category": "gear",
+      "cost": 26,
+      "currentPrice": 61,
+      "onHand": 540,
+      "reorderPoint": 170,
+      "estimatedWeeklyUnits": 62
+    },
+    {
+      "sku": "MER-GEAR-POLE",
+      "name": "Carbon Trekking Poles",
+      "category": "gear",
+      "cost": 36,
+      "currentPrice": 92,
+      "onHand": 480,
+      "reorderPoint": 150,
+      "estimatedWeeklyUnits": 58
+    },
+    {
+      "sku": "MER-GEAR-LAMP",
+      "name": "Beacon Rechargeable Headlamp",
+      "category": "gear",
+      "cost": 14,
+      "currentPrice": 41,
+      "onHand": 1000,
+      "reorderPoint": 300,
+      "estimatedWeeklyUnits": 115
+    },
+    {
+      "sku": "MER-GEAR-BAG",
+      "name": "Nightfall 20F Sleeping Bag",
+      "category": "gear",
+      "cost": 64,
+      "currentPrice": 155,
+      "onHand": 320,
+      "reorderPoint": 110,
+      "estimatedWeeklyUnits": 40
+    },
+    {
+      "sku": "MER-GEAR-PAD",
+      "name": "Cloudbase Sleeping Pad",
+      "category": "gear",
+      "cost": 38,
+      "currentPrice": 98,
+      "onHand": 420,
+      "reorderPoint": 140,
+      "estimatedWeeklyUnits": 52
+    },
+    {
+      "sku": "MER-GEAR-CHR",
+      "name": "Trailrest Folding Chair",
+      "category": "gear",
+      "cost": 22,
+      "currentPrice": 56,
+      "onHand": 680,
+      "reorderPoint": 200,
+      "estimatedWeeklyUnits": 74
+    }
+  ]
+}

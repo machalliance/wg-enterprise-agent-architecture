@@ -9,6 +9,7 @@ dist/
 *.db-shm
 *.jsonl
 !seed/**/*.jsonl
+*.trigger
 
 # Env / secrets
 .env

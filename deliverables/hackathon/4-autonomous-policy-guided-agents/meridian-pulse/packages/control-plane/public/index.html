@@ -60,6 +60,33 @@
       .esc .sku { font-weight: 600; }
       .esc .why { color: var(--muted); font-size: 13px; margin: 4px 0 8px; }
       .esc .tier { font-size: 12px; color: var(--orange); }
+      .anomaly { border: 1px solid var(--red); border-left: 4px solid var(--red); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: rgba(230,72,61,.07); }
+      .anomaly .sku { font-weight: 600; color: var(--red); }
+      .anomaly .obs { margin: 4px 0 2px; }
+      .anomaly .cause { color: var(--muted); font-size: 13px; }
+      .anomaly .taken { color: var(--green); font-size: 12px; margin-top: 6px; }
+      .anomaly .ts { color: var(--muted); font-size: 11px; float: right; }
+      .act { border-left: 3px solid var(--green); background: rgba(53,196,107,.05); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; }
+      .act.NOTIFY { border-left-color: var(--amber); background: rgba(230,161,43,.06); }
+      .act .sku { font-weight: 600; }
+      .act .chg { color: var(--muted); font-size: 12px; }
+      .act .badge { font-size: 11px; padding: 1px 7px; border-radius: 20px; font-weight: 600; }
+      .act .badge.PERMIT { background: rgba(53,196,107,.15); color: var(--green); }
+      .act .badge.NOTIFY { background: rgba(230,161,43,.15); color: var(--amber); }
+      .act .ts { color: var(--muted); font-size: 11px; float: right; }
+      /* transient toast stack, bottom-right */
+      #toasts { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 50; }
+      .toast {
+        background: var(--panel); border: 1px solid var(--green); border-left: 4px solid var(--green);
+        border-radius: 8px; padding: 10px 14px; min-width: 260px; max-width: 340px;
+        box-shadow: 0 6px 24px rgba(0,0,0,.4); animation: toastin .25s ease-out;
+      }
+      .toast.NOTIFY { border-color: var(--amber); border-left-color: var(--amber); }
+      .toast.fade { animation: toastout .4s ease-in forwards; }
+      .toast .t-head { font-weight: 600; font-size: 13px; }
+      .toast .t-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+      @keyframes toastin { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+      @keyframes toastout { to { opacity: 0; transform: translateX(20px); } }
       .empty { color: var(--muted); font-style: italic; }
       .banner { display: none; padding: 10px 20px; background: rgba(230,72,61,.15); border-bottom: 1px solid var(--red); color: var(--red); font-weight: 600; }
       .banner.show { display: block; }
@@ -111,6 +138,16 @@
         <h2>Escalation queue — awaiting approval</h2>
         <div id="escList"><div class="empty">No pending escalations.</div></div>
       </section>
+
+      <section class="panel" style="grid-column: 1 / -1;">
+        <h2>Autonomous actions — the agent working within policy (live)</h2>
+        <div id="activityList"><div class="empty">No actions yet — advance a beat or wait for the next cycle.</div></div>
+      </section>
+
+      <section class="panel" style="grid-column: 1 / -1;">
+        <h2>⚠ Agent-flagged anomalies — bad data the agent caught and refused to act on</h2>
+        <div id="anomalyList"><div class="empty">No anomalies flagged.</div></div>
+      </section>
     </main>
 
     <div class="links">
@@ -119,9 +156,27 @@
       Full decision trail: <code>pnpm --filter @meridian-pulse/policy trail list</code>
     </div>
 
+    <div id="toasts"></div>
+
     <script>
       const $ = (id) => document.getElementById(id);
       let halted = false;
+      const seenActionIds = new Set(); // dedup so a toast fires once per new action
+      let firstActivityRender = true;
+
+      function toast(a) {
+        const wrap = $("toasts");
+        const el = document.createElement("div");
+        el.className = "toast " + (a.tier || "PERMIT");
+        const arrow = a.currentPrice != null && a.newPrice != null
+          ? `$${a.currentPrice} → $${a.newPrice}` : "";
+        el.innerHTML =
+          `<div class="t-head">Agent acted autonomously — ${a.tier}</div>` +
+          `<div class="t-sub"><strong>${a.sku}</strong> ${arrow}` +
+          (a.changePct != null ? ` (${a.changePct}%)` : "") + `</div>`;
+        wrap.appendChild(el);
+        setTimeout(() => { el.classList.add("fade"); setTimeout(() => el.remove(), 400); }, 5000);
+      }
 
       async function post(path, body) {
         const r = await fetch(path, {
@@ -193,6 +248,50 @@
                 <button class="reject" onclick="reject('${a.id}')">Reject</button>
               </div>
             </div>`).join("");
+        }
+
+        const anomalies = state.anomalies || [];
+        const aList = $("anomalyList");
+        if (anomalies.length === 0) {
+          aList.innerHTML = '<div class="empty">No anomalies flagged.</div>';
+        } else {
+          aList.innerHTML = anomalies.map((a) => {
+            const t = a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : "";
+            return `
+            <div class="anomaly">
+              <span class="ts">${t}</span>
+              <div class="sku">⚠ ${a.sku}</div>
+              <div class="obs">${a.observation || ""}</div>
+              <div class="cause">Suspected: ${a.suspectedCause || ""}</div>
+              <div class="taken">✓ ${a.actionTaken || "flagged; no price change"}</div>
+            </div>`;
+          }).join("");
+        }
+
+        const activity = state.recentActivity || [];
+        const actList = $("activityList");
+        if (activity.length === 0) {
+          actList.innerHTML = '<div class="empty">No actions yet — advance a beat or wait for the next cycle.</div>';
+        } else {
+          actList.innerHTML = activity.map((a) => {
+            const t = a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : "";
+            const arrow = a.currentPrice != null && a.newPrice != null ? `$${a.currentPrice} → $${a.newPrice}` : "";
+            return `
+            <div class="act ${a.tier}">
+              <span class="ts">${t}</span>
+              <span class="sku">${a.sku}</span> <span class="badge ${a.tier}">${a.tier}</span>
+              <div class="chg">${arrow}${a.changePct != null ? ` · ${a.changePct}%` : ""} — ${a.reason || ""}</div>
+            </div>`;
+          }).join("");
+          // Fire a transient toast for each NEW executed action (skip the first
+          // render so a page load doesn't flood toasts for pre-existing history).
+          for (const a of activity) {
+            if (a.id && !seenActionIds.has(a.id)) {
+              seenActionIds.add(a.id);
+              if (!firstActivityRender) toast(a);
+            }
+          }
+          firstActivityRender = false;
         }
       }
 

@@ -132,6 +132,21 @@ oversight state + dead-man's-switch, checkpoint store, commerce DB); it does **n
 end-to-end, the gateway CEL, or the Goose loop — those are demonstrated by running the demo, not asserted
 by a test.
 
+## Demo behaviour with a capable model
+
+**13. The circuit breaker is a backstop, and the demo does not rely on it firing.** M5's rate/magnitude/
+anomaly breakers (`packages/control-plane/src/breakers.ts`) are real and still sit in the `set_price` path
+— a burst of deep cuts, a >$50k magnitude move, or an EXTREME demand z-score halts the agent. But the
+demo's bad-data beat (a competitor feed fat-fingering a 75%-off across its whole catalog) does **not** trip
+it, because a capable model (Claude Sonnet 5) *reasons* that a catalog-wide 75% cut is implausible and
+declines to act — so no cascade of cuts is ever proposed. Rather than dumb the scenario down until the
+model takes the bait, the agent has a `report_anomaly` tool (policy server) that records "I saw bad data
+and stood down" to the decision trail, which the control plane surfaces on the dashboard. So the demonstrated
+safety story is the model's *own judgment*, made visible and auditable; the breaker is the mechanical
+backstop for a **weaker** model that fails to catch it. Both are real and both are wanted. Do not remove
+the breaker because the demo does not exercise it, and do not weaken the glitch to force a breaker trip —
+the point is that a good agent shouldn't need the breaker here, and a good system has it anyway.
+
 ## Invariants — do not "fix" these while working on something else
 
 The following are load-bearing and must survive any future refactor of the above verbatim:
@@ -143,6 +158,8 @@ The following are load-bearing and must survive any future refactor of the above
   must stay meaningful — never rewrite history in place, and keep tamper detection pointing at the exact
   broken record. Retention pruning keeps the *chain* verifiable, not just the count.
 - **The gateway rate-limit stays loose; the breakers are the real control** (item 5).
+- **The circuit breaker stays in the write path even though the demo doesn't trip it** (item 13). The
+  agent's `report_anomaly` judgment and the mechanical breaker are complementary layers — keep both.
 - **The recipe omits `temperature`** (item 6) — do not reintroduce it.
 - **Non-vacuous tests.** Every test that filters a collection down to violations must first assert the
   collection was non-empty, so an empty scan fails loudly instead of certifying nothing (enforced by the

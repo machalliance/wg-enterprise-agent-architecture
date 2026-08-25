@@ -14,7 +14,9 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SEED_DIR = resolve(__dirname, "..", "..", "..", "seed");
+const SEED_DIR = process.env.SEED_DIR
+  ? resolve(process.env.SEED_DIR)
+  : resolve(__dirname, "..", "..", "..", "seed");
 /** Default DB path: alongside the package (packages/mcp-commerce/catalog.db). */
 const DEFAULT_DB_PATH = resolve(__dirname, "..", "catalog.db");
 

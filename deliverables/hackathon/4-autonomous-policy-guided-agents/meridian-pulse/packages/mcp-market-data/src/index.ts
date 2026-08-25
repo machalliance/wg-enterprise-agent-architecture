@@ -13,10 +13,13 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createServer, type Server as HttpServer } from "node:http";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 import { z } from "zod";
 import { MarketDataStore } from "./store.js";
 import { ScenarioDriver, type ScenarioMode } from "./scenario-driver.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function log(msg: string): void {
   process.stderr.write(`[mcp-market-data] ${msg}\n`);
@@ -34,50 +37,6 @@ function notFound(sku: string) {
   };
 }
 
-/**
- * Manual-mode control surface.
- *
- * The MCP transport owns this process's stdio, so the presenter can't drive the
- * demo from stdin here — the trigger has to be out-of-band. In manual mode only,
- * we host a tiny HTTP listener the presenter (or a terminal-Enter helper, or a
- * future dashboard button) pokes to advance one beat:
- *
- *   POST /scenario/next   -> apply the next beat; returns the StepResult JSON
- *   GET  /scenario/status -> the beat plan and how far through it we are
- *
- * Loopback-only, unauthenticated — an operator tool on localhost, matching the
- * control plane's stance. Returns the server so main() can close it on shutdown.
- */
-function startScenarioControl(driver: ScenarioDriver, port: number): HttpServer {
-  const server = createServer((req, res) => {
-    const url = req.url ?? "";
-    res.setHeader("Content-Type", "application/json");
-    if (req.method === "POST" && url === "/scenario/next") {
-      const result = driver.stepBeat();
-      res.statusCode = 200;
-      res.end(JSON.stringify(result));
-      return;
-    }
-    if (req.method === "GET" && url === "/scenario/status") {
-      const beats = driver.getBeats().map((b) => ({
-        beat: b.beat,
-        phase: b.phase,
-        eventCount: b.events.length,
-      }));
-      res.statusCode = 200;
-      res.end(JSON.stringify({ mode: "manual", beats }));
-      return;
-    }
-    res.statusCode = 404;
-    res.end(JSON.stringify({ error: "not_found", hint: "POST /scenario/next or GET /scenario/status" }));
-  });
-  // Bind loopback only — this is a localhost operator surface, never public.
-  server.listen(port, "127.0.0.1", () => {
-    log(`manual scenario control on http://127.0.0.1:${port} (POST /scenario/next)`);
-  });
-  return server;
-}
-
 async function main(): Promise<void> {
   const store = new MarketDataStore();
 
@@ -90,7 +49,7 @@ async function main(): Promise<void> {
     "list_category_skus",
     {
       description:
-        "List all SKUs under management with their category and current price. Use this to discover what you can act on.",
+        "List all SKUs under management with their category, current price, and current demand signal (demandTrend + demandMagnitude). Use this to discover what you can act on and to spot which SKUs are MOVING — prioritise the largest demand magnitudes.",
       inputSchema: {},
     },
     async () => json({ skus: store.listSkus() }),
@@ -152,17 +111,22 @@ async function main(): Promise<void> {
   const tickScale = Number(process.env.SCENARIO_TICK_SCALE ?? "1");
   const loop = process.env.SCENARIO_LOOP === "1";
   const mode: ScenarioMode = process.env.SCENARIO_MODE === "manual" ? "manual" : "timed";
-  const scenarioControlPort = Number(process.env.SCENARIO_CONTROL_PORT ?? "8091");
-  const driver = new ScenarioDriver(store, { tickScale, loop, mode });
-
-  // In manual mode, the presenter advances beats out-of-band over HTTP (stdio
-  // here belongs to the MCP transport). Timed mode needs no such surface.
-  let scenarioControl: HttpServer | undefined;
+  // Manual mode advances beats from a TRIGGER FILE, not a socket. The gateway can
+  // spawn this stdio child more than once; a file trigger has no bind race and no
+  // "which instance owns the port" ambiguity — the live instance reads the same
+  // integer the presenter writes. Default lives next to the other runtime state.
+  const triggerFile =
+    process.env.SCENARIO_TRIGGER_FILE || resolve(__dirname, "..", "scenario-step.trigger");
+  const driver = new ScenarioDriver(store, {
+    tickScale,
+    loop,
+    mode,
+    triggerFile: mode === "manual" ? triggerFile : "",
+  });
 
   const shutdown = (signal: string) => {
     log(`received ${signal}, shutting down`);
     driver.stop();
-    scenarioControl?.close();
     process.exit(0);
   };
   process.on("SIGINT", () => shutdown("SIGINT"));
@@ -171,8 +135,7 @@ async function main(): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   if (driver.isManual) {
-    scenarioControl = startScenarioControl(driver, scenarioControlPort);
-    log("connected over stdio; scenario driver in MANUAL mode (advance beats via POST /scenario/next)");
+    log(`connected over stdio; scenario driver in MANUAL mode (trigger file: ${triggerFile})`);
   } else {
     log("connected over stdio; starting scenario driver (timed)");
   }

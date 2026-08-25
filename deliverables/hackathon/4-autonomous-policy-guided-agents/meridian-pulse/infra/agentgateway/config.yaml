@@ -100,6 +100,10 @@ binds:
                 rules:
                   - 'mcp.tool.name.startsWith("get_") || mcp.tool.name.startsWith("list_")'
                   - 'mcp.tool.name == "set_price" && "commerce:write" in jwt.scopes'
+                  # report_anomaly records the agent's judgment (flags bad data);
+                  # it changes NO commerce state, so any authenticated identity may
+                  # call it — no commerce:write required.
+                  - 'mcp.tool.name == "report_anomaly"'
               # Coarse rate-limit backstop (M5). This token bucket caps ALL MCP
               # calls on the route as a blunt safety net. The FINE-GRAINED circuit
               # breakers that the demo exercises (set_price-only rate limit,

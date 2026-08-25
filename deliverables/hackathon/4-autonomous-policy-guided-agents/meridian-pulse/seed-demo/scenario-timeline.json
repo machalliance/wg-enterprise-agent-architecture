@@ -1,0 +1,106 @@
+{
+  "_comment": "Ordered market events driving the ~4-minute demo. The embedded scenario driver in mcp-market-data emits these by their `atSeconds` offset from start (timed mode) or one demo-beat per manual step. Event types: competitor_price_change, demand_signal, inventory_update, competitor_prices_bulk_update (priceMultiplier for the fat-finger glitch, restoreBaseline for recovery). Demo beats: 2 competitor-undercut -> autonomous PERMIT/NOTIFY; 3 demand-spike on the FLAGGED SKU MER-PACK-UL -> ESCALATE by rule (any change to a flagged SKU escalates); 4 flash-crash -> agent flags bad data via report_anomaly (circuit breaker is the backstop, not the demo path); 5 recovery + operator kill-switch/resume.",
+  "durationSeconds": 240,
+  "events": [
+    {
+      "atSeconds": 5,
+      "type": "demand_signal",
+      "phase": "steady-state",
+      "sku": "MER-PACK-30",
+      "trend": "stable",
+      "magnitude": 0.02,
+      "reason": "Normal spring foot traffic; daypack demand flat."
+    },
+    {
+      "atSeconds": 12,
+      "type": "competitor_price_change",
+      "phase": "steady-state",
+      "sku": "MER-HYD-1L",
+      "competitor": "AquaGear",
+      "newPrice": 32.0,
+      "reason": "Minor competitor adjustment within normal band."
+    },
+    {
+      "atSeconds": 20,
+      "type": "demand_signal",
+      "phase": "steady-state",
+      "sku": "MER-TENT-2P",
+      "trend": "rising",
+      "magnitude": 0.04,
+      "reason": "Slight uptick in 2-person tent interest ahead of weekend."
+    },
+
+    {
+      "atSeconds": 35,
+      "type": "competitor_price_change",
+      "phase": "competitor-undercut",
+      "sku": "MER-TENT-3S",
+      "competitor": "AlpineDirect",
+      "newPrice": 188.6,
+      "reason": "Competitor undercuts hero tent by ~8% on AlpineDirect.",
+      "expectedOutcome": "autonomous",
+      "demoBeat": 2
+    },
+    {
+      "atSeconds": 40,
+      "type": "demand_signal",
+      "phase": "competitor-undercut",
+      "sku": "MER-TENT-3S",
+      "trend": "rising",
+      "magnitude": 0.18,
+      "reason": "Hero tent demand elastic to competitor move; matching expected to recover share."
+    },
+
+    {
+      "atSeconds": 75,
+      "type": "demand_signal",
+      "phase": "demand-spike",
+      "sku": "MER-PACK-UL",
+      "trend": "rising",
+      "magnitude": 0.40,
+      "reason": "Ultralight pack goes viral with thru-hikers; demand up 40% week-over-week.",
+      "expectedOutcome": "escalate",
+      "demoBeat": 3
+    },
+    {
+      "atSeconds": 80,
+      "type": "competitor_price_change",
+      "phase": "demand-spike",
+      "sku": "MER-PACK-UL",
+      "competitor": "AlpineDirect",
+      "newPrice": 219,
+      "reason": "AlpineDirect raises the ultralight pack to $219 on the demand surge, opening room to move."
+    },
+    {
+      "atSeconds": 90,
+      "type": "inventory_update",
+      "phase": "demand-spike",
+      "sku": "MER-PACK-UL",
+      "onHandDelta": -260,
+      "reason": "Ultralight pack inventory drawing down fast under the surge."
+    },
+
+    {
+      "atSeconds": 180,
+      "type": "competitor_prices_bulk_update",
+      "phase": "flash-crash",
+      "source": "FeedX",
+      "affectedSkusPattern": "all-with-feedx",
+      "priceMultiplier": 0.25,
+      "reason": "FeedX pricing error: a 75%-off promo meant for one product was applied to their ENTIRE catalog, so every FeedX competitor price drops to a quarter of its value.",
+      "expectedOutcome": "circuit-breaker",
+      "demoBeat": 4
+    },
+
+    {
+      "atSeconds": 210,
+      "type": "competitor_prices_bulk_update",
+      "phase": "recovery",
+      "source": "FeedX",
+      "affectedSkusPattern": "all-with-feedx",
+      "restoreBaseline": true,
+      "reason": "FeedX feed corrected; prices restored to baseline after operator applies data filter.",
+      "demoBeat": 5
+    }
+  ]
+}

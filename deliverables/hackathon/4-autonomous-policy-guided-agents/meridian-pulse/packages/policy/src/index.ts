@@ -31,7 +31,9 @@ import { classify, type Mandate, type PriceContext } from "./tiers.js";
 import { DecisionTrail } from "./decision-trail.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SEED_DIR = resolve(__dirname, "..", "..", "..", "seed");
+const SEED_DIR = process.env.SEED_DIR
+  ? resolve(process.env.SEED_DIR)
+  : resolve(__dirname, "..", "..", "..", "seed");
 const NOTIFY_LOG = process.env.NOTIFY_LOG_PATH || resolve(__dirname, "..", "notifications.jsonl");
 
 function log(msg: string): void {
@@ -271,6 +273,48 @@ async function main(): Promise<void> {
           return json({ ...result, tier: decision.tier, rule: decision.rule });
         }
       }
+    },
+  );
+
+  // --- report_anomaly: the agent's own safety judgment, made visible ----------
+  // A capable model often recognises bad market data (e.g. a competitor feed
+  // reporting implausible prices) and correctly declines to act on it. Without a
+  // way to record that, the judgment vanishes into the reasoning log. This tool
+  // lets the agent log the anomaly to the append-only decision trail, from where
+  // the control plane surfaces it on the operator dashboard — so "the agent
+  // caught the bad data and stood down" is a visible, auditable event, not an
+  // invisible non-action. (The circuit breaker remains the mechanical backstop
+  // for the case where a weaker model fails to catch it.)
+  server.registerTool(
+    "report_anomaly",
+    {
+      description:
+        "Report a market-data anomaly you have detected and are choosing NOT to act on — for example a competitor price so implausible it is almost certainly a data/feed error rather than a real move. Use this instead of silently ignoring bad data: it records your judgment to the decision trail and flags it for the human operator. Does NOT change any price.",
+      inputSchema: {
+        sku: z.string().describe("The SKU the anomaly concerns, e.g. MER-TENT-3S"),
+        observation: z
+          .string()
+          .describe("What you observed, e.g. 'FeedX quotes ~75% below normal across the catalog'"),
+        suspectedCause: z
+          .string()
+          .describe("Why you believe it is not a real signal, e.g. 'feed pricing error, not a genuine price move'"),
+      },
+    },
+    async ({ sku, observation, suspectedCause }) => {
+      const record = trail.appendAnomaly({
+        cycleNumber: null,
+        sku,
+        observation,
+        suspectedCause,
+        actionTaken: "flagged for operator; no price change made",
+      });
+      log(`report_anomaly ${sku}: ${observation} (${suspectedCause})`);
+      return json({
+        recorded: true,
+        anomalyId: record.id,
+        sku,
+        message: `Anomaly on ${sku} recorded and flagged for the operator. No price change made.`,
+      });
     },
   );
 

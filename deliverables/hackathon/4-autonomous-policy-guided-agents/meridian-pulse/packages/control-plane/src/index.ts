@@ -28,6 +28,8 @@ const PORT = Number(process.env.CONTROL_PLANE_PORT ?? "8090");
 const PUBLIC_DIR = resolve(__dirname, "..", "public");
 const ESCALATION_QUEUE_PATH =
   process.env.ESCALATION_QUEUE_PATH || resolve(__dirname, "..", "..", "policy", "escalation-queue.jsonl");
+const DECISION_TRAIL_PATH =
+  process.env.DECISION_TRAIL_PATH || resolve(__dirname, "..", "..", "policy", "decision-trail.jsonl");
 const APPROVALS_CLI = resolve(__dirname, "..", "..", "policy", "dist", "approvals-cli.js");
 
 function log(msg: string): void {
@@ -47,6 +49,62 @@ function readEscalations(): Record<string, unknown>[] {
     }
   }
   return [...byId.values()];
+}
+
+/** Read anomaly records the agent flagged (kind:"anomaly") from the decision trail, newest first. */
+function readAnomalies(limit = 20): Record<string, unknown>[] {
+  if (!existsSync(DECISION_TRAIL_PATH)) return [];
+  const anomalies: Record<string, unknown>[] = [];
+  for (const line of readFileSync(DECISION_TRAIL_PATH, "utf8").split("\n").filter(Boolean)) {
+    try {
+      const rec = JSON.parse(line) as Record<string, unknown>;
+      if (rec.kind === "anomaly") anomalies.push(rec);
+    } catch {
+      /* skip malformed */
+    }
+  }
+  return anomalies.reverse().slice(0, limit);
+}
+
+/**
+ * Read recent EXECUTED autonomous actions (kind:"decision", tier PERMIT/NOTIFY,
+ * executed) from the trail, newest first. This is what the dashboard's live
+ * activity feed + toast use to make the agent's silent-but-legitimate work
+ * visible — "it IS doing things, within policy" — even when nothing is escalated.
+ * Escalations/denials are shown elsewhere; this is the autonomous stream.
+ */
+function readRecentActivity(limit = 8): Record<string, unknown>[] {
+  if (!existsSync(DECISION_TRAIL_PATH)) return [];
+  const actions: Record<string, unknown>[] = [];
+  for (const line of readFileSync(DECISION_TRAIL_PATH, "utf8").split("\n").filter(Boolean)) {
+    try {
+      const r = JSON.parse(line) as {
+        kind?: string;
+        id?: string;
+        timestamp?: string;
+        proposedAction?: { args?: { sku?: string; newPrice?: number }; changePct?: number };
+        reasoning?: { summary?: string };
+        policyResult?: { tier?: string; context?: { currentPrice?: number } };
+        outcome?: { executed?: boolean };
+      };
+      if (r.kind !== "decision" || !r.outcome?.executed) continue;
+      const tier = r.policyResult?.tier;
+      if (tier !== "PERMIT" && tier !== "NOTIFY") continue;
+      actions.push({
+        id: r.id,
+        timestamp: r.timestamp,
+        sku: r.proposedAction?.args?.sku,
+        currentPrice: r.policyResult?.context?.currentPrice,
+        newPrice: r.proposedAction?.args?.newPrice,
+        changePct: r.proposedAction?.changePct,
+        tier,
+        reason: r.reasoning?.summary,
+      });
+    } catch {
+      /* skip malformed */
+    }
+  }
+  return actions.reverse().slice(0, limit);
 }
 
 /** Run the policy package's approvals CLI (which handles release-to-commerce). */
@@ -135,6 +193,17 @@ app.get("/escalations", (_req, res) => {
   });
 });
 
+// Anomalies the agent flagged (report_anomaly -> decision trail). This is the
+// agent's own judgment made visible: bad data it detected and declined to act on.
+app.get("/anomalies", (_req, res) => {
+  res.json({ anomalies: readAnomalies() });
+});
+
+// Recent executed autonomous actions — the agent visibly working within policy.
+app.get("/activity", (_req, res) => {
+  res.json({ recentActivity: readRecentActivity() });
+});
+
 app.post("/escalations/:id/approve", async (req, res) => {
   const result = await runApprovals("approve", req.params.id);
   log(`approve ${req.params.id} -> exit ${result.code}`);
@@ -171,6 +240,8 @@ function broadcast(): void {
     status: oversight.get(),
     breakers: breakers.snapshot(),
     pendingEscalations: escalations.filter((a) => a.status === "pending"),
+    anomalies: readAnomalies(),
+    recentActivity: readRecentActivity(),
   });
   for (const res of sseClients) res.write(`data: ${payload}\n\n`);
 }

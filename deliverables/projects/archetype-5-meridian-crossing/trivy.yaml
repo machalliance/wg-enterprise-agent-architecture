@@ -23,7 +23,7 @@ scan:
     # Generated identity material: Ed25519 private keys derived from the committed KEY_DERIVATION_SEED,
     # recreated by `pnpm identity:issue` and gitignored. Deliberately public and worthless — the same
     # exclusion and the same rationale as .semgrepignore's entry for this tree.
-    - "meridian-crossing/infra/identity/generated/**"
+    - "infra/identity/generated/**"
 
 pkg:
   # Trivy suppresses dev dependencies by default, which left the vuln scan covering only the runtime
@@ -40,14 +40,14 @@ secret:
   # Scoped to the fixture directory rather than disabling the jwt-token rule globally, so a JWT appearing
   # anywhere else in the repo is still reported.
   skip-paths:
-    - "meridian-crossing/seed/a2cn/**"
+    - "seed/a2cn/**"
 
 misconfig:
   # Enabled, but it currently has NOTHING to scan in this repo, and the summary table saying "0" must not
   # be read as "the demo infrastructure was checked and is clean". Trivy's misconfig scanner covers
   # Dockerfile, Kubernetes, Terraform, CloudFormation, Helm and ARM — NOT Docker Compose, which is the
-  # only infrastructure file here (`meridian-crossing/infra/dir/docker-compose.yml`). Confirmed:
-  # `trivy config meridian-crossing/infra/dir/` reports "Detected config files num=0".
+  # only infrastructure file here (`infra/dir/docker-compose.yml`). Confirmed:
+  # `trivy config infra/dir/` reports "Detected config files num=0".
   #
   # Left on so that adding a Dockerfile or a manifest later is covered without touching this file.
   include-non-failures: false

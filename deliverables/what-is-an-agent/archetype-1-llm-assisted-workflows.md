@@ -1,4 +1,4 @@
-# Bucket 1: LLM-assisted workflows (not yet agents)
+# Archetype 1: LLM-assisted workflows (not yet agents)
 
 *The model helps with language and structure. The workflow still decides everything.*
 
@@ -8,13 +8,13 @@
 
 ## What changes here
 
-Bucket 1 is the simplest and most common place to start. A deterministic workflow calls an LLM to synthesize, extract, summarize, translate, classify, or draft content. The model is doing useful work, but it is not deciding what happens next.
+Archetype 1 is the simplest and most common place to start. A deterministic workflow calls an LLM to synthesize, extract, summarize, translate, classify, or draft content. The model is doing useful work, but it is not deciding what happens next.
 
 A person or a human-authored system still defines the sequence, the routing, the checks, and the final action. The LLM is used like any other capability in the stack: given this context, produce this output. The workflow remains in charge.
 
-That distinction matters. This bucket is powerful, but it is not agentic. The system does not cross the agency line because the model does not make decisions that shape the behavior of the system. It only generates or transforms information inside a path that was already designed.
+That distinction matters. This archetype is powerful, but it is not agentic. The system does not cross the agency line because the model does not make decisions that shape the behavior of the system. It only generates or transforms information inside a path that was already designed.
 
-The moment you adopt this bucket, a few practical concerns appear:
+The moment you adopt this archetype, a few practical concerns appear:
 
 - **Prompting becomes implementation.** A prompt is no longer just a natural-language instruction. It is part of the workflow contract.
 - **Context becomes product surface.** The quality of the output depends heavily on what data the workflow gathers, filters, and passes to the model.
@@ -22,7 +22,7 @@ The moment you adopt this bucket, a few practical concerns appear:
 - **Review stays human or rule based.** The model can draft, but it does not approve, publish, refund, reprice, or route.
 - **Cost and latency matter early.** High-volume workflows can become expensive fast if every simple transformation is pushed through an LLM.
 
-Bucket 1 is useful precisely because it gives teams the language capabilities of an LLM without introducing model-driven control flow.
+Archetype 1 is useful precisely because it gives teams the language capabilities of an LLM without introducing model-driven control flow.
 
 ## Running example: Product content enrichment workflow
 
@@ -38,7 +38,7 @@ The workflow:
 
 The LLM is not deciding whether the product should be sold, which channel should receive it, whether legal review is needed, or whether the content should go live. Those decisions remain outside the model.
 
-This is bucket 1: the model helps create the artifact, but the workflow path is fixed.
+This is archetype 1: the model helps create the artifact, but the workflow path is fixed.
 
 ---
 
@@ -147,11 +147,11 @@ There is no step where the LLM chooses a route. The workflow may retry, reject, 
 
 Treat the LLM call as a step inside a workflow engine, not as the workflow engine itself. The application decides when to call the model, what data to send, how many retries are allowed, which validators run afterward, and who approves the result.
 
-This makes bucket 1 attractive for enterprise teams. You get AI assistance while keeping the operational model familiar: queues, tasks, states, approvals, logs, and rollback.
+This makes archetype 1 attractive for enterprise teams. You get AI assistance while keeping the operational model familiar: queues, tasks, states, approvals, logs, and rollback.
 
 ### Context packaging is where quality comes from
 
-The model only sees what the workflow gives it. Good bucket 1 systems invest heavily in context assembly:
+The model only sees what the workflow gives it. Good archetype 1 systems invest heavily in context assembly:
 
 - approved product attributes from PIM or ERP
 - brand tone and terminology rules
@@ -176,7 +176,7 @@ Practical requirements:
 
 ### Output contracts and validators
 
-A workflow cannot safely hand raw model output directly to downstream systems. Bucket 1 needs output contracts.
+A workflow cannot safely hand raw model output directly to downstream systems. Archetype 1 needs output contracts.
 
 For product content, that might mean:
 
@@ -193,7 +193,7 @@ The validator is the bridge between probabilistic generation and deterministic s
 
 ### Human review and publishing controls
 
-In bucket 1, the model drafts. It does not own the final business action.
+In archetype 1, the model drafts. It does not own the final business action.
 
 For some low-risk fields, review can be lightweight. For regulated categories, sustainability claims, medical claims, financial claims, or brand-sensitive campaigns, review should stay explicit. The approval action belongs to a person or a separate deterministic governance process.
 
@@ -201,7 +201,7 @@ For some low-risk fields, review can be lightweight. For regulated categories, s
 
 Not every transformation deserves an LLM call. Simple formatting, unit conversion, ID mapping, schema validation, deduplication, and field normalization are better handled by scripts or deterministic services.
 
-Bucket 1 works best when the LLM is reserved for language-heavy work where it adds clear value. Cache outputs when inputs have not changed. Batch work when latency is not critical. Keep cheap deterministic steps outside the model.
+Archetype 1 works best when the LLM is reserved for language-heavy work where it adds clear value. Cache outputs when inputs have not changed. Batch work when latency is not critical. Keep cheap deterministic steps outside the model.
 
 ---
 
@@ -240,7 +240,7 @@ Policy should distinguish between:
 
 ### Evaluation and regression tests
 
-Bucket 1 systems need evaluation even though they are not agents. The failure mode is not a rogue autonomous system. The failure mode is quietly degraded output at scale.
+Archetype 1 systems need evaluation even though they are not agents. The failure mode is not a rogue autonomous system. The failure mode is quietly degraded output at scale.
 
 Useful evaluation patterns:
 
@@ -266,7 +266,7 @@ This is not an agent decision trail yet. It is content provenance.
 
 ---
 
-## Other examples that fit bucket 1
+## Other examples that fit archetype 1
 
 - **Customer support reply drafting.** The workflow gathers order, shipment, and policy context. The LLM drafts a response. The support agent decides what to send.
 - **Localization and market adaptation.** The workflow sends approved source copy to the model for translation or adaptation, then routes output to local review.
@@ -276,23 +276,23 @@ This is not an agent decision trail yet. It is content provenance.
 
 ---
 
-## Bridging to bucket 2
+## Bridging to archetype 2
 
-Bucket 1 stops at generation and transformation. It becomes bucket 2 when the model's output changes the path of the workflow.
+Archetype 1 stops at generation and transformation. It becomes archetype 2 when the model's output changes the path of the workflow.
 
-A generated product description is bucket 1. A model deciding that a product should go to legal review instead of copy enrichment is bucket 2.
+A generated product description is archetype 1. A model deciding that a product should go to legal review instead of copy enrichment is archetype 2.
 
-A drafted support reply is bucket 1. A model deciding whether the ticket should go to fraud, delivery investigation, refund review, or technical support is bucket 2.
+A drafted support reply is archetype 1. A model deciding whether the ticket should go to fraud, delivery investigation, refund review, or technical support is archetype 2.
 
-The safest way to move from bucket 1 to bucket 2 is to promote one decision point at a time. Keep the paths explicit. Keep the allowed outputs structured. Keep deterministic execution where deterministic execution works.
+The safest way to move from archetype 1 to archetype 2 is to promote one decision point at a time. Keep the paths explicit. Keep the allowed outputs structured. Keep deterministic execution where deterministic execution works.
 
 ---
 
 ## Where this leaves us
 
-Bucket 1 is not a consolation prize. It is where most organizations can create immediate value with manageable risk. It gives teams a way to learn how prompts, context, validation, review, and observability work in production without asking the model to steer the system.
+Archetype 1 is not a consolation prize. It is where most organizations can create immediate value with manageable risk. It gives teams a way to learn how prompts, context, validation, review, and observability work in production without asking the model to steer the system.
 
-That foundation compounds. The same context packaging, prompt governance, output validation, audit logging, and human review patterns become the raw material for bucket 2. When you later let the model choose between designed paths, you will already have the controls needed to make that decision visible and reviewable.
+That foundation compounds. The same context packaging, prompt governance, output validation, audit logging, and human review patterns become the raw material for archetype 2. When you later let the model choose between designed paths, you will already have the controls needed to make that decision visible and reviewable.
 
 ---
 

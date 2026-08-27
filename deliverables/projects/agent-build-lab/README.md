@@ -59,7 +59,7 @@ This segment is mostly learning with light hands-on moments, so you finish with 
 
 ### The five archetypes
 
-We work from the spectrum laid out in the MACH Alliance article [From Orchestration to Autonomy](https://machalliance.org/insights-hub/from-orchestrations-to-autonomy), by the Agent Ecosystem's Enterprise Agent Architecture Working Group. The archetypes are **not a maturity ladder** — each is the right choice for a particular problem, and most real systems use several at once:
+We work from the spectrum laid out in the MACH Alliance article [From Orchestration to Autonomy](https://machalliance.org/insights-hub/from-orchestration-to-autonomy), by the Agent Ecosystem's Enterprise Agent Architecture Working Group. The archetypes are **not a maturity ladder** — each is the right choice for a particular problem, and most real systems use several at once:
 
 1. **LLM-assisted workflows** — a fixed, human-authored flow that calls a model to generate or transform content at certain steps. The model does real work but never chooses the path, so it sits below the line where agency begins.
 2. **LLM-directed workflows** — the structure is still authored by people, but the model decides which path to take within it (routing, parallelization, evaluation loops).
@@ -150,7 +150,7 @@ If you adapt or extend the kit, contributions back are welcome — see [Contribu
 ## Reference & further reading
 
 - [MACH X Amsterdam, September 29–30, 2026](https://mach-x.machalliance.org/amsterdam/) — the event where this kit debuts.
-- [From Orchestration to Autonomy](https://machalliance.org/insights-hub/from-orchestrations-to-autonomy) — MACH Alliance Insights Hub. The five archetypes and the architecture/policy framing for the morning.
+- [From Orchestration to Autonomy](https://machalliance.org/insights-hub/from-orchestration-to-autonomy) — MACH Alliance Insights Hub. The five archetypes and the architecture/policy framing for the morning.
 - [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) — the working group behind the article; charter, members, and ongoing work.
 - Reference architectures — **TBC** _(links to be added)._
 

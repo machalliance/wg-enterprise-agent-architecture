@@ -7,7 +7,8 @@ repository. It follows the AGENTS.md convention from the Agentic AI Foundation s
 
 Meridian Pulse is a hackathon reference prototype for **Archetype 4: Autonomous, policy-guided
 agents**. A single revenue-optimization agent monitors ~50 SKUs and reprices them continuously,
-within policy. The spec lives in `../spec/`.
+within policy. The step-by-step build guide lives in the Hackathon in a Box at
+`../agent-build-lab/archetype-4-meridian-pulse/`.
 
 ## The hard rule
 
@@ -42,14 +43,17 @@ meridian-pulse/
 │   ├── otel/             # OpenTelemetry collector config
 │   └── grafana/          # Provisioned dashboards + datasources
 ├── seed/                 # catalog.json, competitors.json, scenario-timeline.json, mandate.json, identity/
-└── ../spec/              # the milestone specs (read these in order)
+└── docs/                 # known-limitations.md and other prototype notes
 ```
+
+The step-by-step build guide (milestones, read in order) lives in the Hackathon in a Box at
+`../agent-build-lab/archetype-4-meridian-pulse/`.
 
 ## Build order
 
 M0 (foundation) → M1 (identity) → M2 (state) → M3 (policy) → M4 (accountability) →
 M5 (circuit breakers) → M6 (demo). Each milestone adds exactly one thing and ends at a demoable
-checkpoint. See `../spec/00-overview.md` §9.
+checkpoint. See `../agent-build-lab/archetype-4-meridian-pulse/00-overview.md` §9.
 
 ## Conventions
 

@@ -7,7 +7,7 @@ Buildable deliverables of the [Enterprise Agent Architecture Working Group](../.
 | Project | What it is | State |
 |---|---|---|
 | [`agent-build-lab/`](./agent-build-lab/) | **Agent Architecture Hackathon in a Box** — a reusable two-half-day hackathon for learning to design and combine agent architectures. Debuts at MACH X Amsterdam, September 29–30, 2026. | Active development |
-| [`archetype-4-meridian-pulse/`](./archetype-4-meridian-pulse/) | **Meridian Pulse** — specification for an **archetype 4** reference architecture: an agent that runs over extended periods and acts on its own according to policy. Written as a milestone-sequenced spec (identity, state, policy, accountability, circuit breakers, demo). | Spec |
+| [`archetype-4-meridian-pulse/`](./archetype-4-meridian-pulse/) | **Meridian Pulse** — a working **archetype 4** reference prototype: an agent that runs over extended periods and acts on its own according to policy, with real policy gates, circuit breakers, and an auditable decision trail. The step-by-step build guide lives in [`agent-build-lab/archetype-4-meridian-pulse/`](./agent-build-lab/archetype-4-meridian-pulse/). | Prototype |
 | [`archetype-5-meridian-crossing/`](./archetype-5-meridian-crossing/) | **Meridian Crossing** — a working **archetype 5** prototype: multiple self-directed agents representing different interests, negotiating across trust boundaries. | Prototype |
 
 Project directories are named `archetype-<n>-<project>`, so the numbering matches the five archetypes in the article. Not every archetype has a project yet.

@@ -1,6 +1,6 @@
 # Meridian Pulse
 
-Meridian Pulse is a hackathon reference prototype for **Archetype 4: Autonomous, policy-guided agents**. A single revenue-optimization agent continuously monitors ~50 SKUs of Meridian Outfitters' spring outdoor line and reprices them within policy — perceiving market signals, reasoning about responses, acting through a policy gate, and self-correcting, without a human in the loop for each decision. It is built entirely on the open Agentic AI Foundation (AAIF) stack: **Goose** as the agent runtime, **AgentGateway** as the policy/governance/observability layer, and **MCP** for tool connectivity. The full milestone specs live in [`../spec/`](../spec/) (start with [`00-overview.md`](../spec/00-overview.md)); this README documents the prototype as actually built.
+Meridian Pulse is a hackathon reference prototype for **Archetype 4: Autonomous, policy-guided agents**. A single revenue-optimization agent continuously monitors ~50 SKUs of Meridian Outfitters' spring outdoor line and reprices them within policy — perceiving market signals, reasoning about responses, acting through a policy gate, and self-correcting, without a human in the loop for each decision. It is built entirely on the open Agentic AI Foundation (AAIF) stack: **Goose** as the agent runtime, **AgentGateway** as the policy/governance/observability layer, and **MCP** for tool connectivity. The step-by-step build guide (milestones M0–M6) lives in the Hackathon in a Box at [`../agent-build-lab/archetype-4-meridian-pulse/`](../agent-build-lab/archetype-4-meridian-pulse/) (start with [`00-overview.md`](../agent-build-lab/archetype-4-meridian-pulse/00-overview.md)); this README documents the prototype as actually built.
 
 ---
 
@@ -168,8 +168,10 @@ meridian-pulse/
 │   ├── grafana/          # Provisioned datasources + dashboards
 │   └── observability-compose.yaml   # finch compose stack (Grafana/Tempo/Prometheus/Loki/OTel)
 ├── seed/                 # catalog.json, competitors.json, scenario-timeline.json, mandate.json, identity/
-└── ../spec/              # the milestone specs (read these in order)
+└── docs/                 # known-limitations.md and other prototype notes
 ```
+
+The step-by-step build guide (milestones M0–M6) lives separately in the Hackathon in a Box at [`../agent-build-lab/archetype-4-meridian-pulse/`](../agent-build-lab/archetype-4-meridian-pulse/) — read those in order to build this prototype from scratch.
 
 Milestones **M0–M6** were built in order, each adding exactly one thing and ending at a demoable checkpoint: **M0** foundation → **M1** identity → **M2** state → **M3** policy → **M4** accountability → **M5** circuit breakers → **M6** demo.
 
@@ -194,7 +196,7 @@ Either way, Goose always points at the gateway on `:4000`; which provider actual
 
 ## Scope boundaries
 
-This prototype demonstrates that persistence, identity, policy, circuit breakers, and accountability can be assembled from open AAIF components today. To keep the focus there, the following are deliberately mocked or out of scope (mirroring [`../spec/00-overview.md` §8](../spec/00-overview.md)):
+This prototype demonstrates that persistence, identity, policy, circuit breakers, and accountability can be assembled from open AAIF components today. To keep the focus there, the following are deliberately mocked or out of scope (mirroring [`../agent-build-lab/archetype-4-meridian-pulse/00-overview.md` §8](../agent-build-lab/archetype-4-meridian-pulse/00-overview.md)):
 
 - **Commerce systems are mocks.** `mcp-commerce` is a SQLite-backed stand-in with a seeded catalog. Integrating real legacy commerce systems is acknowledged, not solved here.
 - **Market data is simulated.** `mcp-market-data` and its embedded scenario driver replay accelerated signals from `seed/scenario-timeline.json` instead of consuming real feeds.

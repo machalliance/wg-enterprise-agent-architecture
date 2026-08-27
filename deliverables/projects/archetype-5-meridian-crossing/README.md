@@ -5,15 +5,54 @@ organizations, with opposed interests, negotiate a real commercial outcome acros
 no single party controls.
 
 This document is the high-level overview — what the prototype is, why it matters, and what it
-demonstrates. To stand it up, see **[`GETTING-STARTED.md`](GETTING-STARTED.md)**; to present it, see
+demonstrates — with a quick start below. For the full setup path see
+**[`GETTING-STARTED.md`](GETTING-STARTED.md)**; to present it, see
 **[`HOW-TO-DEMO.md`](HOW-TO-DEMO.md)**. For what it deliberately does *not* do — the accepted
 architecture debt and the three places the wire or the artifact diverges from the standard it claims —
-see **[`meridian-crossing/docs/known-limitations.md`](meridian-crossing/docs/known-limitations.md)**.
+see **[`docs/known-limitations.md`](docs/known-limitations.md)**.
 The narrative write-up is
 **[`docs/when-your-agent-negotiates-against-someone-elses.md`](docs/when-your-agent-negotiates-against-someone-elses.md)**.
 
 > **This is an unmaintained demo — do not deploy it, and use it at your own risk.** No security patches, no
 > advisories, no support, and it is provided "as is" under MIT. See **[`SECURITY.md`](SECURITY.md)**.
+
+## Quick start
+
+Requires **Node ≥ 22**, **pnpm**, and **Docker** (for the agent directory).
+
+```bash
+pnpm install
+cp .env.example .env.local             # then set STRIPE_SECRET_KEY=sk_test_... — required by --usdc
+pnpm demo --web --usdc                 # then open http://localhost:41200 and press Start
+```
+
+Configuration lives in **`.env.local`** (gitignored — it holds your real keys). `.env.example` is the
+committed template listing every variable the code reads, with its default; every line is commented out,
+so a fresh copy changes nothing. The run commands load it automatically. A shell variable still wins over
+the file, so `NEGOTIATION_SEED=rehearsal pnpm demo --web` remains a valid one-off.
+
+| command | what it does |
+| --- | --- |
+| `pnpm demo --web --usdc` | the full demo: dashboard + Stripe USDC settlement. **Start here.** |
+| `pnpm demo --web` | dashboard, no money layer (see the caveat below) |
+| `pnpm demo` | terminal only; runs immediately, no dashboard |
+| `pnpm test` | the full suite — unit, in-process integration, and one end-to-end run over real HTTP |
+| `pnpm sample` | sample the outcome *distribution* in-process — the tool for measuring LLM behaviour |
+| `pnpm demo:reset` | clear the trails so the next run starts clean |
+
+**`--usdc` is what exercises the human-approval step.** Without it the run is correct and complete but
+the agent is never *required* to ask anyone anything, because the approval gate lives in the settlement
+layer. See the note in [`packages/dashboard/RUNBOOK.md`](packages/dashboard/RUNBOOK.md).
+
+**`--usdc` needs a Stripe test-mode `STRIPE_SECRET_KEY`.** The settlement layer only mounts when both
+the flag and the key are present, so with the flag alone the demo still runs — it just silently drops
+back to the `--web` behaviour, with no USDC settlement and no human-approval step. That is the one
+combination that looks like it worked and did not.
+
+Optional: set `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` in `.env.local` to have both sides reason with
+a model instead of the deterministic reasoners. With no LLM configured the demo runs entirely offline and
+reaches the same outcome every time. Full setup detail is in
+**[`GETTING-STARTED.md`](GETTING-STARTED.md)**.
 
 ## What it is
 
@@ -227,7 +266,7 @@ no code change on either side. That fallback is asserted end-to-end over real HT
 function nothing in the product called: the buyer read the env var, encoded A2CN at every supplier
 regardless of its card, and a supplier on the default profile refused every negotiation verb. Full mapping
 table and the honest list of simplifications:
-**[`meridian-crossing/docs/a2cn-alignment.md`](meridian-crossing/docs/a2cn-alignment.md)**.
+**[`docs/a2cn-alignment.md`](docs/a2cn-alignment.md)**.
 
 ## Identity & trust across boundaries
 
@@ -278,7 +317,7 @@ So every discovered base URL is validated before a card URL is built or fetched
 agents themselves bind `127.0.0.1` rather than all interfaces — nothing in the demo needs a wider surface.
 Two env vars open it deliberately for a distributed deployment: `A2A_ALLOWED_ORIGINS` (a comma-separated
 allowlist of permitted agent origins) and `A2A_BIND_HOST` (e.g. `0.0.0.0`), both set in
-`meridian-crossing/.env.local`. Both are opt-in; a non-loopback origin with no allowlist is a hard error
+`.env.local`. Both are opt-in; a non-loopback origin with no allowlist is a hard error
 naming the var, not a silent fetch.
 
 ## Accountability
@@ -332,7 +371,28 @@ Stripe test key; without one it stays off and nothing else changes.
 
 Turning it on, the threshold's failure modes, and the single sandbox substitution:
 **[`GETTING-STARTED.md`](GETTING-STARTED.md)**, **[`HOW-TO-DEMO.md`](HOW-TO-DEMO.md)** and
-`meridian-crossing/packages/dashboard/RUNBOOK.md`.
+`packages/dashboard/RUNBOOK.md`.
+
+## What is real, and what is modelled
+
+Real: the DIDs and verifiable credentials, the signatures on every message, the per-organisation
+hash-chained logs, the A2CN transaction records both sides derive independently, the AGNTCY directory,
+and the Stripe crypto PaymentIntent including the on-chain capture.
+
+Modelled: the buyer agent's own USDC transfer. Stripe sandbox PaymentIntents do not watch real testnets,
+so the deposit is driven by Stripe's `simulate_crypto_deposit` test helper. That is the only substitution
+— see [`packages/buyer/src/settlement.ts`](packages/buyer/src/settlement.ts).
+
+## Standards
+
+| layer | standard |
+| --- | --- |
+| negotiation | [A2CN v0.2](https://github.com/A2CN-protocol/A2CN) — offer/counter/accept acts, signed transaction records, human-approval receipts, audit logs |
+| transport | [A2A](https://github.com/a2aproject/A2A) (`@a2a-js/sdk`), with A2CN carried as a declared extension |
+| discovery | [AGNTCY Directory](https://github.com/agntcy/dir) + OASF capability records |
+| identity | [W3C DIDs + Verifiable Credentials](https://www.w3.org/2018/credentials/v1), `did:web`, Ed25519 |
+| settlement | [Stripe crypto PaymentIntent](https://docs.stripe.com/crypto) — USDC on the Tempo network |
+| telemetry | OpenTelemetry — one span per negotiation |
 
 ## Layout
 
@@ -386,6 +446,29 @@ seed/
 those numbers used to be literals inside each `supplier-*/src/index.ts` **and** copied again into the
 sampling harness. Two copies of a number that decides every price is a measurement bug waiting to happen
 — change a floor in one place and the harness keeps confidently reporting the old distribution.
+
+## Where to read more
+
+- **[`GETTING-STARTED.md`](GETTING-STARTED.md)** — the full setup path, every environment variable, and
+  troubleshooting.
+- **[`HOW-TO-DEMO.md`](HOW-TO-DEMO.md)** and
+  **[`packages/dashboard/RUNBOOK.md`](packages/dashboard/RUNBOOK.md)** — how to present it live; the
+  RUNBOOK is the annotated stage script.
+- **[`docs/a2cn-alignment.md`](docs/a2cn-alignment.md)** — exactly where this conforms to A2CN, where it
+  deviates, and why. Includes the §9 record, the §10 audit log, and what is deliberately not implemented.
+- **[`docs/known-limitations.md`](docs/known-limitations.md)** — the accepted prototype debt and the
+  standards-conformance gaps.
+- **[`infra/VERSIONS.md`](infra/VERSIONS.md)** — every pinned dependency version and why it is pinned.
+- **[`infra/identity/README.md`](infra/identity/README.md)** — the DIDs, credentials, and how
+  RidgeLine's identity is broken on purpose.
+
+Design decisions are argued in comments at the code that implements them rather than collected in a
+document, because that is where they stay true. The denser ones are in
+`packages/buyer/src/llm.ts` (what an agent may and may not be told),
+`packages/buyer/src/quote-board.ts` (why sharing quotes between your own negotiations is not the
+cross-organisation read this codebase deleted), and
+`packages/agent-runtime/src/disposition.ts` (why variation comes from circumstances rather than a dice
+roll).
 
 ## What it proves
 

@@ -9,9 +9,9 @@ dashboard has no god view. It opens **one SSE stream per organization** and reco
 
 - Docker running (the real AGNTCY Agent Directory runs in a container).
 - Node ≥ 22, `pnpm install` already run once.
-- Configuration lives in `.env.local` in `meridian-crossing/` — the directory holding `package.json`,
-  not the git root above it (`cp .env.example .env.local` from there). It is gitignored, every run
-  command loads it automatically, and `.env.example` lists every variable with its default.
+- Configuration lives in `.env.local` at the repo root — the directory holding `package.json`
+  (`cp .env.example .env.local` from there). It is gitignored, every run command loads it
+  automatically, and `.env.example` lists every variable with its default.
 - To drive the agents with an LLM, set the gateway config there (any OpenAI-compatible gateway):
 
   ```dotenv
@@ -122,7 +122,7 @@ Ports: the dashboard (`41200`) reverse-proxies every stream and control call, so
 talks to `41200`. If the demo runs on a remote host, **expose only `41200`** — the agents (`41100`,
 `41001/41002/41003/41004`) and the directory (`8888`) stay internal. The dashboard holds the kill switch, so
 on any shared host reach it via an SSH tunnel, or set `DASHBOARD_USER`/`DASHBOARD_PASS` (HTTP Basic
-Auth) before publishing the port. See [`../../../HOW-TO-DEMO.md`](../../../HOW-TO-DEMO.md) for both.
+Auth) before publishing the port. See [`../../HOW-TO-DEMO.md`](../../HOW-TO-DEMO.md) for both.
 
 Note what happens with `DASHBOARD_PASS` **unset**: `server.mjs` binds `DASH_BIND` to `127.0.0.1`, so the
 dashboard is reachable only from the host itself and refuses connections from anywhere else — publishing

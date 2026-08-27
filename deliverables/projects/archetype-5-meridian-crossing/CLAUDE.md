@@ -4,19 +4,14 @@ Meridian Crossing: four supplier agents and a buyer agent negotiating a real pro
 organizational boundaries, over A2A, with DID/VC identity, per-org signed half-trails, and an optional
 A2CN wire profile and Stripe USDC settlement.
 
-**The code lives in `meridian-crossing/`, a pnpm workspace. Run every `pnpm` command from there, not from
-the repo root.** Anything at the root is documentation (`README.md`, `GETTING-STARTED.md`,
-`HOW-TO-DEMO.md`), the scanner configs (`trivy.yaml`, `.semgrepignore`, `.coderabbit.yaml`) and
-`.github/`.
-
-**The scanners are the exception: run semgrep, trivy and coderabbit from the REPO ROOT**, because that is
-where their configs live. `trivy fs --config trivy.yaml .` from inside `meridian-crossing/` fails with
-"no such file or directory", and semgrep silently loses `.semgrepignore`.
+**The repo root is also the pnpm workspace root — run everything from here.** The code is in
+`packages/`, the tooling in `infra/`, the fixtures in `seed/`. This used to be split, with the workspace
+one level down in `meridian-crossing/`; it was flattened, so a `cd meridian-crossing` in an older doc,
+script or scanner path is stale rather than something to restore.
 
 ## Commands
 
 ```bash
-cd meridian-crossing
 pnpm install            # pnpm, NOT npm/yarn — this is a workspace with linked packages
 pnpm build              # tsc -b (project references). Agents run the emitted dist/, not a TS loader
 pnpm test               # identity:issue + clean + build + node --test over dist/
@@ -112,7 +107,7 @@ obscurely.
 
 ## Known architectural debt and standards gaps — ACCEPTED for the prototype stage
 
-The full list lives in **[`meridian-crossing/docs/known-limitations.md`](meridian-crossing/docs/known-limitations.md)**:
+The full list lives in **[`docs/known-limitations.md`](docs/known-limitations.md)**:
 ten architecture items and three standards-conformance gaps, found in a review and an audit (both
 2026-08-12) and then deliberately left in place. Read it before touching governance state, the A2CN codec,
 identity resolution, `negotiate.ts`, or a supplier entrypoint.

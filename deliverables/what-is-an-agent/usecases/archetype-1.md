@@ -1,8 +1,8 @@
-# Bucket 1: LLM-Assisted Workflows
+# Archetype 1: LLM-Assisted Workflows
 
 **By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)**
 
-The use cases below illustrate the category defined in [Bucket 1: LLM-assisted workflows](../bucket-1-llm-assisted-workflows.md), where an LLM generates content inside a workflow whose path is fully predetermined.
+The use cases below illustrate the category defined in [Archetype 1: LLM-assisted workflows](../archetype-1-llm-assisted-workflows.md), where an LLM generates content inside a workflow whose path is fully predetermined.
 
 ## 1. Content Enrichment for Product Experience Platforms
 
@@ -19,7 +19,7 @@ The key point is that the LLM is not deciding the process. The steps are fixed:
 
 This is not yet an agent. It is a content-generation capability embedded in a predictable workflow. It is valuable precisely because it reduces manual work while preserving governance, review, and publishing control.
 
-**Why this fits Bucket 1:** The LLM produces content, but the workflow path is fully predetermined.
+**Why this fits Archetype 1:** The LLM produces content, but the workflow path is fully predetermined.
 
 ## 2. Customer Support Reply Drafting
 
@@ -31,7 +31,7 @@ The support agent remains in control. The workflow does not decide whether to re
 
 This is a strong early use case because it is low risk, measurable, and easy to govern. The business can track time saved, response quality, consistency of tone, and agent satisfaction.
 
-**Why this fits Bucket 1:** The LLM assists with language generation inside a fixed support workflow. The human or existing business rules still decide the outcome.
+**Why this fits Archetype 1:** The LLM assists with language generation inside a fixed support workflow. The human or existing business rules still decide the outcome.
 
 ## 3. Localization and Market Adaptation
 
@@ -47,7 +47,7 @@ The workflow may include fixed steps such as:
 
 The LLM helps scale content operations, but it does not decide which markets to publish to, which legal rules apply, or whether content goes live.
 
-**Why this fits Bucket 1:** The model transforms content, but humans and existing workflow logic control the path and final approval.
+**Why this fits Archetype 1:** The model transforms content, but humans and existing workflow logic control the path and final approval.
 
 ## 4. Developer Documentation and Release Note Drafting
 
@@ -57,4 +57,4 @@ This can help teams keep documentation closer to the actual state of the system 
 
 The workflow is still deterministic: collect changes, generate summary, format output, send for review.
 
-**Why this fits Bucket 1:** The LLM creates a draft artifact, but it does not choose what gets released or how the release process proceeds.
+**Why this fits Archetype 1:** The LLM creates a draft artifact, but it does not choose what gets released or how the release process proceeds.

@@ -5,7 +5,7 @@
 Meridian Crossing is a reference prototype, published as a hackathon deliverable of the MACH Alliance
 Enterprise Agent Architecture working group:
 
-<https://github.com/machalliance/wg-enterprise-agent-architecture/tree/main/deliverables/hackathon/5-collaborating-self-directed-agents>
+<https://github.com/machalliance/wg-enterprise-agent-architecture/tree/main/deliverables/projects/archetype-5-meridian-crossing>
 
 It exists to show how cross-organization agent negotiation can be built, not to be run against anything of
 value. There is no maintenance and no security support: no patches, no advisories, no disclosure process,
@@ -16,4 +16,4 @@ kind**, and the authors and copyright holders are not liable for any claim, dama
 arising from it. That clause is the operative one here.
 
 What the prototype deliberately does not do is listed in
-[`meridian-crossing/docs/known-limitations.md`](meridian-crossing/docs/known-limitations.md).
+[`docs/known-limitations.md`](docs/known-limitations.md).

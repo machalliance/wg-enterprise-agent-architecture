@@ -12,8 +12,8 @@ dist/
 # --- generated identity material ----------------------------------------------------------------------
 # Recreated from seed/ + config.json by `pnpm identity:issue`, and gitignored. Contains Ed25519 private
 # keys that are deliberately public (derived from the committed KEY_DERIVATION_SEED) — see
-# meridian-crossing/infra/identity/README.md. Real secrets never live here, but key-shaped material does.
-meridian-crossing/infra/identity/generated/
+# infra/identity/README.md. Real secrets never live here, but key-shaped material does.
+infra/identity/generated/
 
 # --- the A2CN golden fixture --------------------------------------------------------------------------
 # `generic.secrets.security.detected-jwt-token` fires (at ERROR severity) on the `protocol_act_signature`
@@ -25,4 +25,4 @@ meridian-crossing/infra/identity/generated/
 #
 # NOTE: this excludes the whole fixture directory from scanning. If a future fixture here ever carries
 # genuinely sensitive material, that is the assumption to revisit.
-meridian-crossing/seed/a2cn/
+seed/a2cn/

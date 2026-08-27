@@ -24,11 +24,11 @@ What changes as you move along the spectrum isn't whether something qualifies as
 
 More autonomy requires more of both. A sophisticated architecture without rigorous policy creates risk. Rigorous policy without the right architecture creates friction. Getting them wrong together is how agentic pilots fail.
 
-## Five buckets in the Agent Ecosystem
+## Five archetypes in the Agent Ecosystem
 
 These aren't levels to climb. They aren't a maturity model. Each is the best choice for a given problem, and most production systems will use several at once.
 
-We've grouped them into five buckets, knowing that the last bucket deliberately collapses two distinct ideas — collaboration across systems and self-directed autonomy — into one. They're separable in theory, but the group landed on this grouping because it's the easiest to reason about in practice.
+We've grouped them into five archetypes, knowing that the last archetype deliberately collapses two distinct ideas — collaboration across systems and self-directed autonomy — into one. They're separable in theory, but the group landed on this grouping because it's the easiest to reason about in practice.
 
 ![Horizontal arrow diagram showing five stages of AI autonomy, from "More Structured / Human direction" on the left to "More Autonomous / System direction" on the right. Stage 1: LLM-assisted workflows (not yet agents). Stage 2: LLM-directed workflows. Stage 3: Goal-directed, task-oriented agents. Stage 4: Long running, policy driven. Stage 5: Collaborating across domains and organizations.](diagram-degrees-of-agency.png)
 
@@ -42,7 +42,7 @@ This is the right architecture for high-volume, well-understood work where you w
 
 AI makes decisions *within a designed structure*. You build the paths; the LLM decides which ones to take. Given context and a prompt, the model chooses between A, B, or C — and the workflow proceeds accordingly. This includes patterns like intelligent routing, parallel processing, and evaluation loops — the workflow patterns [Anthropic describes](https://www.anthropic.com/engineering/building-effective-agents) in "Building Effective Agents." The structure is authored by people; the decisions at each step are driven by the model.
 
-Anthropic groups both this tier and the content-generation case in bucket 1 under the single label "workflows." We split them because the line between *the LLM generates content* and *the LLM picks the path* is exactly where the industry's confusion about the word "agentic" lives — and a taxonomy that wants to resolve that confusion has to draw the line there explicitly.
+Anthropic groups both this tier and the content-generation case in archetype 1 under the single label "workflows." We split them because the line between *the LLM generates content* and *the LLM picks the path* is exactly where the industry's confusion about the word "agentic" lives — and a taxonomy that wants to resolve that confusion has to draw the line there explicitly.
 
 This is the right architecture for well-defined, high-volume work where you want consistency and predictability with a layer of intelligence on top.
 
@@ -62,15 +62,15 @@ That shift changes the infrastructure conversation. You need persistent machine 
 
 Multiple agents working together — across teams, vendors, or organizational boundaries — and, at the far end, doing so on behalf of parties with different interests. A buyer's agent and a seller's agent, each optimizing for different outcomes, negotiating with each other. No shared orchestrator. No single party controls the system.
 
-This bucket deliberately combines two ideas that could be split apart: *coordinated multi-agent systems* (independently built agents working toward a shared objective) and *discoverable, self-interested autonomous agents* (independent agents with their own goals interacting across organizational lines). They sit on a continuum of trust and intent, and the infrastructure needs run in the same direction: open protocols like [A2A](https://a2a-protocol.org) and [AGNTCY's](https://agntcy.org) infrastructure for agent discovery and composition, support — when agents start representing distinct interests — verified identity, and secure messaging across trust boundaries.
+This archetype deliberately combines two ideas that could be split apart: *coordinated multi-agent systems* (independently built agents working toward a shared objective) and *discoverable, self-interested autonomous agents* (independent agents with their own goals interacting across organizational lines). They sit on a continuum of trust and intent, and the infrastructure needs run in the same direction: open protocols like [A2A](https://a2a-protocol.org) and [AGNTCY's](https://agntcy.org) infrastructure for agent discovery and composition, support — when agents start representing distinct interests — verified identity, and secure messaging across trust boundaries.
 
-[MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) draws the far end of this bucket explicitly: a marketplace of agents representing both sides of a transaction. This is also the long-term vision behind the AGNTCY Internet of Agents. When agents are self-interested and operating across organizational lines, the infrastructure for trust isn't optional. It's the foundation.
+[MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) draws the far end of this archetype explicitly: a marketplace of agents representing both sides of a transaction. This is also the long-term vision behind the AGNTCY Internet of Agents. When agents are self-interested and operating across organizational lines, the infrastructure for trust isn't optional. It's the foundation.
 
 ## Where most organizations sit today
 
-Most enterprises are working in buckets 1 and 2 — LLM-assisted workflows and LLM-directed workflows — with some early goal-directed agents in production. Summarization, content routing, basic coding assistance. Others are beginning to experiment with more advanced use cases that call for collaborating, self-directed agents.
+Most enterprises are working in archetypes 1 and 2 — LLM-assisted workflows and LLM-directed workflows — with some early goal-directed agents in production. Summarization, content routing, basic coding assistance. Others are beginning to experiment with more advanced use cases that call for collaborating, self-directed agents.
 
-The organizations that move successfully along this spectrum are the ones doing their current bucket well. Getting reliable checkpoint-and-rollback in place. Establishing machine identity governance. Building reasoning traces into their observability stack. These foundations compound, and they're exactly what you'll need as the work matures.
+The organizations that move successfully along this spectrum are the ones doing their current archetype well. Getting reliable checkpoint-and-rollback in place. Establishing machine identity governance. Building reasoning traces into their observability stack. These foundations compound, and they're exactly what you'll need as the work matures.
 
 ## Defining the taxonomy together
 

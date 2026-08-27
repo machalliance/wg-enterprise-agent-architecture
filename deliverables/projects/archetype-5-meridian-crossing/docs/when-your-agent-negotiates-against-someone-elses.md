@@ -12,7 +12,7 @@ As part of the MACH Alliance [Enterprise Agent Architecture working group](https
 
 ## The scenario
 
-[Meridian Crossing](https://github.com/machalliance/wg-enterprise-agent-architecture/tree/main/deliverables/hackathon/5-collaborating-self-directed-agents) is a retailer 100 units short of a three-season tent it needs on shelf. Its buying agent may pay up to $94 a unit, and must not let any supplier learn that number. Four supplier agents, each run by a different company, can cover the order:
+[Meridian Crossing](https://github.com/machalliance/wg-enterprise-agent-architecture/tree/main/deliverables/projects/archetype-5-meridian-crossing) is a retailer 100 units short of a three-season tent it needs on shelf. Its buying agent may pay up to $94 a unit, and must not let any supplier learn that number. Four supplier agents, each run by a different company, can cover the order:
 
 | Supplier | How it plays | Where it lands |
 | --- | --- | --- |

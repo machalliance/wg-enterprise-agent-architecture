@@ -9,7 +9,7 @@ The proposed set of artifacts is described in the [charter](../CHARTER.md#propos
 | Path | What it is |
 |---|---|
 | [`from-orchestration-to-autonomy-ebook/`](./from-orchestration-to-autonomy-ebook/) | The working group's flagship written artifact: the five agent archetypes, the architecture-and-policy framing, composition, cross-cutting concerns, evaluation, and a readiness reference. Chapters are numbered source files; assembled drafts land in `dist/`. |
-| [`projects/`](./projects/) | Buildable deliverables — reference architecture specs, runnable prototypes, and the [Hackathon in a Box](./projects/hackathon/). See the [projects README](./projects/README.md). |
+| [`projects/`](./projects/) | Buildable deliverables — reference architecture specs, runnable prototypes, and the [Hackathon in a Box](./projects/agent-build-lab/). See the [projects README](./projects/README.md). |
 | [`what-is-an-agent/`](./what-is-an-agent/) | Working material on the definition of an agent and where the line of agency sits. |
 
 ## How this is organized

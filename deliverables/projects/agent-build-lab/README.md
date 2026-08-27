@@ -123,7 +123,7 @@ Reference architectures are intentionally kept in separate repositories rather t
 ```
 deliverables/
 └── projects/
-    └── hackathon/
+    └── agent-build-lab/
         ├── README.md      ← you are here
         └── ...            ← structure to be confirmed
 ```

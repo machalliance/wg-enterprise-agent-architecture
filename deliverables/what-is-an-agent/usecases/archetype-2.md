@@ -1,8 +1,8 @@
-# Bucket 2: LLM-Directed Workflows
+# Archetype 2: LLM-Directed Workflows
 
 **By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)**
 
-The use cases below illustrate the category defined in [Bucket 2: LLM-directed workflows](../bucket-2-llm-directed-workflows.md), where an LLM makes decisions that direct control flow within a set of human-designed paths.
+The use cases below illustrate the category defined in [Archetype 2: LLM-directed workflows](../archetype-2-llm-directed-workflows.md), where an LLM makes decisions that direct control flow within a set of human-designed paths.
 
 ## 1. Intelligent Ticket Routing Across a MACH Stack
 
@@ -21,9 +21,9 @@ For example, the LLM may route the ticket to:
 
 The important part is that the available paths are designed by the organization. The LLM does not invent a new process. It chooses from known branches based on the context.
 
-This is a good bucket 2 example because it introduces model-driven decision-making while keeping operational boundaries tight.
+This is a good archetype 2 example because it introduces model-driven decision-making while keeping operational boundaries tight.
 
-**Why this fits Bucket 2:** The LLM decides which predefined workflow path to take.
+**Why this fits Archetype 2:** The LLM decides which predefined workflow path to take.
 
 ## 2. Product Data Quality Triage
 
@@ -42,7 +42,7 @@ For example:
 
 The LLM is not freely managing the product catalog. It is making a routing decision within a designed governance process.
 
-**Why this fits Bucket 2:** The LLM evaluates context and decides which existing process should handle the product record.
+**Why this fits Archetype 2:** The LLM evaluates context and decides which existing process should handle the product record.
 
 ## 3. Adaptive Content Review Workflow
 
@@ -61,7 +61,7 @@ For example:
 
 This avoids forcing every content item through the same heavy approval chain, while still applying more governance where the risk is higher.
 
-**Why this fits Bucket 2:** The LLM does not publish the content. It decides the appropriate review route inside a predefined workflow.
+**Why this fits Archetype 2:** The LLM does not publish the content. It decides the appropriate review route inside a predefined workflow.
 
 ## 4. Don’t Burn Tokens on What a Script Can Do
 
@@ -76,7 +76,7 @@ For example, in a commerce migration or content operation:
 
 This creates a more efficient and more reliable system. The LLM provides decision-making where it adds value, while deterministic components handle repeatable work cheaply and predictably.
 
-**Why this fits Bucket 2:** The LLM chooses among designed paths or tools, but the actual execution remains bounded and deterministic where possible.
+**Why this fits Archetype 2:** The LLM chooses among designed paths or tools, but the actual execution remains bounded and deterministic where possible.
 
 ## 5. Commerce Exception Handling
 
@@ -95,14 +95,14 @@ For example:
 
 This does not require a fully autonomous agent. The company designs the possible exception-handling paths. The LLM helps choose the most appropriate one based on messy, real-world context.
 
-**Why this fits Bucket 2:** The model makes a routing decision, but only within a controlled operational framework.
+**Why this fits Archetype 2:** The model makes a routing decision, but only within a controlled operational framework.
 
 ## 6. Iterative Product Description Quality Loop
 
-Not every bucket 2 use case is a routing decision. Bucket 1 uses an LLM to draft product copy once, then hands it to a human or a deterministic validator. A bucket 2 version of the same workflow adds a model-judged refinement loop on top of that single generation step.
+Not every archetype 2 use case is a routing decision. Archetype 1 uses an LLM to draft product copy once, then hands it to a human or a deterministic validator. A archetype 2 version of the same workflow adds a model-judged refinement loop on top of that single generation step.
 
 A generator model drafts a product description from the approved attribute package. A separate evaluator model scores the draft against a fixed rubric — brand voice, required attributes, reading level, SEO completeness — and returns structured feedback. If the draft passes, the workflow ships it or queues it for light review. If it fails, the feedback returns to the generator for a revision and the loop runs again, up to a fixed maximum number of attempts. If the copy still falls short on the last attempt, the record escalates to a human instead of looping indefinitely.
 
-This is not routing. The model is not choosing among predefined branches; it is deciding whether the output is good enough to stop. That pass-fail-revise judgment is a model-made decision that directs control flow — the bucket 2 agency line — but the shape is a bounded loop rather than a branch. The rubric, the revision cap, and the escalation fallback are all human-designed, which is what keeps it inside bucket 2.
+This is not routing. The model is not choosing among predefined branches; it is deciding whether the output is good enough to stop. That pass-fail-revise judgment is a model-made decision that directs control flow — the archetype 2 agency line — but the shape is a bounded loop rather than a branch. The rubric, the revision cap, and the escalation fallback are all human-designed, which is what keeps it inside archetype 2.
 
-**Why this fits Bucket 2:** The model decides whether to revise or ship, not which route to take. The agency is loop-continuation inside a human-designed, bounded structure.
+**Why this fits Archetype 2:** The model decides whether to revise or ship, not which route to take. The agency is loop-continuation inside a human-designed, bounded structure.

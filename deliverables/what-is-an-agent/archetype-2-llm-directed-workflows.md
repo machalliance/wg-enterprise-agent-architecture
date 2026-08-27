@@ -1,4 +1,4 @@
-# Bucket 2: LLM-directed workflows
+# Archetype 2: LLM-directed workflows
 
 *The paths are designed by people. The model chooses which one to take.*
 
@@ -8,9 +8,9 @@
 
 ## What changes here
 
-Bucket 2 is where the system first crosses the agency line. The LLM is no longer only generating content inside a fixed path. It evaluates context and makes a decision that changes how the workflow behaves.
+Archetype 2 is where the system first crosses the agency line. The LLM is no longer only generating content inside a fixed path. It evaluates context and makes a decision that changes how the workflow behaves.
 
-That decision takes one of two shapes: *choosing which path to take* — routing a record or request to one of several designed branches — or *deciding whether to continue* — judging an output and looping to refine it, or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop is just as much a bucket 2 pattern. In both, the model directs control flow without escaping the structure people designed.
+That decision takes one of two shapes: *choosing which path to take* — routing a record or request to one of several designed branches — or *deciding whether to continue* — judging an output and looping to refine it, or stopping. Routing is the most visible form, but a bounded refine-and-recheck loop is just as much a archetype 2 pattern. In both, the model directs control flow without escaping the structure people designed.
 
 That decision is still constrained. People design the paths. People define the allowed routes, tools, thresholds, loops, and fallbacks. The model chooses from those options at runtime.
 
@@ -24,13 +24,13 @@ The moment the LLM chooses a path, new concerns appear:
 - **Decision traces become necessary.** Operators need to know why the workflow chose one path instead of another.
 - **Deterministic work should stay deterministic.** Scripts, rules, APIs, and validators should do the repeatable work. The LLM should handle ambiguity, judgment, and language-heavy interpretation.
 
-Bucket 2 is attractive because it gives teams adaptive behavior without giving the model open-ended control.
+Archetype 2 is attractive because it gives teams adaptive behavior without giving the model open-ended control.
 
 ## Running example: Product data quality triage workflow
 
 Throughout this document we use a product data quality triage workflow in a retail or e-commerce context. Product data enters the organization from suppliers, ERPs, spreadsheets, syndication tools, marketplaces, and PIM systems. The records are messy: missing attributes, inconsistent categories, unsupported claims, weak descriptions, duplicated SKUs, and ambiguous variants.
 
-A bucket 1 workflow might use an LLM to rewrite the product description. A bucket 2 workflow asks the LLM to decide which predefined remediation path the product record should follow.
+A archetype 1 workflow might use an LLM to rewrite the product description. A archetype 2 workflow asks the LLM to decide which predefined remediation path the product record should follow.
 
 The LLM evaluates the product record and chooses a route such as:
 
@@ -44,7 +44,7 @@ The LLM evaluates the product record and chooses a route such as:
 
 The LLM chooses the route. The workflow executes the route with deterministic systems: validators, scripts, APIs, task creation, review queues, and publishing controls.
 
-This is bucket 2: model-directed routing inside a human-designed workflow.
+This is archetype 2: model-directed routing inside a human-designed workflow.
 
 ---
 
@@ -164,7 +164,7 @@ The three terminal outcomes are the full decision space: execute a permitted rou
 
 ### Designed decision space
 
-The route set is the architecture. If the route set is vague, the workflow will be vague. Bucket 2 systems should define the available decisions before the model is introduced.
+The route set is the architecture. If the route set is vague, the workflow will be vague. Archetype 2 systems should define the available decisions before the model is introduced.
 
 For product data triage, that means defining:
 
@@ -200,7 +200,7 @@ The evaluator can validate this shape before anything else happens. If the route
 
 The LLM should not do work that a script, rule, or API can do more reliably.
 
-Good bucket 2 design keeps deterministic work outside the model:
+Good archetype 2 design keeps deterministic work outside the model:
 
 - schema checks
 - required field validation
@@ -216,7 +216,7 @@ The model is best used where the system needs judgment over messy context: ambig
 
 ### Confidence, thresholds, and fallbacks
 
-A bucket 2 workflow needs a response for every kind of uncertainty.
+A archetype 2 workflow needs a response for every kind of uncertainty.
 
 Examples:
 
@@ -233,16 +233,16 @@ The fallback path is not an error. It is part of the design.
 
 ### Evaluation loops with budgets
 
-Not every bucket 2 decision is a choice between paths. The other common shape is a decision about whether to *continue*. Bucket 2 can include evaluation loops, but the loops must be bounded.
+Not every archetype 2 decision is a choice between paths. The other common shape is a decision about whether to *continue*. Archetype 2 can include evaluation loops, but the loops must be bounded.
 
-A generate-evaluate-revise loop is the clearest retail example, and it sits directly on top of bucket 1's content enrichment workflow. In bucket 1, the model drafts a product description once, and a human or a deterministic validator decides what happens next. Promote that one decision point and it becomes bucket 2:
+A generate-evaluate-revise loop is the clearest retail example, and it sits directly on top of archetype 1's content enrichment workflow. In archetype 1, the model drafts a product description once, and a human or a deterministic validator decides what happens next. Promote that one decision point and it becomes archetype 2:
 
 1. A generator produces a product description from the approved attribute package.
 2. An evaluator — a separate model call with its own rubric — scores the draft against brand voice, required attributes, reading level, and SEO completeness, and returns structured feedback.
 3. If the draft passes, the workflow ships it or queues it for light human review. If it fails, the feedback returns to the generator for a revision, and the loop runs again.
 4. The loop is bounded: a fixed maximum number of revisions. If the draft still fails on the last attempt, the record escalates to a human rather than looping forever.
 
-The agency here is not *which path* — it is *whether to go again*. The evaluator's pass-or-fail judgment is a model-made decision that shapes control flow, exactly like a routing decision, but the structure is a loop rather than a branch. Everything that bounds it — the rubric, the revision cap, the escalation fallback — is human-designed. That is what keeps it in bucket 2 and out of bucket 3: the model decides whether the output is good enough, not what the goal is, which tools exist, or how many attempts it gets.
+The agency here is not *which path* — it is *whether to go again*. The evaluator's pass-or-fail judgment is a model-made decision that shapes control flow, exactly like a routing decision, but the structure is a loop rather than a branch. Everything that bounds it — the rubric, the revision cap, the escalation fallback — is human-designed. That is what keeps it in archetype 2 and out of archetype 3: the model decides whether the output is good enough, not what the goal is, which tools exist, or how many attempts it gets.
 
 Useful patterns:
 
@@ -253,7 +253,7 @@ Useful patterns:
 - sampling of automatically routed records for human review
 - offline evaluation against historical decisions
 
-Loops without budgets drift toward bucket 3 behavior. Bucket 2 stays safe by limiting attempts, routes, and stop conditions.
+Loops without budgets drift toward archetype 3 behavior. Archetype 2 stays safe by limiting attempts, routes, and stop conditions.
 
 ### Decision traces and replay
 
@@ -315,7 +315,7 @@ Data minimization reduces privacy risk, cost, latency, and confusion.
 
 ### Monitoring route drift
 
-Bucket 2 systems can drift even when every individual decision looks plausible. A workflow that used to send 5 percent of records to compliance review may suddenly send 40 percent. That may reflect a real change in supplier data, or it may reflect prompt drift, model drift, or a broken context builder.
+Archetype 2 systems can drift even when every individual decision looks plausible. A workflow that used to send 5 percent of records to compliance review may suddenly send 40 percent. That may reflect a real change in supplier data, or it may reflect prompt drift, model drift, or a broken context builder.
 
 Track:
 
@@ -341,11 +341,11 @@ The audit log should capture both the model decision and the surrounding control
 - downstream action taken
 - final outcome
 
-This is the start of decision accountability. It is not yet the continuous decision trail required by bucket 4, but it is the foundation.
+This is the start of decision accountability. It is not yet the continuous decision trail required by archetype 4, but it is the foundation.
 
 ---
 
-## Other examples that fit bucket 2
+## Other examples that fit archetype 2
 
 - **Customer support ticket routing.** The LLM reads a ticket and routes it to delivery investigation, refund review, fraud, product defect, technical support, or human escalation.
 - **Adaptive content review.** The LLM decides whether content needs editorial review, legal review, compliance review, accessibility review, localization review, or standard approval.
@@ -355,25 +355,25 @@ This is the start of decision accountability. It is not yet the continuous decis
 
 ---
 
-## Bridging to bucket 3
+## Bridging to archetype 3
 
-Bucket 2 ends where the designed path set ends. The workflow can choose between known branches, but it cannot invent a new plan.
+Archetype 2 ends where the designed path set ends. The workflow can choose between known branches, but it cannot invent a new plan.
 
-A product record routed to compliance review is bucket 2. A system handed the goal "clean up this supplier catalog" that decides which records to inspect, which tools to call, which fixes to make, and when the task is complete is bucket 3.
+A product record routed to compliance review is archetype 2. A system handed the goal "clean up this supplier catalog" that decides which records to inspect, which tools to call, which fixes to make, and when the task is complete is archetype 3.
 
-A support ticket routed to delivery investigation is bucket 2. A system handed the goal "resolve this customer's delivery issue" that checks carrier status, drafts a response, requests a refund, creates a replacement order, and adapts as results come back is bucket 3.
+A support ticket routed to delivery investigation is archetype 2. A system handed the goal "resolve this customer's delivery issue" that checks carrier status, drafts a response, requests a refund, creates a replacement order, and adapts as results come back is archetype 3.
 
-The practical difference is control. In bucket 2, people design the paths and the model chooses. In bucket 3, the model controls the sequence of steps needed to reach a goal.
+The practical difference is control. In archetype 2, people design the paths and the model chooses. In archetype 3, the model controls the sequence of steps needed to reach a goal.
 
 ---
 
 ## Where this leaves us
 
-Bucket 2 is the enterprise-friendly start of agency. It introduces model-driven decisions, but inside boundaries that architects, product owners, security teams, and legal teams can reason about.
+Archetype 2 is the enterprise-friendly start of agency. It introduces model-driven decisions, but inside boundaries that architects, product owners, security teams, and legal teams can reason about.
 
-It is also where sloppy language causes real trouble. Calling every content-generation workflow an agent hides the difference between assistance and decision-making. Calling every router an agent overstates its autonomy. Bucket 2 gives teams a more precise label: an LLM-directed workflow.
+It is also where sloppy language causes real trouble. Calling every content-generation workflow an agent hides the difference between assistance and decision-making. Calling every router an agent overstates its autonomy. Archetype 2 gives teams a more precise label: an LLM-directed workflow.
 
-Done well, bucket 2 builds the foundations for later buckets: structured decisions, route policies, confidence handling, evaluation loops, decision traces, and escalation. Done badly, it creates invisible control flow that nobody can explain when something goes wrong.
+Done well, archetype 2 builds the foundations for later archetypes: structured decisions, route policies, confidence handling, evaluation loops, decision traces, and escalation. Done badly, it creates invisible control flow that nobody can explain when something goes wrong.
 
 ---
 

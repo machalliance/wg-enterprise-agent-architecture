@@ -1,4 +1,4 @@
-# Bucket 5: Collaborating, Self-Directed Agents
+# Archetype 5: Collaborating, Self-Directed Agents
 
 *The orchestrator is gone. When no single party controls the system, trust has to be built into the architecture itself.*
 
@@ -8,11 +8,11 @@
 
 ## What changes here
 
-Every bucket before this one assumes a boundary. An LLM-assisted workflow runs inside your pipeline. A goal-directed agent (bucket 3) works on your task with your tools. An autonomous, policy-guided agent (bucket 4) persists and self-corrects, but it does so inside *your* trust domain, under *your* policies, authenticating with *your* machine identity. There is always a single operator who can answer "who is in charge here?"
+Every archetype before this one assumes a boundary. An LLM-assisted workflow runs inside your pipeline. A goal-directed agent (archetype 3) works on your task with your tools. An autonomous, policy-guided agent (archetype 4) persists and self-corrects, but it does so inside *your* trust domain, under *your* policies, authenticating with *your* machine identity. There is always a single operator who can answer "who is in charge here?"
 
-Bucket 5 removes that assumption. Agents now collaborate across teams, vendors, and organizational lines — and at the far end, they do so on behalf of parties with opposing interests. A buyer's agent optimizing for landed cost talks directly to a seller's agent optimizing for margin. There is no shared orchestrator. No single party controls the system. No one can see the whole decision trail.
+Archetype 5 removes that assumption. Agents now collaborate across teams, vendors, and organizational lines — and at the far end, they do so on behalf of parties with opposing interests. A buyer's agent optimizing for landed cost talks directly to a seller's agent optimizing for margin. There is no shared orchestrator. No single party controls the system. No one can see the whole decision trail.
 
-This bucket deliberately collapses two ideas that are separable in theory:
+This archetype deliberately collapses two ideas that are separable in theory:
 
 - **Coordinated multi-agent systems** — independently built agents working toward a *shared* objective. Different teams or vendors, aligned intent.
 - **Discoverable, self-interested agents** — independent agents with their *own* goals, interacting across organizational lines. Different parties, opposed intent.
@@ -26,23 +26,23 @@ The moment an agent must interact with an agent it does not control, four questi
 - **Protocol.** What shared message contract lets agents built independently negotiate, counteroffer, and settle reliably across a network neither side owns?
 - **Accountability.** When two agents from two organizations produce an outcome neither operator intended, whose decision trail is authoritative, and how is the dispute resolved?
 
-Bucket 4 told you to build durable identity, auditable decision trails, and enforceable policy. You do not throw any of that away. Bucket 5 extends it outward — across trust boundaries you do not own.
+Archetype 4 told you to build durable identity, auditable decision trails, and enforceable policy. You do not throw any of that away. Archetype 5 extends it outward — across trust boundaries you do not own.
 
 ## One scenario, all the way up
 
-Bucket 5 is easiest to see as the top of a ladder you already climb in a single domain. Take B2B procurement and replenishment. Here is how the same domain plays out at each bucket, with bucket 5 on the last line:
+Archetype 5 is easiest to see as the top of a ladder you already climb in a single domain. Take B2B procurement and replenishment. Here is how the same domain plays out at each archetype, with archetype 5 on the last line:
 
 1. *(LLM-assisted)* An LLM extracts purchase-order data from incoming supplier emails.
 2. *(LLM-directed)* An LLM classifies and routes requisitions by category and spend threshold.
 3. *(Goal-directed)* An agent takes "restock store 142 for the weekend promo" and drafts the purchase orders.
-4. *(Autonomous, policy-guided)* An agent watches inventory and demand signals and reorders continuously within policy. This is bucket 4's revenue optimization agent, working inside one organization.
+4. *(Autonomous, policy-guided)* An agent watches inventory and demand signals and reorders continuously within policy. This is archetype 4's revenue optimization agent, working inside one organization.
 5. **(Collaborating, self-directed)** A buyer's procurement agent runs an RFQ against several suppliers' agents, trading counteroffers and settling the deal.
 
-The shift happens on that last line. Through bucket 4, the work is something one organization's agent does to its own systems. At bucket 5 it becomes something multiple organizations' agents do with each other.
+The shift happens on that last line. Through archetype 4, the work is something one organization's agent does to its own systems. At archetype 5 it becomes something multiple organizations' agents do with each other.
 
 ## Running example: Cross-organization procurement negotiation
 
-We carry forward the retail/e-commerce setting from bucket 4, but cross the boundary. Bucket 4's **revenue optimization agent** lived entirely inside one retailer. Here, that retailer's **procurement agent** must source a seasonal product and negotiate terms with **several independent suppliers' selling agents**, none of which it controls.
+We carry forward the retail/e-commerce setting from archetype 4, but cross the boundary. Archetype 4's **revenue optimization agent** lived entirely inside one retailer. Here, that retailer's **procurement agent** must source a seasonal product and negotiate terms with **several independent suppliers' selling agents**, none of which it controls.
 
 The procurement agent:
 
@@ -57,7 +57,7 @@ This is exactly the shape of the **AGNTCY [CoffeeAGNTCY](https://github.com/agnt
 
 ## Architecture
 
-Two angles, as in bucket 4. First the component architecture: what exists on each side of the boundary and what the shared substrate provides. Then the negotiation loop: how a deal actually flows between two agents that trust nothing implicitly.
+Two angles, as in archetype 4. First the component architecture: what exists on each side of the boundary and what the shared substrate provides. Then the negotiation loop: how a deal actually flows between two agents that trust nothing implicitly.
 
 No box in this diagram is owned by both organizations. The trust substrate in the middle is shared infrastructure — open protocols and a directory — not a controlling party. Each organization runs its own agent, its own policy engine, and its own decision store, and they meet only through verified, mediated exchange.
 
@@ -119,7 +119,7 @@ graph TB
     BAGENT --> BLEDGER
 ```
 
-The buyer's internal stack (policy, identity, decision trail) is the bucket-4 architecture, intact. What is new is the substrate: a **directory** for discovery, **identity verification** that works across organizations, a **secure transport** for messages that traverse a network neither side owns, and a shared **negotiation protocol** that gives both agents the same vocabulary for offers and counteroffers.
+The buyer's internal stack (policy, identity, decision trail) is the archetype-4 architecture, intact. What is new is the substrate: a **directory** for discovery, **identity verification** that works across organizations, a **secure transport** for messages that traverse a network neither side owns, and a shared **negotiation protocol** that gives both agents the same vocabulary for offers and counteroffers.
 
 ### Negotiation loop
 
@@ -195,7 +195,7 @@ Practical consequences:
 
 ### Identity and trust across boundaries
 
-Inside bucket 4, machine identity was about giving *your* agent a durable, scoped, revocable credential. Bucket 5 adds the harder half: verifying the identity of an agent that *someone else* issued.
+Inside archetype 4, machine identity was about giving *your* agent a durable, scoped, revocable credential. Archetype 5 adds the harder half: verifying the identity of an agent that *someone else* issued.
 
 The **[AGNTCY Identity](https://github.com/agntcy/identity)** model uses decentralized techniques to issue and verify identities for agents, MCP servers, and multi-agent systems across organizations, so claims can be cryptographically checked rather than taken on faith. Your procurement agent must answer, before it exchanges anything of value:
 
@@ -218,7 +218,7 @@ The protocol layer must encode, at minimum: the structure of an offer, how count
 
 ### Accountability when no one sees the whole picture
 
-In bucket 4, one operator could reconstruct the agent's full decision trail. Across organizations, **each party sees only its own half.** Your procurement agent's trail records what it offered, what it received, what it accepted, and from whom. The supplier's trail records the mirror image. Neither is complete.
+In archetype 4, one operator could reconstruct the agent's full decision trail. Across organizations, **each party sees only its own half.** Your procurement agent's trail records what it offered, what it received, what it accepted, and from whom. The supplier's trail records the mirror image. Neither is complete.
 
 This forces new requirements:
 
@@ -232,7 +232,7 @@ This forces new requirements:
 
 ### Mandates: policy that travels to the negotiating table
 
-Bucket 4's policy tiers governed what an agent could do to your own systems. Bucket 5 policy must govern what an agent may *commit you to* in a deal with an outside party. This is a **mandate**: the negotiating authority you delegate to your agent.
+Archetype 4's policy tiers governed what an agent could do to your own systems. Archetype 5 policy must govern what an agent may *commit you to* in a deal with an outside party. This is a **mandate**: the negotiating authority you delegate to your agent.
 
 - **Tier 1, Autonomous settle:** Accept terms within a defined envelope — price ≤ reservation, standard delivery, approved counterparties. Commit without approval.
 - **Tier 2, Notify on settle:** Accept within a wider band but record and notify the buying team immediately.
@@ -252,7 +252,7 @@ Self-interested counterparties change the safety model. An adversarial or merely
 
 ### Inherited safeguards, extended outward
 
-The bucket-4 machinery does not disappear — it now guards a more dangerous surface:
+The archetype-4 machinery does not disappear — it now guards a more dangerous surface:
 
 - **Kill switches and circuit breakers.** A manual halt must sever active negotiations and revoke in-flight commitments, not just stop internal actions. Magnitude limiters cap total committed spend across *all* concurrent negotiations, not per-deal.
 - **Dead man's switch.** If oversight connectivity drops, the agent suspends new commitments — it does not keep deal-making blind.
@@ -260,7 +260,7 @@ The bucket-4 machinery does not disappear — it now guards a more dangerous sur
 
 ### Dispute and arbitration
 
-When two organizations' agents produce an outcome neither operator intended, "whose policy wins?" has no local answer. This bucket needs mechanisms a single organization never required:
+When two organizations' agents produce an outcome neither operator intended, "whose policy wins?" has no local answer. This archetype needs mechanisms a single organization never required:
 
 - **Pre-agreed dispute terms.** The protocol exchange should reference the contractual basis for resolving a contested settlement before either agent commits.
 - **Authoritative reconciliation.** Correlated, non-repudiable trails from both sides feed a defined arbitration path — human, contractual, or a trusted third party — rather than a stalemate of two partial logs.
@@ -270,11 +270,11 @@ When two organizations' agents produce an outcome neither operator intended, "wh
 
 ## Where this leaves us
 
-The five buckets were never a ladder to climb. Each is the right tool for a given problem, and most production systems run several at once. But bucket 5 is where the foundations you built earlier earn their keep. Durable identity, auditable decision trails, and enforceable policy were good engineering inside one organization. Across organizations, with no orchestrator to fall back on, they are what makes collaboration safe instead of reckless.
+The five archetypes were never a ladder to climb. Each is the right tool for a given problem, and most production systems run several at once. But archetype 5 is where the foundations you built earlier earn their keep. Durable identity, auditable decision trails, and enforceable policy were good engineering inside one organization. Across organizations, with no orchestrator to fall back on, they are what makes collaboration safe instead of reckless.
 
-The far end of this bucket is already being built. [MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) describes it as a marketplace of agents representing both sides of every transaction, and it is the long-term vision behind the AGNTCY [Internet of Agents](https://agntcy.org). The protocols exist today: open discovery via OASF and the Agent Directory, verified cross-organization identity, secure messaging over SLIM, and a shared negotiation contract in A2A. The CoffeeAGNTCY reference application runs a working version of it for a coffee supply chain.
+The far end of this archetype is already being built. [MIT Sloan's Sinan Aral](https://mitsloan.mit.edu/faculty/directory/sinan-aral) describes it as a marketplace of agents representing both sides of every transaction, and it is the long-term vision behind the AGNTCY [Internet of Agents](https://agntcy.org). The protocols exist today: open discovery via OASF and the Agent Directory, verified cross-organization identity, secure messaging over SLIM, and a shared negotiation contract in A2A. The CoffeeAGNTCY reference application runs a working version of it for a coffee supply chain.
 
-What remains unsolved is the part this document keeps returning to: trust between parties who do not share interests, accountability when no one sees the whole picture, and arbitration when two faithful agents reach an outcome both operators regret. The organizations that get there will be the ones that did buckets 3 and 4 well, because in bucket 5 your internal rigor is the credential the rest of the ecosystem checks you against.
+What remains unsolved is the part this document keeps returning to: trust between parties who do not share interests, accountability when no one sees the whole picture, and arbitration when two faithful agents reach an outcome both operators regret. The organizations that get there will be the ones that did archetypes 3 and 4 well, because in archetype 5 your internal rigor is the credential the rest of the ecosystem checks you against.
 
 ---
 

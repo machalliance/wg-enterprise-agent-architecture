@@ -1,4 +1,4 @@
-# Bucket 4: Autonomous, Policy-Guided Agents
+# Archetype 4: Autonomous, Policy-Guided Agents
 *Persistence changes everything. When an agent does not stop, your architecture and governance cannot either.*
 
 **By the [Enterprise Agent Architecture Working Group](https://github.com/machalliance/wg-enterprise-agent-architecture) of the [Agent Ecosystem](https://agentecosystem.org)**
@@ -7,7 +7,7 @@
 
 ## What changes here
 
-A goal-directed agent (bucket 3) receives a task, works out how to accomplish it, and finishes. Clear start, clear end. An autonomous, policy-guided agent does not wait for assignments. It persists. It monitors a domain, detects conditions that warrant action, decides what to do, acts, observes the result, and self-corrects. Continuously. Without a human in the loop for each decision.
+A goal-directed agent (archetype 3) receives a task, works out how to accomplish it, and finishes. Clear start, clear end. An autonomous, policy-guided agent does not wait for assignments. It persists. It monitors a domain, detects conditions that warrant action, decides what to do, acts, observes the result, and self-corrects. Continuously. Without a human in the loop for each decision.
 
 This is not a difference in degree. It is a difference in kind. The moment an agent operates independently over extended durations, you inherit a new class of problems:
 
@@ -193,7 +193,7 @@ The revenue optimization agent is not a function that runs when called. It is a 
 - **Credential rotation.** Automated, on schedule, without disrupting the agent's operation. The agent handles credential refresh as part of its normal runtime, not as an exceptional case.
 - **Revocation.** If the agent is compromised or behaving anomalously, its identity can be revoked immediately, severing access to all downstream systems in one operation.
 
-In bucket 3, an agent typically inherits the invoking user's session credentials for the duration of a task. Persistence demands standalone identity.
+In archetype 3, an agent typically inherits the invoking user's session credentials for the duration of a task. Persistence demands standalone identity.
 
 ### Long-running durable state
 
@@ -272,7 +272,7 @@ Policy is not static. The agent's operating environment changes, regulations evo
 
 ---
 
-## Bridging to bucket 5
+## Bridging to archetype 5
 
 Everything above assumes a single agent operating within a single organization's boundary. The architecture and policy patterns hold until the agent needs to interact with agents it does not control.
 
@@ -283,7 +283,7 @@ When that happens, new questions emerge:
 - **Intent alignment.** Your agent optimizes for margin. A partner's agent optimizes for volume. They need to negotiate. Who arbitrates?
 - **Accountability.** When two agents from different organizations produce an outcome neither operator intended, whose decision trail matters?
 
-These questions define bucket 5. The infrastructure you build here (durable identity, decision trails, policy enforcement) becomes the *foundation* for operating across trust boundaries. You do not throw it away. You extend it with protocols for discovery, negotiation, and cross-organizational accountability.
+These questions define archetype 5. The infrastructure you build here (durable identity, decision trails, policy enforcement) becomes the *foundation* for operating across trust boundaries. You do not throw it away. You extend it with protocols for discovery, negotiation, and cross-organizational accountability.
 
 ---
 

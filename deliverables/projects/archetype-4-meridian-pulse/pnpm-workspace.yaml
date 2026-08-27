@@ -1,2 +1,5 @@
 packages:
   - "packages/*"
+
+overrides:
+  "path-to-regexp@~0.1.12": "0.1.13"

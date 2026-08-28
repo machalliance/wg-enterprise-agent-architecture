@@ -4,105 +4,227 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Meridian Pulse — Operator Control</title>
+    <link rel="stylesheet" href="fonts.css" />
     <style>
+      /* ============================================================
+         Waypoint design system — internalized, same tiers as the
+         Archetype 5 dashboard (packages/dashboard/public/index.html).
+         Tier 1 primitives → Tier 2 semantics → dashboard components.
+         Product code below only reads the semantic names.
+         ============================================================ */
       :root {
-        --bg: #0b0e14; --panel: #151a23; --line: #232a36; --text: #d7dde8;
-        --muted: #8792a6; --green: #35c46b; --amber: #e6a12b; --orange: #e6772b;
-        --red: #e6483d; --accent: #4a9eff;
+        /* Tier 1 · primitives (only the steps this UI uses) */
+        --wp-chalk:#FDFDFB;
+        --wp-granite-50:#F5F4EE; --wp-granite-100:#E7E9E1; --wp-granite-200:#DBDED4;
+        --wp-granite-300:#C6CCC5; --wp-granite-600:#626C65; --wp-granite-700:#4E5852;
+        --wp-granite-900:#232D27;
+        --wp-pine-50:#EDFBF3; --wp-pine-700:#2A5B45; --wp-pine-800:#224937; --wp-pine-900:#163225;
+        --wp-blaze-100:#FFE7DF; --wp-blaze-600:#B84408;
+        --wp-glacier-100:#E2EFF9; --wp-glacier-300:#B2C7D9; --wp-glacier-600:#49708E; --wp-glacier-700:#395971;
+        --wp-summit-100:#DEF3E3; --wp-summit-600:#2F7D4C; --wp-summit-700:#24643C;
+        --wp-lichen-100:#FCEACF; --wp-lichen-500:#B07C0F; --wp-lichen-700:#714E02;
+        --wp-scree-50:#FFF4F1; --wp-scree-100:#FFE6E2; --wp-scree-600:#B23A2E; --wp-scree-700:#912F25;
+        --wp-contour-300:#CFC7AE;
+
+        /* Tier 2 · semantics — the vocabulary the components speak */
+        --ground:var(--wp-granite-50);
+        --surface:var(--wp-chalk);
+        --fill:var(--wp-granite-100);
+        --hairline:var(--wp-granite-200);
+        --border:var(--wp-granite-300);
+        --text:var(--wp-granite-900);
+        --text-2:var(--wp-granite-700);
+        --text-3:var(--wp-granite-600);
+        --action:var(--wp-pine-700);
+        --action-hover:var(--wp-pine-800);
+        --signal:var(--wp-blaze-600);
+        --signal-tint:var(--wp-blaze-100);
+        --focus:var(--wp-blaze-600);
+        --success:var(--wp-summit-600); --success-text:var(--wp-summit-700); --success-tint:var(--wp-summit-100);
+        --warn:var(--wp-lichen-500);    --warn-text:var(--wp-lichen-700);   --warn-tint:var(--wp-lichen-100);
+        --error:var(--wp-scree-600);    --error-hover:var(--wp-scree-700);  --error-tint:var(--wp-scree-100);
+        --error-wash:var(--wp-scree-50);
+        --info:var(--wp-glacier-600);   --info-text:var(--wp-glacier-700);  --info-tint:var(--wp-glacier-100);
+        /* SIGNIFICANT sits between MINOR (lichen) and EXTREME (scree); blaze is the one
+           hue in the palette that reads as "louder than amber, not yet a failure". */
+        --alert:var(--wp-blaze-600);    --alert-tint:var(--wp-blaze-100);
+
+        /* type / shape / motion */
+        --font-display:'Barlow Condensed', ui-sans-serif, 'Arial Narrow', sans-serif;
+        --font-body:Barlow, ui-sans-serif, system-ui, -apple-system, sans-serif;
+        --font-data:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+        --r-control:2px; --r-card:4px; --r-pill:999px;
+        --shadow-overlay:0 8px 24px rgba(22,29,25,.2);
+        --ease:150ms ease-out;
+        --topo-line:rgba(207,199,174,.45);
+        color-scheme:light;
       }
       * { box-sizing: border-box; }
       body {
-        margin: 0; background: var(--bg); color: var(--text);
-        font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        margin: 0; background: var(--ground); color: var(--text);
+        font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        /* A single faint topographic contour bleeds in from the corner — Waypoint's expedition
+           motif, kept low-contrast so it lives only in the gutters behind the opaque panels. */
+        background-image: repeating-radial-gradient(circle at 100% -8%, transparent 0 70px, var(--topo-line) 70px 71px);
+        background-attachment: fixed;
       }
+      h1, h2 { margin: 0; font-family: var(--font-display); font-weight: 600; line-height: 1.05; }
+      ::selection { background: var(--signal-tint); }
+      :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 1px; }
+
       header {
-        display: flex; align-items: center; gap: 16px; padding: 14px 20px;
-        border-bottom: 1px solid var(--line); background: var(--panel);
+        display: flex; align-items: center; gap: 16px; padding: 14px 24px;
+        border-bottom: 2px solid var(--text); position: sticky; top: 0; background: var(--surface);
+        z-index: 5; flex-wrap: wrap;
       }
-      header h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: .3px; }
+      header h1 { font-size: 25px; text-transform: uppercase; letter-spacing: .04em; }
       .pulse {
-        width: 12px; height: 12px; border-radius: 50%; background: var(--green);
-        box-shadow: 0 0 0 0 rgba(53,196,107,.6); animation: beat 1.4s infinite;
+        width: 10px; height: 10px; border-radius: 50%; background: var(--success); flex: none;
+        box-shadow: 0 0 0 0 rgba(47,125,76,.5); animation: beat 1.4s infinite;
       }
-      .pulse.halted { background: var(--red); animation: none; }
+      .pulse.halted { background: var(--error); animation: none; }
       @keyframes beat {
-        0% { box-shadow: 0 0 0 0 rgba(53,196,107,.6); }
-        70% { box-shadow: 0 0 0 10px rgba(53,196,107,0); }
-        100% { box-shadow: 0 0 0 0 rgba(53,196,107,0); }
+        0% { box-shadow: 0 0 0 0 rgba(47,125,76,.5); }
+        70% { box-shadow: 0 0 0 10px rgba(47,125,76,0); }
+        100% { box-shadow: 0 0 0 0 rgba(47,125,76,0); }
       }
-      .status-word { font-weight: 600; }
-      .status-word.running { color: var(--green); }
-      .status-word.halted { color: var(--red); }
+      /* Header meta reads as one quiet instrument row: mono for the numbers that tick,
+         a Waypoint pill for the one word that carries state. */
+      header .meta { color: var(--text-2); font-size: 13px; font-family: var(--font-data); }
+      .status-word {
+        font-family: var(--font-data); font-size: 11px; font-weight: 500; padding: 4px 12px;
+        border-radius: var(--r-pill); border: 1px solid var(--border); text-transform: uppercase;
+        letter-spacing: .06em; white-space: nowrap;
+      }
+      .status-word.running { color: var(--success-text); border-color: var(--success); background: var(--success-tint); }
+      .status-word.halted { color: var(--error); border-color: var(--error); background: var(--error-tint); }
       .spacer { flex: 1; }
-      main { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px; }
-      .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
-      .panel h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; }
-      .metric-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line); }
-      .metric-row:last-child { border-bottom: none; }
-      .metric-val { font-variant-numeric: tabular-nums; font-weight: 600; }
-      .bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 4px; }
-      .bar > span { display: block; height: 100%; background: var(--accent); }
-      .bar.warn > span { background: var(--amber); }
-      .bar.danger > span { background: var(--red); }
-      .level { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-      .level.NORMAL { background: rgba(53,196,107,.15); color: var(--green); }
-      .level.MINOR { background: rgba(230,161,43,.15); color: var(--amber); }
-      .level.SIGNIFICANT { background: rgba(230,119,43,.15); color: var(--orange); }
-      .level.EXTREME { background: rgba(230,72,61,.2); color: var(--red); }
-      button { font: inherit; border: none; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-weight: 600; }
-      .kill { background: var(--red); color: #fff; }
-      .resume { background: var(--green); color: #06210f; }
-      .approve { background: var(--green); color: #06210f; padding: 5px 12px; }
-      .reject { background: var(--line); color: var(--text); padding: 5px 12px; }
-      .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-      .controls input { flex: 1; min-width: 180px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; }
-      .esc { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
-      .esc .sku { font-weight: 600; }
-      .esc .why { color: var(--muted); font-size: 13px; margin: 4px 0 8px; }
-      .esc .tier { font-size: 12px; color: var(--orange); }
-      .anomaly { border: 1px solid var(--red); border-left: 4px solid var(--red); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: rgba(230,72,61,.07); }
-      .anomaly .sku { font-weight: 600; color: var(--red); }
-      .anomaly .obs { margin: 4px 0 2px; }
-      .anomaly .cause { color: var(--muted); font-size: 13px; }
-      .anomaly .taken { color: var(--green); font-size: 12px; margin-top: 6px; }
-      .anomaly .ts { color: var(--muted); font-size: 11px; float: right; }
-      .act { border-left: 3px solid var(--green); background: rgba(53,196,107,.05); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; }
-      .act.NOTIFY { border-left-color: var(--amber); background: rgba(230,161,43,.06); }
-      .act .sku { font-weight: 600; }
-      .act .chg { color: var(--muted); font-size: 12px; }
-      .act .badge { font-size: 11px; padding: 1px 7px; border-radius: 20px; font-weight: 600; }
-      .act .badge.PERMIT { background: rgba(53,196,107,.15); color: var(--green); }
-      .act .badge.NOTIFY { background: rgba(230,161,43,.15); color: var(--amber); }
-      .act .ts { color: var(--muted); font-size: 11px; float: right; }
-      /* transient toast stack, bottom-right */
-      #toasts { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 50; }
-      .toast {
-        background: var(--panel); border: 1px solid var(--green); border-left: 4px solid var(--green);
-        border-radius: 8px; padding: 10px 14px; min-width: 260px; max-width: 340px;
-        box-shadow: 0 6px 24px rgba(0,0,0,.4); animation: toastin .25s ease-out;
+
+      main {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 24px;
       }
-      .toast.NOTIFY { border-color: var(--amber); border-left-color: var(--amber); }
+      .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); padding: 16px; min-width: 0; }
+      /* Section headers get Waypoint's signature: a single blaze diamond, an uppercase Barlow
+         Condensed title, and a hairline contour rule that runs out to the edge. */
+      .panel h2 {
+        display: flex; align-items: center; gap: 12px; margin: 0 0 14px;
+        font-size: 18px; text-transform: uppercase; letter-spacing: .03em; color: var(--text);
+      }
+      .panel h2::before { content: ""; width: 9px; height: 9px; background: var(--signal); transform: rotate(45deg); flex: none; }
+      .panel h2::after { content: ""; height: 1px; background: var(--wp-contour-300); flex: 1; min-width: 16px; }
+
+      .metric-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--hairline); }
+      .metric-row:last-child { border-bottom: none; }
+      .metric-row > span:first-child { color: var(--text-2); font-size: 14px; }
+      .metric-val { font-family: var(--font-data); font-variant-numeric: tabular-nums; font-size: 14px; color: var(--text); }
+      .bar { height: 6px; border-radius: var(--r-control); background: var(--fill); overflow: hidden; margin-top: 6px; }
+      .bar > span { display: block; height: 100%; background: var(--info); transition: width var(--ease); }
+      .bar.warn > span { background: var(--warn); }
+      .bar.danger > span { background: var(--error); }
+
+      /* Waypoint pill badge: tint + text per state, with a leading status dot. */
+      .level {
+        display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body);
+        font-size: 12px; font-weight: 500; padding: 3px 12px; border-radius: var(--r-pill);
+        border: 1px solid transparent; letter-spacing: .02em; background: var(--fill); color: var(--text-3);
+      }
+      .level::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+      .level.NORMAL { background: var(--success-tint); color: var(--success-text); }
+      .level.MINOR { background: var(--warn-tint); color: var(--warn-text); }
+      .level.SIGNIFICANT { background: var(--alert-tint); color: var(--alert); }
+      .level.EXTREME { background: transparent; color: var(--error); border-color: var(--error); }
+
+      /* Buttons share the Waypoint control shape: 2px radius, 44px min target, Barlow 600 caps. */
+      button {
+        font-family: var(--font-body); font-weight: 600; font-size: 14px; letter-spacing: .04em;
+        text-transform: uppercase; border: 1px solid transparent; border-radius: var(--r-control);
+        padding: 11px 20px; min-height: 44px; cursor: pointer;
+        transition: background var(--ease), color var(--ease);
+      }
+      .kill { background: var(--error); color: #fff; }
+      .kill:hover { background: var(--error-hover); }
+      .resume { background: var(--action); color: #fff; }
+      .resume:hover { background: var(--action-hover); }
+      .approve { background: var(--action); color: #fff; padding: 8px 14px; min-height: 40px; font-size: 13px; }
+      .approve:hover { background: var(--action-hover); }
+      .reject { background: transparent; color: var(--error); border-color: var(--error); padding: 8px 14px; min-height: 40px; font-size: 13px; }
+      .reject:hover { background: var(--error-tint); }
+      .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+      .controls input {
+        flex: 1; min-width: 180px; background: var(--surface); border: 1px solid var(--border);
+        color: var(--text); border-radius: var(--r-control); padding: 10px 12px; font-family: var(--font-body); font-size: 14px;
+      }
+
+      .esc { border: 1px solid var(--border); border-radius: var(--r-card); padding: 12px 14px; margin-bottom: 10px; background: var(--surface); }
+      .esc .sku { font-weight: 700; font-size: 15px; }
+      .esc .sku .terms { font-family: var(--font-data); font-weight: 500; color: var(--text-2); margin-left: 4px; }
+      .esc .why { color: var(--text-2); font-size: 13px; margin: 6px 0 10px; line-height: 1.5; }
+      .esc .tier {
+        display: inline-block; font-family: var(--font-data); font-size: 10px; font-weight: 600;
+        padding: 2px 7px; border-radius: var(--r-control); letter-spacing: .02em;
+        background: var(--warn-tint); color: var(--warn-text);
+      }
+
+      .anomaly { border: 1px solid var(--error); border-left: 4px solid var(--error); border-radius: var(--r-card); padding: 12px 14px; margin-bottom: 10px; background: var(--error-wash); }
+      .anomaly .sku { font-weight: 700; color: var(--error); }
+      .anomaly .obs { margin: 4px 0 2px; color: var(--text); }
+      .anomaly .cause { color: var(--text-2); font-size: 13px; }
+      .anomaly .taken { color: var(--success-text); font-size: 12px; margin-top: 8px; }
+      .anomaly .ts { color: var(--text-3); font-family: var(--font-data); font-size: 11px; float: right; }
+
+      /* Autonomous actions: quiet surface rows, tier carried by a single accent edge —
+         the same "in policy / flag a human" split the badges use. */
+      .act { border: 1px solid var(--hairline); border-left: 3px solid var(--success); border-radius: var(--r-card); padding: 9px 12px; margin-bottom: 8px; background: var(--surface); }
+      .act.NOTIFY { border-left-color: var(--warn); }
+      .act .sku { font-weight: 700; }
+      .act .chg { color: var(--text-2); font-size: 13px; margin-top: 3px; font-family: var(--font-data); }
+      .act .badge {
+        display: inline-block; font-family: var(--font-data); font-size: 10px; font-weight: 600;
+        padding: 2px 7px; border-radius: var(--r-control); letter-spacing: .02em;
+      }
+      .act .badge.PERMIT { background: var(--success-tint); color: var(--success-text); }
+      .act .badge.NOTIFY { background: var(--warn-tint); color: var(--warn-text); }
+      .act .ts { color: var(--text-3); font-family: var(--font-data); font-size: 11px; float: right; }
+
+      /* transient toast stack, bottom-right */
+      #toasts { position: fixed; right: 24px; bottom: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 50; }
+      .toast {
+        background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--success);
+        border-radius: var(--r-card); padding: 12px 16px; min-width: 260px; max-width: 340px;
+        box-shadow: var(--shadow-overlay); animation: toastin .25s ease-out;
+      }
+      .toast.NOTIFY { border-top-color: var(--warn); }
       .toast.fade { animation: toastout .4s ease-in forwards; }
-      .toast .t-head { font-weight: 600; font-size: 13px; }
-      .toast .t-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+      .toast .t-head { font-family: var(--font-display); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--text); }
+      .toast .t-sub { color: var(--text-2); font-size: 13px; margin-top: 3px; font-family: var(--font-data); }
       @keyframes toastin { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
       @keyframes toastout { to { opacity: 0; transform: translateX(20px); } }
-      .empty { color: var(--muted); font-style: italic; }
-      .banner { display: none; padding: 10px 20px; background: rgba(230,72,61,.15); border-bottom: 1px solid var(--red); color: var(--red); font-weight: 600; }
+
+      .empty { color: var(--text-3); font-size: 13px; font-style: italic; }
+      .banner { display: none; padding: 12px 24px; background: var(--error-tint); border-bottom: 1px solid var(--error); color: var(--error); font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: 15px; }
       .banner.show { display: block; }
-      .links { padding: 0 20px 20px; color: var(--muted); font-size: 13px; }
-      .links a { color: var(--accent); }
-      code { background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+      .links { padding: 4px 24px 24px; color: var(--text-3); font-size: 13px; }
+      .links a { color: var(--action); }
+      code { background: var(--fill); font-family: var(--font-data); font-size: 12px; padding: 2px 6px; border-radius: var(--r-control); color: var(--text-2); }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      }
+      @media (max-width: 860px) {
+        main { grid-template-columns: 1fr; }
+        main .panel { grid-column: 1 !important; }
+      }
     </style>
   </head>
   <body>
     <header>
       <div class="pulse" id="pulse"></div>
       <h1>Meridian Pulse</h1>
-      <span>Agent: <span class="status-word running" id="statusWord">running</span></span>
-      <span style="color: var(--muted)">cycle <span id="cycle">–</span></span>
+      <span class="meta">Agent <span class="status-word running" id="statusWord">running</span></span>
+      <span class="meta">cycle <span id="cycle">–</span></span>
       <div class="spacer"></div>
-      <button class="kill" id="killBtn">■ KILL SWITCH</button>
+      <button class="kill" id="killBtn">Kill switch</button>
     </header>
 
     <div class="banner" id="banner"></div>
@@ -145,7 +267,7 @@
       </section>
 
       <section class="panel" style="grid-column: 1 / -1;">
-        <h2>⚠ Agent-flagged anomalies — bad data the agent caught and refused to act on</h2>
+        <h2>Agent-flagged anomalies — bad data the agent caught and refused to act on</h2>
         <div id="anomalyList"><div class="empty">No anomalies flagged.</div></div>
       </section>
     </main>
@@ -206,7 +328,7 @@
         sw.textContent = halted ? "halted" : "running";
         sw.className = "status-word " + (halted ? "halted" : "running");
         $("cycle").textContent = st.lastCycle ?? "–";
-        $("killBtn").textContent = halted ? "▶ RESUME" : "■ KILL SWITCH";
+        $("killBtn").textContent = halted ? "Resume" : "Kill switch";
         $("killBtn").className = halted ? "resume" : "kill";
 
         const banner = $("banner");
@@ -240,7 +362,7 @@
         } else {
           list.innerHTML = esc.map((a) => `
             <div class="esc">
-              <div class="sku">${a.sku} &nbsp; $${a.currentPrice} → $${a.proposedPrice} (${a.changePct}%)</div>
+              <div class="sku">${a.sku} <span class="terms">$${a.currentPrice} → $${a.proposedPrice} (${a.changePct}%)</span></div>
               <div class="why">${a.reason || ""}</div>
               <div class="tier">${a.tierResult}</div>
               <div style="margin-top:8px; display:flex; gap:8px;">

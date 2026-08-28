@@ -4,7 +4,7 @@
 #
 # Brings the whole system up in the right order and drives the ~4-minute demo:
 #   1. Observability stack (OTel Collector + Tempo + Prometheus + Loki + Grafana)
-#      via finch compose  [optional: skip with NO_OBSERVABILITY=1]
+#      via finch compose (or docker compose)  [optional: skip with NO_OBSERVABILITY=1]
 #   2. AgentGateway            (LLM routing + MCP federation + policy gate front)
 #   3. control-plane           (kill switch, breakers, heartbeat, dashboard)
 #   4. agent run-loop          (continuous perceive -> reason -> act)
@@ -18,8 +18,10 @@
 #
 # Ctrl-C tears everything down.
 #
-# Prereqs (see README): goose, agentgateway, finch on PATH; pnpm -r build done;
-# agent identity minted (node packages/agent/dist/identity.js keygen && mint);
+# Runs on macOS, Linux, and Windows (via WSL2 or Git Bash — it is a Bash script).
+# Prereqs (see README): goose, agentgateway, and a container runtime (finch or
+# docker) on PATH; pnpm -r build done; agent identity minted
+# (node packages/agent/dist/identity.js keygen && mint);
 # .env filled (or gateway config switched to Bedrock).
 # =============================================================================
 set -uo pipefail
@@ -39,12 +41,27 @@ if [[ -f .env ]]; then set -a; . ./.env; set +a; fi
 export GOOSE_PROVIDER GOOSE_MODEL OPENAI_HOST OPENAI_BASE_PATH OPENAI_API_KEY AGENT_MAX_CYCLES NODE_NO_WARNINGS=1
 
 PIDS=()
+
+# Container runtime for the observability stack: prefer finch (what this project
+# was tested with); fall back to `docker compose` if finch is absent. Both are
+# Docker-compose compatible. NO_OBSERVABILITY=1 skips the stack entirely.
+COMPOSE=()
+if command -v finch >/dev/null 2>&1; then
+  COMPOSE=(finch compose)
+elif command -v docker >/dev/null 2>&1; then
+  COMPOSE=(docker compose)
+fi
+
+# OS-neutral temp dir for component logs (TMPDIR on macOS, /tmp on Linux, a
+# real temp path under WSL2 / Git Bash on Windows).
+LOGDIR="${TMPDIR:-/tmp}"
+
 cleanup() {
   echo ""
   echo "[demo] shutting down..."
   for pid in "${PIDS[@]:-}"; do kill "$pid" 2>/dev/null || true; done
-  if [[ "${NO_OBSERVABILITY:-0}" != "1" ]]; then
-    finch compose -f infra/observability-compose.yaml down 2>/dev/null || true
+  if [[ "${NO_OBSERVABILITY:-0}" != "1" && "${#COMPOSE[@]}" -gt 0 ]]; then
+    "${COMPOSE[@]}" -f infra/observability-compose.yaml down 2>/dev/null || true
   fi
   echo "[demo] done."
 }
@@ -63,24 +80,24 @@ fi
 
 # --- 1. Observability stack (optional) --------------------------------------
 if [[ "${NO_OBSERVABILITY:-0}" != "1" ]]; then
-  if command -v finch >/dev/null 2>&1; then
-    echo "[demo] starting observability stack (finch compose)..."
-    finch compose -f infra/observability-compose.yaml up -d 2>&1 | sed 's/^/[observability] /' || \
+  if [[ "${#COMPOSE[@]}" -gt 0 ]]; then
+    echo "[demo] starting observability stack (${COMPOSE[*]})..."
+    "${COMPOSE[@]}" -f infra/observability-compose.yaml up -d 2>&1 | sed 's/^/[observability] /' || \
       echo "[demo] WARN: observability stack failed to start; continuing without it (dashboards unavailable)."
   else
-    echo "[demo] WARN: finch not found; skipping observability stack."
+    echo "[demo] WARN: no container runtime (finch or docker) found; skipping observability stack."
   fi
 fi
 
 # --- 2. AgentGateway --------------------------------------------------------
 echo "[demo] starting AgentGateway..."
-agentgateway -f infra/agentgateway/config.yaml >/tmp/meridian-gateway.log 2>&1 &
+agentgateway -f infra/agentgateway/config.yaml >"${LOGDIR}/meridian-gateway.log" 2>&1 &
 PIDS+=($!)
 sleep 5
 
 # --- 3. control-plane -------------------------------------------------------
 echo "[demo] starting control-plane (dashboard: http://localhost:8090)..."
-node packages/control-plane/dist/index.js >/tmp/meridian-control-plane.log 2>&1 &
+node packages/control-plane/dist/index.js >"${LOGDIR}/meridian-control-plane.log" 2>&1 &
 PIDS+=($!)
 sleep 2
 

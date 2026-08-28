@@ -10,6 +10,18 @@ Everything runs on a **single host**: your own machine, or a remote dev environm
 agent, AgentGateway, the MCP servers, and the control plane talk to each other over loopback; the
 observability stack runs as containers on the same host. Nothing needs to leave the machine.
 
+**Supported OSes: macOS, Linux, and Windows.** The prototype was built and tested on macOS; the same
+steps work on Linux, and on Windows through **WSL2** (recommended) or **Git Bash**. The build
+(`pnpm -r build`) and tests (`pnpm test`) are pure Node and run natively on any OS. The one-command demo
+(`pnpm demo`) and the agent loop are Bash scripts that also use `curl`, so on Windows they must run in a
+POSIX shell — WSL2 or Git Bash both provide one.
+
+> **Windows setup:** install [WSL2](https://learn.microsoft.com/windows/wsl/install) once with
+> `wsl --install` (from an elevated PowerShell), open your WSL distribution, and from there follow the
+> **Linux** instructions throughout this guide — every `bash` block runs unchanged. Git Bash also works if
+> you prefer not to use WSL2, but WSL2 is the smoother path (Finch/Docker, Goose, and Node all install
+> cleanly inside it).
+
 The gateway binds its admin endpoint to `127.0.0.1`; its metrics endpoint binds `0.0.0.0:15020` so the
 Prometheus container can scrape it across the container boundary (see the note in
 [`meridian-pulse/docs/known-limitations.md`](meridian-pulse/docs/known-limitations.md), item 9). On a
@@ -18,28 +30,45 @@ shared machine, firewall `:15020` or revert it to loopback.
 ## Prerequisites
 
 Pinned versions live in [`meridian-pulse/infra/VERSIONS.md`](meridian-pulse/infra/VERSIONS.md). Listed so
-you can sanity-check:
+you can sanity-check (on **Windows**, install these inside WSL2):
 
-- **Node ≥ 20** (`node -v` → tested on 24.11.1)
+- **Node ≥ 20** (`node -v` → tested on 24.11.1) — nvm, [nodejs.org](https://nodejs.org), or a distro package.
 - **pnpm 9.15.0** (`corepack use pnpm@9.15.0`)
-- **Goose CLI 1.46.0** (`brew install block-goose-cli`) — the agent runtime
+- **Goose CLI 1.46.0** — the agent runtime.
+  - macOS/Linux (and Windows/WSL2): `curl -fsSL https://github.com/block/goose/raw/main/download_cli.sh | bash`
+  - macOS/Linux via Homebrew: `brew install block-goose-cli`
+  - See the [Goose install docs](https://block-goose.mintlify.app/installation) for the source (Cargo) fallback.
 - **AgentGateway 1.4.1** — a downloaded binary, not a package (see below)
-- **Finch 1.14.1** (`brew install --cask finch`) — the container runtime for the observability stack.
-  Start its VM once with `finch vm start`. Docker Desktop also works; the compose file maps both
-  `host.lima.internal` (Finch/Lima) and `host.docker.internal` (Docker) so either resolves the host.
+- **Finch 1.14.1** — the container runtime for the observability stack, and what this project was tested
+  with. On macOS: `brew install --cask finch`; on Linux: a [Finch release](https://github.com/runfinch/finch/releases).
+  Start its VM once with `finch vm start`. **Any Docker-compose-compatible runtime works too** — Docker
+  Desktop (macOS/Windows) or Docker Engine (Linux); just substitute `docker compose` for `finch compose`.
+  The compose file maps both `host.lima.internal` (Finch/Lima) and `host.docker.internal` (Docker) so
+  either resolves the host.
 
 You also need an **LLM** the gateway can reach — see [step 2](#2-configure-the-llm-provider).
 
 ### Installing AgentGateway
 
 From the [agentgateway releases](https://github.com/agentgateway/agentgateway/releases), download the
-`darwin` / `linux` / `windows` binary for **1.4.1**, then:
+`darwin` / `linux` / `windows` binary for **1.4.1**, then put it on your PATH.
+
+On macOS / Linux (and Windows/WSL2):
 
 ```bash
-shasum -a 256 agentgateway-<platform>          # compare to the release's published sha256
+shasum -a 256 agentgateway-<platform>          # macOS; on Linux: sha256sum agentgateway-<platform>
+                                               # compare the output to the release's published sha256
 chmod +x agentgateway-<platform>
 xattr -d com.apple.quarantine agentgateway-<platform>   # macOS only: clear Gatekeeper quarantine
 sudo mv agentgateway-<platform> /usr/local/bin/agentgateway
+```
+
+On native Windows PowerShell (only if you are **not** using WSL2 — note the demo itself still needs a
+POSIX shell, so WSL2/Git Bash is simpler):
+
+```powershell
+Get-FileHash -Algorithm SHA256 agentgateway-windows.exe   # compare to the release's sha256
+# rename to agentgateway.exe and move it to a folder on your PATH (e.g. C:\bin added to PATH)
 ```
 
 ## 1. Install & build
@@ -128,6 +157,9 @@ One command brings up the whole system — observability stack, gateway, control
 pnpm demo
 ```
 
+> On **Windows**, run `pnpm demo` from a **WSL2** shell or **Git Bash** — the orchestrator and agent loop
+> are Bash scripts. macOS and Linux run it directly.
+
 Then open the **operator dashboard at http://localhost:8090** and **Grafana at http://localhost:3001**
 (which lands directly on the Meridian Pulse dashboard). `Ctrl-C` tears everything down, including the
 container stack. The presenter's walkthrough is in [`HOW-TO-DEMO.md`](HOW-TO-DEMO.md).
@@ -147,7 +179,7 @@ Under the hood `pnpm demo` runs these in order — you can also run them by hand
 own pane:
 
 ```bash
-finch compose -f infra/observability-compose.yaml up -d   # 1. observability (or: pnpm observability:up)
+finch compose -f infra/observability-compose.yaml up -d   # 1. observability (or: pnpm observability:up; Docker: docker compose -f …)
 agentgateway -f infra/agentgateway/config.yaml            # 2. gateway (LLM :4000, MCP :3000)
 node packages/control-plane/dist/index.js                 # 3. control plane (dashboard :8090)
 packages/agent/run-loop.sh                                # 4. the agent's continuous loop
@@ -205,6 +237,8 @@ Run from `meridian-pulse/` after `pnpm -r build`:
   different param, omit that param from `packages/agent/recipe.yaml` too.
 - **Grafana panels are empty** — the gateway runs fine without the OTel collector, so traces/metrics only
   appear once the `finch compose` stack is up. The demo's core behaviour does not depend on it.
-- **Ports already in use (`EADDRINUSE`)** — a previous run's processes are still alive. Stop them:
-  `pkill -f 'agentgateway -f infra'; pkill -f 'control-plane/dist/index.js'; pkill -f run-loop.sh`, and
-  `pkill -f 'meridian-pulse/packages/mcp-'` for any orphaned MCP servers the gateway spawned.
+- **Ports already in use (`EADDRINUSE`)** — a previous run's processes are still alive. On macOS/Linux
+  (and Windows/WSL2 or Git Bash): `pkill -f 'agentgateway -f infra'; pkill -f 'control-plane/dist/index.js'; pkill -f run-loop.sh`, and
+  `pkill -f 'meridian-pulse/packages/mcp-'` for any orphaned MCP servers the gateway spawned. If a
+  specific port is still held, find and free it: macOS/Linux `lsof -tiTCP:8090 -sTCP:LISTEN | xargs kill -9`;
+  native Windows PowerShell `Get-NetTCPConnection -LocalPort 8090 | Select-Object -Expand OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }`.

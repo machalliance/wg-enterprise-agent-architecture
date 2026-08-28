@@ -39,6 +39,10 @@ From `meridian-pulse/`:
 pnpm demo
 ```
 
+> On **Windows**, run this from a **WSL2** shell or **Git Bash** — `pnpm demo` and the agent loop are Bash
+> scripts. macOS and Linux run it directly. (Build and tests run natively on any OS; only the live demo
+> needs the POSIX shell.)
+
 This starts the observability stack, AgentGateway, the control plane, and the agent loop, then begins
 replaying the scenario. Confirm the dashboard at http://localhost:8090 shows a pulsing heartbeat and the
 decision feed beginning to scroll before you start narrating.
@@ -94,13 +98,17 @@ The two dashboard interactions (Approve after beat 3, and the kill-switch / Resu
 manual touches.
 
 If you prefer not to use the helper, the stepper just increments a small trigger file the market-data
-driver watches — you can drive it by hand (handy for a scripted or a future dashboard-button trigger):
+driver watches — you can drive it by hand (handy for a scripted or a future dashboard-button trigger). In
+a POSIX shell (macOS/Linux, or Windows via WSL2/Git Bash):
 
 ```bash
 # advance one beat = bump the integer in the trigger file
 echo $(( $(cat packages/mcp-market-data/scenario-step.trigger 2>/dev/null || echo 0) + 1 )) \
   > packages/mcp-market-data/scenario-step.trigger
 ```
+
+(`pnpm scenario:step` is the cross-platform way to do the same thing and works in any shell, including
+native Windows PowerShell — prefer it unless you specifically need the raw file bump.)
 
 The trigger file lives at `packages/mcp-market-data/scenario-step.trigger` (override with
 `SCENARIO_TRIGGER_FILE`) and the driver only watches it in **manual mode**. It is a file rather than a
@@ -176,18 +184,19 @@ beats land on your narration. Either way, narrate as each beat lands:
 - **Need to explain a decision.** `node packages/policy/dist/query-trail.js list` (recent decisions),
   `... why <id>` (why it reached its tier), or `... stats`.
 - **Grafana panels are empty.** The gateway runs fine without the OTel collector; if traces/metrics aren't
-  showing, confirm the `finch compose` stack is up. The demo's core behaviour does not depend on it.
+  showing, confirm the `finch compose` (or `docker compose`) stack is up. The demo's core behaviour does not depend on it.
 - **Anomaly card didn't appear (Beat 4).** The card is fed from `report_anomaly` → the decision trail →
   the control plane's `/anomalies`. Check the agent actually flagged it: `node
   packages/policy/dist/query-trail.js list` should show an `anomaly` record, and `curl
   localhost:8090/anomalies` should return it. If the agent instead *repriced* the FeedX SKUs, it didn't
   treat the data as anomalous — give it another cycle, or confirm the recipe's report_anomaly instruction
   is present.
-- **Ports already in use.** A previous run is still alive. Kill by process AND reap orphaned MCP children
-  by port (a gateway-spawned child can outlive its parent as an orphan):
-  `pkill -f 'agentgateway -f infra'; pkill -f 'control-plane/dist/index.js'; pkill -f run-loop.sh`, then
-  `pkill -f 'meridian-pulse/packages/mcp-'`. If a port is still held, find and kill the holder:
-  `lsof -tiTCP:8090 -sTCP:LISTEN | xargs kill -9`.
+- **Ports already in use.** A previous run is still alive. On macOS/Linux (and Windows/WSL2 or Git Bash),
+  kill by process AND reap orphaned MCP children by port (a gateway-spawned child can outlive its parent as
+  an orphan): `pkill -f 'agentgateway -f infra'; pkill -f 'control-plane/dist/index.js'; pkill -f run-loop.sh`, then
+  `pkill -f 'meridian-pulse/packages/mcp-'`. If a port is still held, find and kill the holder — macOS/Linux:
+  `lsof -tiTCP:8090 -sTCP:LISTEN | xargs kill -9`; native Windows PowerShell:
+  `Get-NetTCPConnection -LocalPort 8090 | Select-Object -Expand OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }`.
 
 ## Knobs
 
@@ -218,5 +227,5 @@ The full variable reference is in [`meridian-pulse/.env.example`](meridian-pulse
 ## Teardown
 
 `Ctrl-C` the `pnpm demo` process — it stops the gateway, control plane, and agent, and runs
-`finch compose ... down` for the observability stack on its way out. If you exposed `8090`/`3001` from a
-remote host, tear that forwarding down too.
+`finch compose ... down` (or `docker compose ... down` if you use Docker) for the observability stack on
+its way out. If you exposed `8090`/`3001` from a remote host, tear that forwarding down too.

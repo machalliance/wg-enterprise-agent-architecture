@@ -51,23 +51,36 @@ graph LR
 
 **Observability:** AgentGateway emits OTLP traces (one span per tool call and policy eval) to the OTel Collector on `:4317` → Tempo; it exposes Prometheus metrics on `:15020`, scraped by Prometheus; Grafana renders both on `:3001`. The stack runs as containers via `finch compose`.
 
+## Platform support
+
+Meridian Pulse runs on **macOS, Linux, and Windows**. It was built and tested on macOS; the same steps work on Linux, and on Windows through **WSL2** (recommended) or **Git Bash**. The one-command demo (`pnpm demo`) and the agent loop are Bash scripts that also use `curl`, so on Windows they need a POSIX shell — WSL2 or Git Bash both provide one. The build (`pnpm -r build`) and test suite (`pnpm test`) are pure Node and run natively on any OS, including native Windows PowerShell.
+
+> **Windows, in short:** install [WSL2](https://learn.microsoft.com/windows/wsl/install) (`wsl --install`), then follow the **Linux** instructions inside your WSL distribution. Everything below with a `bash` block runs there unchanged.
+
 ## Prerequisites
 
-Pinned versions are in [`infra/VERSIONS.md`](infra/VERSIONS.md). Install:
+Pinned versions are in [`infra/VERSIONS.md`](infra/VERSIONS.md). Install (on Windows, run the Linux install inside WSL2):
 
-| Tool | Version | Install |
-|---|---|---|
-| Node.js | 20+ (tested on 24.11.1) | nvm / nodejs.org |
-| pnpm | 9.15.0 | `corepack use pnpm@9.15.0` |
-| Goose CLI | 1.46.0 | `brew install block-goose-cli` |
-| AgentGateway | 1.4.1 | GitHub release binary (see below) |
-| Finch | 1.14.1 | `brew install --cask finch` |
+| Tool | Version | macOS | Linux (and Windows/WSL2) |
+|---|---|---|---|
+| Node.js | 20+ (tested on 24.11.1) | nvm / [nodejs.org](https://nodejs.org) | nvm / [nodejs.org](https://nodejs.org) / distro package |
+| pnpm | 9.15.0 | `corepack use pnpm@9.15.0` | `corepack use pnpm@9.15.0` |
+| Goose CLI | 1.46.0 | `brew install block-goose-cli` | `curl -fsSL https://github.com/block/goose/raw/main/download_cli.sh \| bash` |
+| AgentGateway | 1.4.1 | GitHub release binary (see below) | GitHub release binary (see below) |
+| Finch | 1.14.1 | `brew install --cask finch` | [Finch releases](https://github.com/runfinch/finch/releases) — or use Docker (see below) |
 
-**AgentGateway** is a downloaded binary, not a package. From the [agentgateway releases](https://github.com/agentgateway/agentgateway/releases), download the `darwin` / `linux` / `windows` binary for version 1.4.1, then:
+Notes per tool:
+
+- **Goose CLI** — the `curl … download_cli.sh \| bash` installer works on macOS and Linux (and inside WSL2); `brew install block-goose-cli` also works on both macOS and Linux. Cargo (`cargo install goose-cli`) is a source fallback. See the [Goose install docs](https://block-goose.mintlify.app/installation). On Windows, install it inside WSL2 with the Linux command above (a native Windows PowerShell installer exists — `irm https://github.com/block/goose/raw/main/download_cli.ps1 | iex` — but the demo orchestration here needs the WSL2/Git Bash shell anyway, so install Goose in that same environment).
+- **Finch** provides the container runtime for the observability stack and is what this project was tested with. Any Docker-compose-compatible runtime works too — **Docker Desktop** (macOS/Windows) or **Docker Engine** (Linux): substitute `docker compose` for `finch compose` in the commands below. With Finch, start its VM once before running the stack: `finch vm start`.
+
+**AgentGateway** is a downloaded binary, not a package. From the [agentgateway releases](https://github.com/agentgateway/agentgateway/releases), download the `darwin` / `linux` / `windows` binary for version 1.4.1, then put it on your PATH.
+
+*macOS / Linux (and Windows/WSL2):*
 
 ```bash
 # verify the download against the published checksum
-shasum -a 256 agentgateway-<platform>      # compare to the release's sha256
+shasum -a 256 agentgateway-<platform>      # macOS; on Linux use: sha256sum agentgateway-<platform>
 chmod +x agentgateway-<platform>
 # macOS only: clear the quarantine attribute so Gatekeeper allows it to run
 xattr -d com.apple.quarantine agentgateway-<platform>
@@ -75,7 +88,14 @@ xattr -d com.apple.quarantine agentgateway-<platform>
 sudo mv agentgateway-<platform> /usr/local/bin/agentgateway
 ```
 
-**Finch** provides the container runtime for the observability stack (Docker-compose compatible). Start its VM once before running the stack: `finch vm start`.
+*Windows, native PowerShell (only if you are not using WSL2):*
+
+```powershell
+# verify the download against the published checksum, then put it on your PATH
+Get-FileHash -Algorithm SHA256 agentgateway-windows.exe   # compare to the release's sha256
+# move agentgateway-windows.exe to a folder on your PATH (e.g. create C:\bin and add it to PATH),
+# renaming it to agentgateway.exe
+```
 
 ## Setup
 
@@ -120,11 +140,13 @@ Then open the dashboard at **http://localhost:8090** and Grafana at **http://loc
 
 > Prerequisites, checked by the script: `goose`, `agentgateway`, and `node` on PATH; `pnpm -r build` already run; the agent identity minted (`pnpm identity:setup`); and `.env` filled in (or the gateway config switched to Bedrock). Set `NO_OBSERVABILITY=1 pnpm demo` to skip the container stack.
 
+> On **Windows**, run `pnpm demo` from a **WSL2** shell or **Git Bash** (the orchestrator and agent loop are Bash scripts). macOS and Linux run it directly. If you use Docker instead of Finch, the demo script auto-detects it; to run the steps by hand, substitute `docker compose` for `finch compose`.
+
 Under the hood, `pnpm demo` runs these steps in order (you can also run them by hand for debugging):
 
 ```bash
 # 1. observability stack (Grafana :3001, Tempo, Prometheus, Loki, OTel Collector :4317)
-finch compose -f infra/observability-compose.yaml up -d      # or: pnpm observability:up
+finch compose -f infra/observability-compose.yaml up -d      # or: pnpm observability:up  (Docker: docker compose -f …)
 
 # 2. AgentGateway (LLM :4000, MCP :3000, admin :15000, metrics :15020)
 agentgateway -f infra/agentgateway/config.yaml

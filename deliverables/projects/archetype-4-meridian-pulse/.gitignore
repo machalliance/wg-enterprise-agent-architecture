@@ -18,6 +18,7 @@ dist/
 seed/identity/*.pem
 seed/identity/*.key
 seed/identity/agent-credential.json
+seed/identity/jwks.json
 
 # OTel / traces
 infra/otel/traces.jsonl

@@ -113,7 +113,7 @@ Run all commands from the `meridian-pulse` repo root.
    pnpm -r build
    ```
 
-3. **Generate the agent's machine identity (M1).** This creates an RSA keypair under `seed/identity/` and mints a scoped JWT. `jwks.json` is public and committed; `priv.pem` and `agent-credential.json` are gitignored:
+3. **Generate the agent's machine identity (M1).** This creates an RSA keypair under `seed/identity/` and mints a scoped JWT. All of `priv.pem`, `jwks.json`, and `agent-credential.json` are gitignored — `jwks.json` is safe to publish, but tracking only one half of the keypair lets git restore a JWKS whose private half is absent locally, which shows up as a gateway 401 on every MCP call. `pnpm demo` runs `keygen` for you in preflight; run these by hand only when starting pieces individually:
    ```bash
    node packages/agent/dist/identity.js keygen   # once — writes priv.pem + jwks.json
    node packages/agent/dist/identity.js mint       # mint / refresh the token

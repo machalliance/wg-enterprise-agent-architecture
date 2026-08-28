@@ -141,9 +141,12 @@ sources. (See item 12 in [`known-limitations.md`](meridian-pulse/docs/known-limi
 pnpm identity:setup      # = identity.js keygen (once) && identity.js mint (refresh the token)
 ```
 
-This writes an RSA keypair and a scoped, short-TTL JWT under `seed/identity/`. `jwks.json` is **public
-and committed**; `priv.pem` and `agent-credential.json` hold private key material and are **gitignored**,
-so a fresh clone has none until you run this. The agent presents the JWT to the gateway on every MCP
+This writes an RSA keypair and a scoped, short-TTL JWT under `seed/identity/`. All three files are
+**gitignored**, so a fresh clone has none until you run this. `jwks.json` is safe to publish, but it is
+deliberately not tracked: it is derived from `priv.pem`, and committing one half of the keypair lets a
+later `git pull` or `checkout` restore a JWKS whose private half does not exist on your machine — which
+surfaces only as a gateway 401 (`Error(InvalidSignature)`) on every MCP call. `keygen` detects a
+mismatched pair and regenerates both. The agent presents the JWT to the gateway on every MCP
 call, and the gateway verifies it strictly — an unauthenticated tool call is rejected. `pnpm demo` runs
 this for you if the identity is missing; the explicit command is only needed when starting pieces by
 hand. Re-run `node packages/agent/dist/identity.js mint` any time to refresh the token.

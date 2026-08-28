@@ -20,9 +20,8 @@
 #
 # Runs on macOS, Linux, and Windows (via WSL2 or Git Bash — it is a Bash script).
 # Prereqs (see README): goose, agentgateway, and a container runtime (finch or
-# docker) on PATH; pnpm -r build done; agent identity minted
-# (node packages/agent/dist/identity.js keygen && mint);
-# .env filled (or gateway config switched to Bedrock).
+# docker) on PATH; pnpm -r build done; .env filled (or gateway config switched to
+# Bedrock). The agent's machine identity is generated here in preflight.
 # =============================================================================
 set -uo pipefail
 
@@ -71,11 +70,15 @@ trap cleanup INT TERM EXIT
 for bin in goose agentgateway node; do
   command -v "$bin" >/dev/null 2>&1 || { echo "[demo] ERROR: '$bin' not on PATH. See README prerequisites." >&2; exit 1; }
 done
-if [[ ! -f packages/control-plane/dist/index.js || ! -f packages/policy/dist/index.js ]]; then
+if [[ ! -f packages/control-plane/dist/index.js || ! -f packages/policy/dist/index.js || ! -f packages/agent/dist/identity.js ]]; then
   echo "[demo] ERROR: build output missing. Run 'pnpm -r build' first." >&2; exit 1
 fi
-if [[ ! -f seed/identity/jwks.json ]]; then
-  echo "[demo] ERROR: agent identity missing. Run 'node packages/agent/dist/identity.js keygen && node packages/agent/dist/identity.js mint'." >&2; exit 1
+# Agent identity must exist before AgentGateway starts: the gateway loads
+# seed/identity/jwks.json at boot, so a key created later in the run would never
+# be seen and every MCP call would 401. keygen is idempotent, and regenerates the
+# pair if priv.pem and jwks.json have drifted apart.
+if ! node packages/agent/dist/identity.js keygen; then
+  echo "[demo] ERROR: failed to generate the agent's machine identity." >&2; exit 1
 fi
 
 # --- 1. Observability stack (optional) --------------------------------------

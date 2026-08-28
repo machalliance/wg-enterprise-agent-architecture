@@ -7,10 +7,15 @@
  * that the agent presents a *scoped, verifiable* credential the gateway checks
  * on every call — not that we run a full issuer.
  *
- * Layout (all under seed/identity/, gitignored except jwks.json which is public):
+ * Layout (all under seed/identity/, all gitignored):
  *   priv.pem              private signing key (NEVER commit)
  *   jwks.json             public JWKS the gateway validates against
  *   agent-credential.json the minted token + its decoded claims (NEVER commit)
+ *
+ * jwks.json is safe to publish but is deliberately not tracked: it is derived
+ * from priv.pem, and tracking only one half of the pair lets git hand you a JWKS
+ * whose private half does not exist locally — which surfaces only as a gateway
+ * 401 (Error(InvalidSignature)) on every MCP call.
  *
  * Usage:
  *   node dist/identity.js keygen   # create priv.pem + jwks.json (idempotent)
@@ -24,7 +29,7 @@ import {
   createPrivateKey,
   createSign,
 } from "node:crypto";
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
@@ -55,11 +60,37 @@ function b64url(input: Buffer | string): string {
     .replace(/=+$/, "");
 }
 
+/**
+ * True when jwks.json actually carries the public half of priv.pem. Existence of
+ * both files is not enough: a mismatched pair is indistinguishable from a healthy
+ * one at setup time and only shows up as a gateway 401 on every MCP call, so
+ * keygen checks agreement rather than presence.
+ */
+function pairMatches(): boolean {
+  try {
+    const pub = createPublicKey(readFileSync(PRIV_PATH)).export({ format: "jwk" }) as {
+      n?: string;
+      e?: string;
+    };
+    const { keys } = JSON.parse(readFileSync(JWKS_PATH, "utf8")) as {
+      keys: Array<{ n?: string; e?: string }>;
+    };
+    return keys.some((k) => k.n === pub.n && k.e === pub.e);
+  } catch {
+    return false;
+  }
+}
+
 function keygen(): void {
   mkdirSync(IDENTITY_DIR, { recursive: true });
   if (existsSync(PRIV_PATH) && existsSync(JWKS_PATH)) {
-    process.stderr.write(`[identity] keys already exist at ${IDENTITY_DIR}; leaving them\n`);
-    return;
+    if (pairMatches()) {
+      process.stderr.write(`[identity] keys already exist at ${IDENTITY_DIR}; leaving them\n`);
+      return;
+    }
+    process.stderr.write(
+      `[identity] jwks.json does not match priv.pem; regenerating both in ${IDENTITY_DIR}\n`,
+    );
   }
   const { publicKey, privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
   writeFileSync(PRIV_PATH, privateKey.export({ type: "pkcs8", format: "pem" }));
@@ -69,6 +100,10 @@ function keygen(): void {
   jwk.alg = "RS256";
   jwk.kid = KID;
   writeFileSync(JWKS_PATH, JSON.stringify({ keys: [jwk] }, null, 2) + "\n");
+  // Any credential minted from the previous key is unverifiable against the new
+  // JWKS, and readToken() would happily keep serving it until it expired. Drop it
+  // so the next mint() issues a token signed by the key the gateway now trusts.
+  if (existsSync(CRED_PATH)) rmSync(CRED_PATH);
   process.stderr.write(`[identity] wrote priv.pem + jwks.json to ${IDENTITY_DIR}\n`);
 }
 

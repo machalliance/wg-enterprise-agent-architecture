@@ -1,0 +1,27 @@
+{
+  "name": "@meridian-pulse/policy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Policy service: an MCP server in the request path that classifies every set_price into a tier (permit/notify/escalate/deny), holds escalations, and forwards permitted writes to the commerce server.",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-policy": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc -b --noEmit",
+    "start": "node dist/index.js",
+    "approvals": "node dist/approvals-cli.js",
+    "trail": "node dist/query-trail.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

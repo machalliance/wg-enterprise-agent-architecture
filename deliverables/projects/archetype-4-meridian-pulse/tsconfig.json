@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "packages/mcp-market-data" },
+    { "path": "packages/mcp-commerce" },
+    { "path": "packages/agent" },
+    { "path": "packages/policy" },
+    { "path": "packages/control-plane" }
+  ]
+}

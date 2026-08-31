@@ -1,0 +1,147 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "type": "text",
+      "id": 1,
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "title": "About this dashboard",
+      "options": {
+        "mode": "markdown",
+        "content": "**Meridian Pulse — Agent Observability.** Demo stage prop.\n\nTraces come from AgentGateway (OTLP → OTel Collector → Tempo) and carry the rich per-request/per-tool-call detail. Metrics are scraped from the gateway's Prometheus endpoint (`host.lima.internal:15020` under Finch, `host.docker.internal` under Docker Desktop).\n\n> **Note:** AgentGateway's Prometheus endpoint exposes mostly runtime/build/config gauges (there is no high-level request-rate counter). The richest per-request signal is in **Tempo traces** (panel below right). The metric panels here use real gateway gauges (`up`, alive tasks, config sync)."
+      }
+    },
+    {
+      "type": "stat",
+      "id": 2,
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 4 },
+      "title": "Scrape targets up",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "green", "value": 1 } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "up",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 3,
+      "gridPos": { "h": 8, "w": 18, "x": 6, "y": 4 },
+      "title": "AgentGateway runtime — alive tasks",
+      "description": "agentgateway_tokio_num_alive_tasks: live task count in the gateway's async runtime. A real gauge that moves with load.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "fillOpacity": 10, "showPoints": "never" },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "agentgateway_tokio_num_alive_tasks",
+          "legendFormat": "alive tasks",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "id": 4,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "title": "AgentGateway config synchronized",
+      "description": "agentgateway_config_synchronized: 1 when the gateway's live config matches the on-disk config. Drops if a reload fails.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "fillOpacity": 10, "showPoints": "never" },
+          "unit": "short",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "agentgateway_config_synchronized",
+          "legendFormat": "config synced",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "traces",
+      "id": 5,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "title": "Recent agent traces (Tempo)",
+      "description": "Latest traces ingested from AgentGateway. Use Explore for full trace search.",
+      "datasource": { "type": "tempo", "uid": "tempo" },
+      "targets": [
+        {
+          "datasource": { "type": "tempo", "uid": "tempo" },
+          "queryType": "traceqlSearch",
+          "query": "{}",
+          "limit": 20,
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["meridian-pulse", "hackathon", "observability"],
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Meridian Pulse — Agent Observability",
+  "uid": "meridian-pulse-obs",
+  "version": 1,
+  "weekStart": ""
+}

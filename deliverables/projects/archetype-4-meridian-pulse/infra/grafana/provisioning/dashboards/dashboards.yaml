@@ -1,0 +1,21 @@
+# =============================================================================
+# Grafana dashboard provider — Meridian Pulse (M6)
+#
+# Loads any dashboard JSON found in the provisioning dashboards directory. The
+# meridian-pulse.json dashboard lives alongside this file and is picked up here.
+# =============================================================================
+
+apiVersion: 1
+
+providers:
+  - name: meridian-pulse
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: false

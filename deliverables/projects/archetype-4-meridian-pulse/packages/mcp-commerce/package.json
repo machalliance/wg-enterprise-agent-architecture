@@ -1,0 +1,25 @@
+{
+  "name": "@meridian-pulse/mcp-commerce",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server exposing the mock commerce platform: read/write pricing, margins, and promotions, backed by SQLite.",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-commerce": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist *.tsbuildinfo catalog.db",
+    "typecheck": "tsc -b --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,47 @@
+# =============================================================================
+# OpenTelemetry Collector config — Meridian Pulse (M6 observability)
+#
+# Role: the single OTLP ingestion point for the stack. AgentGateway runs on the
+# HOST and sends traces via OTLP gRPC to http://localhost:4317. This collector
+# container PUBLISHES 4317 to the host (see infra/observability-compose.yaml),
+# so the gateway's traces land here. The collector then forwards traces to Tempo
+# over the internal compose network (tempo:4317).
+#
+# 4317 conflict note: BOTH this collector and Tempo speak OTLP on 4317, but only
+# THIS collector publishes 4317 to the host. Tempo's 4317 is reachable only
+# inside the compose network by service name (tempo:4317), so there is no clash.
+#
+# Image: otel/opentelemetry-collector-contrib (tag pinned in the compose file).
+# =============================================================================
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        # Listen on all interfaces so the published host port (4317) reaches it.
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Small batch to smooth export bursts; keep timeouts short for a live demo.
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+
+exporters:
+  # Forward traces to Tempo over the internal compose network.
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  # Console visibility while demoing / debugging the pipeline.
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/tempo, debug]

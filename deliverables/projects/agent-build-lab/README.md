@@ -114,6 +114,7 @@ When in doubt, arrive with a laptop you can install on and admin rights to do so
 This kit is expected to include a mix of:
 
 - **Instructional material** — slides, walkthroughs, and supporting articles for the morning.
+- **Build guides** — step-by-step milestone walkthroughs for building a reference architecture from scratch during the afternoon. The first is [`archetype-4-meridian-pulse/`](./archetype-4-meridian-pulse/), which builds the [Meridian Pulse](../archetype-4-meridian-pulse/) archetype-4 prototype milestone by milestone (M0–M6).
 - **Reference architectures** — starting points described here and linked out to their own GitHub repositories, so each can be cloned and run on its own. Work-in-progress versions live alongside this kit under [`deliverables/projects/`](../).
 - **Scenario briefs** — the prepared afternoon challenges (see [Path B](#path-b--pick-a-scenario)).
 - **Possibly more** — additional supporting material may be added as the kit takes shape.
@@ -124,8 +125,9 @@ Reference architectures are intentionally kept in separate repositories rather t
 deliverables/
 └── projects/
     └── agent-build-lab/
-        ├── README.md      ← you are here
-        └── ...            ← structure to be confirmed
+        ├── README.md                      ← you are here
+        ├── archetype-4-meridian-pulse/     ← build guide: Meridian Pulse (M0–M6)
+        └── ...                             ← more build guides / scenarios to be confirmed
 ```
 
 The sibling directories under [`deliverables/projects/`](../) hold the working group's

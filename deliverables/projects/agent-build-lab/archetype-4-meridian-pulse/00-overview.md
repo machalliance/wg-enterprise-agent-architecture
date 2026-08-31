@@ -169,22 +169,24 @@ physical rather than aspirational.
 
 ## 6. Repository layout
 
+This build guide lives in the **Hackathon in a Box** (`deliverables/projects/agent-build-lab/archetype-4-meridian-pulse/`). The prototype you build from it lives as a sibling project, `deliverables/projects/archetype-4-meridian-pulse/`, laid out like this:
+
 ```
-meridian-pulse/
+archetype-4-meridian-pulse/          # the runnable prototype (sibling project)
 ├── packages/
 │   ├── agent/              # Goose agent: recipe, system prompt, perception -> reason -> act loop
 │   ├── mcp-commerce/       # MCP server: mock commerce platform (read prices, write prices, read promos)
 │   ├── mcp-market-data/    # MCP server: competitor prices, demand signals, inventory levels
-│   ├── scenario-driver/    # Feeds accelerated market events into mcp-market-data
-│   ├── dashboard/          # Operator dashboard: decision trail, metrics, escalation queue, kill switch
+│   ├── control-plane/      # Operator dashboard: decision trail, metrics, escalation queue, kill switch
 │   └── policy/             # AgentGateway CEL policies + permission tier definitions
 ├── infra/
 │   ├── agentgateway/       # AgentGateway config: LLM routing, MCP gateway, policies, rate limits
 │   └── otel/               # OpenTelemetry collector config
 ├── seed/                   # SKU catalog, mandate, baseline metrics, scenario events
-├── AGENTS.md               # Project-level agent guidance (the AAIF standard)
-└── spec/                   # this folder
+└── AGENTS.md               # Project-level agent guidance (the AAIF standard)
 ```
+
+The milestone files in this folder (this build guide) are what you read to build that prototype.
 
 ## 7. End-to-end demo script (target: ~4 minutes)
 

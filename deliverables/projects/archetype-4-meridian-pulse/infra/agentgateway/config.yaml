@@ -1,0 +1,134 @@
+# =============================================================================
+# AgentGateway configuration — Meridian Pulse
+#
+# Milestone 1: IDENTITY & SCOPED PERMISSIONS (adds to M0 pass-through).
+#   1. LLM routing   — OpenAI-compatible endpoint on :4000 -> provider (default
+#                      generic OpenAI-compatible; Bedrock documented below).
+#   2. MCP gateway   — federates the two MCP servers on :3000, now BEHIND auth:
+#        - jwtAuth (mode: strict): every MCP call must carry a valid Bearer JWT,
+#          signed by the key in seed/identity/jwks.json. Anonymous calls -> 401.
+#        - mcpAuthorization: scopes tool access by JWT claims. Read tools are open
+#          to any authenticated identity; set_price requires the `commerce:write`
+#          scope. An identity without it cannot even see set_price in tools/list.
+#
+# NOTE ON SCOPE GRANULARITY: AgentGateway authorizes by tool *identity*
+# (mcp.tool.name) and JWT claims, NOT by tool *arguments*. So the gateway grants
+# or denies "may call set_price" as a whole. Per-SKU / per-category rules (e.g.
+# block MER-BOOT-GTX) need the argument value and therefore live in the M3 policy
+# service, which sits in the request path and can see the arguments. This is a
+# deliberate, documented split — see spec 04-milestone-3-policy.md.
+#
+# Validate:  agentgateway -f infra/agentgateway/config.yaml --validate-only
+# Run:       agentgateway -f infra/agentgateway/config.yaml
+#            (launch from the meridian-pulse repo root: jwks + stdio paths are
+#             resolved relative to the working directory)
+# =============================================================================
+
+# --- Static config: telemetry (M4) -------------------------------------------
+# The gateway emits OpenTelemetry traces (one span per tool call + policy eval)
+# and Prometheus metrics. Traces go via OTLP to a collector; the collector +
+# Grafana/Tempo stack is stood up in M6 (infra/otel + infra/grafana). Until then
+# the gateway simply tries the endpoint and continues if it is absent.
+#   - statsAddr exposes Prometheus metrics (scraped by Prometheus in M6).
+#   - tracing.endpoint is the OTLP collector (OTel Collector on :4317).
+# The structured DECISION TRAIL (the higher-level accountability record) is
+# separate and owned by the policy server (packages/policy decision-trail.jsonl).
+config:
+  adminAddr: "127.0.0.1:15000"
+  # Bind metrics to all interfaces so the Prometheus container can scrape it via
+  # host.docker.internal. (Admin stays on loopback.) On a shared machine, firewall
+  # :15020 or revert to 127.0.0.1 and scrape differently.
+  statsAddr: "0.0.0.0:15020"
+  logging:
+    level: info
+    format: json
+  tracing:
+    otlpEndpoint: "http://localhost:4317"
+    otlpProtocol: grpc
+    randomSampling: true
+
+# --- LLM routing -------------------------------------------------------------
+# DEFAULT: generic OpenAI-compatible endpoint. Set LLM_BASE_URL / LLM_MODEL /
+# LLM_API_KEY in .env. Swap to Bedrock via the commented block further down.
+llm:
+  port: 4000
+  models:
+    - name: default
+      provider: openAI
+      params:
+        model: $LLM_MODEL
+        apiKey: $LLM_API_KEY
+        baseUrl: $LLM_BASE_URL
+
+# --- ALTERNATIVE: Amazon Bedrock ---------------------------------------------
+# Comment out the `llm:` block above and uncomment this to route to Claude on
+# Bedrock. Credentials come from the standard AWS chain (AWS_PROFILE / keys / SSO).
+# (Placeholders are intentionally plain text, not env-var syntax — the gateway
+#  interpolates environment variables before stripping comments, so an env-var
+#  reference here would fail validation even though it is commented out.)
+#
+# llm:
+#   port: 4000
+#   models:
+#     - name: default
+#       provider: bedrock
+#       params:
+#         model: <BEDROCK_MODEL>         # e.g. us.anthropic.claude-sonnet-5
+#         awsRegion: <AWS_REGION>        # e.g. us-east-1
+
+# --- MCP gateway (tool federation, now behind identity) ----------------------
+binds:
+  - port: 3000
+    listeners:
+      - routes:
+          - policies:
+              # Authentication: reject any MCP request without a valid Bearer JWT.
+              jwtAuth:
+                mode: strict
+                issuer: meridian-pulse
+                audiences:
+                  - meridian-pulse-gateway
+                jwks:
+                  # Path is relative to the gateway's working directory (repo root).
+                  file: ./seed/identity/jwks.json
+              # Authorization: which identity may call which tools.
+              #  - read tools (get_*, list_*): any authenticated identity
+              #  - set_price: only identities whose JWT carries `commerce:write`
+              # Tools an identity can't access are filtered from tools/list AND
+              # denied if called directly.
+              mcpAuthorization:
+                rules:
+                  - 'mcp.tool.name.startsWith("get_") || mcp.tool.name.startsWith("list_")'
+                  - 'mcp.tool.name == "set_price" && "commerce:write" in jwt.scopes'
+                  # report_anomaly records the agent's judgment (flags bad data);
+                  # it changes NO commerce state, so any authenticated identity may
+                  # call it — no commerce:write required.
+                  - 'mcp.tool.name == "report_anomaly"'
+              # Coarse rate-limit backstop (M5). This token bucket caps ALL MCP
+              # calls on the route as a blunt safety net. The FINE-GRAINED circuit
+              # breakers that the demo exercises (set_price-only rate limit,
+              # cumulative magnitude limit, behavioural anomaly detection, and the
+              # kill switch) live in the control plane + policy server, because
+              # they need per-tool counting, revenue math, and a baseline the
+              # gateway can't compute. Generous here so it doesn't mask them.
+              localRateLimit:
+                - maxTokens: 120
+                  tokensPerFill: 120
+                  fillInterval: 1m
+            backends:
+              - mcp:
+                  targets:
+                    - name: market-data
+                      stdio:
+                        cmd: node
+                        args: ["packages/mcp-market-data/dist/index.js"]
+                    # The agent's write path goes through the POLICY server, not
+                    # commerce directly. The policy server classifies every
+                    # set_price into a tier (M3) and forwards permitted writes to
+                    # the commerce system it spawns as its own downstream. This is
+                    # where argument-level policy lives (the gateway CEL can't see
+                    # tool arguments). Identity + tool-scope from M1 still apply here.
+                    - name: commerce
+                      stdio:
+                        cmd: node
+                        args: ["packages/policy/dist/index.js"]

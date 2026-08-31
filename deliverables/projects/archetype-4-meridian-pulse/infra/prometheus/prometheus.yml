@@ -1,0 +1,33 @@
+# =============================================================================
+# Prometheus scrape config — Meridian Pulse (M6)
+#
+# Scrapes AgentGateway's Prometheus metrics endpoint. The gateway runs on the
+# HOST (statsAddr 0.0.0.0:15020), NOT in a container. From inside this Prometheus
+# container the host is reached via `host.lima.internal` (Finch runs on a Lima
+# VM; that is the alias that resolves to the host). On Docker Desktop, use
+# `host.docker.internal` instead (both are provided as extra_hosts in the
+# compose file so either works).
+#
+# NOTE: the gateway must bind statsAddr to 0.0.0.0:15020 (not 127.0.0.1) for the
+# container to reach it — this is set in infra/agentgateway/config.yaml.
+# =============================================================================
+
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  # AgentGateway Prometheus metrics (host process, reached via the host alias).
+  - job_name: agentgateway
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["host.lima.internal:15020"]
+        labels:
+          service: agentgateway
+
+  # The collector can expose its own metrics if desired; harmless if absent.
+  - job_name: otel-collector
+    static_configs:
+      - targets: ["otel-collector:8888"]
+        labels:
+          service: otel-collector

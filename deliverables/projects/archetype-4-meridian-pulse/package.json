@@ -1,0 +1,31 @@
+{
+  "name": "meridian-pulse",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reference prototype for Archetype 4: Autonomous, policy-guided agents (Meridian Pulse). Built on the AAIF stack: Goose + AgentGateway + MCP.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "clean": "pnpm -r clean",
+    "typecheck": "pnpm -r typecheck",
+    "identity:setup": "node packages/agent/dist/identity.js keygen && node packages/agent/dist/identity.js mint",
+    "observability:up": "finch compose -f infra/observability-compose.yaml up -d",
+    "observability:down": "finch compose -f infra/observability-compose.yaml down",
+    "scenario:step": "node scripts/scenario-step.mjs",
+    "test": "pnpm -r build && node --test 'packages/*/dist/**/*.test.js' 'scripts/**/*.test.mjs'",
+    "demo": "bash scripts/demo.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "path-to-regexp@~0.1.12": "0.1.13"
+    }
+  }
+}

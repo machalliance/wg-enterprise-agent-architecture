@@ -1,0 +1,25 @@
+{
+  "name": "@meridian-pulse/control-plane",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Human oversight plane: kill switch, circuit-breaker state (rate/magnitude/anomaly), heartbeat dead-man's-switch, and (M6) the operator dashboard + approval UI. A small standalone HTTP service the policy server and agent loop consult.",
+  "main": "dist/index.js",
+  "bin": {
+    "control-plane": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc -b --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "4.22.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

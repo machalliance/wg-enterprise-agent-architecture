@@ -1,0 +1,31 @@
+# =============================================================================
+# Grafana datasource provisioning — Meridian Pulse (M6)
+#
+# Auto-provisions the three backends on Grafana startup. Hostnames are compose
+# service names, resolved on the internal observability network.
+# =============================================================================
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    url: http://tempo:3200
+    editable: true
+
+  - name: Loki
+    type: loki
+    uid: loki
+    access: proxy
+    url: http://loki:3100
+    editable: true

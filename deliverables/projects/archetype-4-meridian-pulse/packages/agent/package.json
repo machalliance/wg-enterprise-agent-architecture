@@ -1,0 +1,20 @@
+{
+  "name": "@meridian-pulse/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The Meridian Pulse revenue-optimization agent: Goose recipe, continuous loop, machine identity, and (later) checkpointing and decision trail.",
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc -b --noEmit",
+    "identity:keygen": "node dist/identity.js keygen",
+    "identity:mint": "node dist/identity.js mint",
+    "checkpoint:status": "node dist/checkpoint-cli.js status",
+    "checkpoint:verify": "node dist/checkpoint-cli.js verify"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

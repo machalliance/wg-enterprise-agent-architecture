@@ -1,0 +1,106 @@
+{
+  "_comment": "Ordered market events driving the ~4-minute demo. The embedded scenario driver in mcp-market-data emits these by their `atSeconds` offset from start. Event types: competitor_price_change (mutates a competitor's price), demand_signal (sets trend/magnitude/reason for a SKU), inventory_update (adjusts on-hand), competitor_prices_bulk_update (the M5 flash-crash glitch). The three demo beats force the three terminal outcomes: autonomous action, escalation, circuit-breaker halt.",
+  "durationSeconds": 240,
+  "events": [
+    {
+      "atSeconds": 5,
+      "type": "demand_signal",
+      "phase": "steady-state",
+      "sku": "MER-PACK-30",
+      "trend": "stable",
+      "magnitude": 0.02,
+      "reason": "Normal spring foot traffic; daypack demand flat."
+    },
+    {
+      "atSeconds": 12,
+      "type": "competitor_price_change",
+      "phase": "steady-state",
+      "sku": "MER-HYD-1L",
+      "competitor": "AquaGear",
+      "newPrice": 32.0,
+      "reason": "Minor competitor adjustment within normal band."
+    },
+    {
+      "atSeconds": 20,
+      "type": "demand_signal",
+      "phase": "steady-state",
+      "sku": "MER-TENT-2P",
+      "trend": "rising",
+      "magnitude": 0.04,
+      "reason": "Slight uptick in 2-person tent interest ahead of weekend."
+    },
+
+    {
+      "atSeconds": 35,
+      "type": "competitor_price_change",
+      "phase": "competitor-undercut",
+      "sku": "MER-TENT-3S",
+      "competitor": "AlpineDirect",
+      "newPrice": 188.6,
+      "reason": "Competitor undercuts hero tent by ~8% on AlpineDirect.",
+      "expectedOutcome": "autonomous",
+      "demoBeat": 2
+    },
+    {
+      "atSeconds": 40,
+      "type": "demand_signal",
+      "phase": "competitor-undercut",
+      "sku": "MER-TENT-3S",
+      "trend": "rising",
+      "magnitude": 0.18,
+      "reason": "Hero tent demand elastic to competitor move; matching expected to recover share."
+    },
+
+    {
+      "atSeconds": 75,
+      "type": "demand_signal",
+      "phase": "demand-spike",
+      "sku": "MER-HYD-2L",
+      "trend": "rising",
+      "magnitude": 0.40,
+      "reason": "Unseasonal heatwave forecast drives hydration pack demand up 40%.",
+      "expectedOutcome": "escalate",
+      "demoBeat": 3
+    },
+    {
+      "atSeconds": 80,
+      "type": "demand_signal",
+      "phase": "demand-spike",
+      "sku": "MER-HYD-3L",
+      "trend": "rising",
+      "magnitude": 0.35,
+      "reason": "Heatwave lifts larger hydration packs too; optimal price exceeds +15% tier."
+    },
+    {
+      "atSeconds": 90,
+      "type": "inventory_update",
+      "phase": "demand-spike",
+      "sku": "MER-HYD-2L",
+      "onHandDelta": -420,
+      "reason": "Hydration pack inventory drawing down fast under the spike."
+    },
+
+    {
+      "atSeconds": 180,
+      "type": "competitor_prices_bulk_update",
+      "phase": "flash-crash",
+      "source": "FeedX",
+      "affectedSkusPattern": "all-with-feedx",
+      "newPrice": 0.0,
+      "reason": "Data feed glitch: FeedX reports all competitor prices at $0.00.",
+      "expectedOutcome": "circuit-breaker",
+      "demoBeat": 4
+    },
+
+    {
+      "atSeconds": 210,
+      "type": "competitor_prices_bulk_update",
+      "phase": "recovery",
+      "source": "FeedX",
+      "affectedSkusPattern": "all-with-feedx",
+      "restoreBaseline": true,
+      "reason": "FeedX feed corrected; prices restored to baseline after operator applies data filter.",
+      "demoBeat": 5
+    }
+  ]
+}

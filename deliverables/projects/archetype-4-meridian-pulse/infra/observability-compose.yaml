@@ -1,0 +1,113 @@
+# =============================================================================
+# Observability stack — Meridian Pulse (M6)
+#
+# Run with Finch (Docker-compose compatible):
+#   finch compose -f infra/observability-compose.yaml up -d
+# (launch from the meridian-pulse repo root so the relative mount paths resolve)
+#
+# Wiring:
+#   AgentGateway (HOST process)
+#     --OTLP gRPC :4317--> otel-collector (publishes 4317 to host)
+#       --OTLP gRPC tempo:4317 (internal net)--> tempo --> Grafana (Tempo DS)
+#   Prometheus  --scrape host.docker.internal:15020--> AgentGateway metrics
+#   Grafana (:3001 on host) reads Prometheus + Tempo + Loki over the internal net
+#
+# 4317 CONFLICT RESOLUTION: only the collector publishes 4317 to the host (that
+# is where the gateway sends traces). Tempo also speaks OTLP on 4317 but is
+# reached only inside the compose network as tempo:4317 — its 4317 is NOT
+# published, so there is no host-port clash.
+# =============================================================================
+
+name: meridian-pulse-observability
+
+networks:
+  observability:
+    driver: bridge
+
+volumes:
+  tempo-data:
+  loki-data:
+  grafana-data:
+  prometheus-data:
+
+services:
+  # --- OTLP ingestion point (the only service that publishes 4317 to host) ---
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    container_name: mp-otel-collector
+    command: ["--config=/etc/otel/collector-config.yaml"]
+    volumes:
+      - ./otel/collector-config.yaml:/etc/otel/collector-config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC — AgentGateway (host) sends traces here
+      - "4318:4318"   # OTLP HTTP — optional, published for convenience
+    networks:
+      - observability
+    depends_on:
+      - tempo
+    restart: unless-stopped
+
+  # --- Trace store (OTLP 4317 stays internal — reached as tempo:4317) ---------
+  tempo:
+    image: grafana/tempo:2.6.1
+    container_name: mp-tempo
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo-data:/var/tempo
+    networks:
+      - observability
+    restart: unless-stopped
+
+  # --- Metrics scrape (targets the HOST gateway via host.docker.internal) -----
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: mp-prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    # Finch may not auto-inject host.docker.internal; map it explicitly so the
+    # scrape target (host.docker.internal:15020) resolves to the host.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - observability
+    restart: unless-stopped
+
+  # --- Log store (default config is fine for the demo) ------------------------
+  loki:
+    image: grafana/loki:3.2.1
+    container_name: mp-loki
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    volumes:
+      - loki-data:/loki
+    networks:
+      - observability
+    restart: unless-stopped
+
+  # --- Dashboards (host :3001 — control-plane HTML links here) ----------------
+  grafana:
+    image: grafana/grafana:11.3.1
+    container_name: mp-grafana
+    ports:
+      - "3001:3000"   # host 3001 -> Grafana 3000 (avoids 3000 gateway MCP port)
+    environment:
+      # No login for the demo: anonymous access with Admin role.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      # Land straight on our provisioned dashboard instead of the generic Home,
+      # so opening http://localhost:3001 shows the Meridian Pulse board with no
+      # clicking. Path is the provisioned JSON as mounted inside the container.
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: "/etc/grafana/provisioning/dashboards/meridian-pulse.json"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    networks:
+      - observability
+    depends_on:
+      - prometheus
+      - tempo
+      - loki
+    restart: unless-stopped

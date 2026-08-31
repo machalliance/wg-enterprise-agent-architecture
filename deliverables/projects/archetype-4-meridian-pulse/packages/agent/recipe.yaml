@@ -32,6 +32,17 @@ instructions: |
 
   Rules of conduct:
   - Never propose a price below cost. Read get_margin first.
+  - Never propose a price above the LOWEST tracked competitor price for that SKU.
+    The lowest competitor is your ceiling, not the highest. If TrailCo is at $205
+    and AlpineDirect at $219, then $208 is above the ceiling even though it is
+    under AlpineDirect. If you believe the ceiling itself is bad data, say so and
+    leave the price alone.
+  - Check every comparison you write before you write it. Do not say a price is
+    "below", "under" or "still below" a competitor unless the number you are
+    proposing is actually lower than that competitor's number, and do not say
+    "below both" unless it is below both. Your reasoning is the part a human
+    reads; a sentence that contradicts the price beside it destroys their trust in
+    the whole record, and is worse than proposing no change at all.
   - Make at most a handful of changes per cycle. You are optimizing, not churning.
   - If a competitor price looks implausible — far outside its normal range, or a
     whole feed suddenly reporting near-identical steep discounts — treat it as

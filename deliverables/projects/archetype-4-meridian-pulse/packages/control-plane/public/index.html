@@ -195,6 +195,8 @@
         box-shadow: var(--shadow-overlay); animation: toastin .25s ease-out;
       }
       .toast.NOTIFY { border-top-color: var(--warn); }
+      /* An operator-released change is not autonomous action; colour it apart. */
+      .toast.ESCALATE { border-top-color: var(--action); }
       .toast.fade { animation: toastout .4s ease-in forwards; }
       .toast .t-head { font-family: var(--font-display); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--text); }
       .toast .t-sub { color: var(--text-2); font-size: 13px; margin-top: 3px; font-family: var(--font-data); }
@@ -292,8 +294,15 @@
         el.className = "toast " + (a.tier || "PERMIT");
         const arrow = a.currentPrice != null && a.newPrice != null
           ? `$${a.currentPrice} → $${a.newPrice}` : "";
+        // An executed ESCALATE reached the feed because an operator released it,
+        // so it must not be announced as autonomous action — that is precisely
+        // the moment the agent did not act on its own.
+        const released = a.tier === "ESCALATE" || String(a.rule || "").startsWith("RELEASED:");
+        const head = released
+          ? "Operator approved — change released"
+          : `Agent acted autonomously — ${a.tier}`;
         el.innerHTML =
-          `<div class="t-head">Agent acted autonomously — ${a.tier}</div>` +
+          `<div class="t-head">${head}</div>` +
           `<div class="t-sub"><strong>${a.sku}</strong> ${arrow}` +
           (a.changePct != null ? ` (${a.changePct}%)` : "") + `</div>`;
         wrap.appendChild(el);

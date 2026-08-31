@@ -51,19 +51,41 @@ function readEscalations(): Record<string, unknown>[] {
   return [...byId.values()];
 }
 
-/** Read anomaly records the agent flagged (kind:"anomaly") from the decision trail, newest first. */
+/**
+ * Read anomaly records the agent flagged (kind:"anomaly") from the decision
+ * trail, newest first and DEDUPED.
+ *
+ * A genuinely bad feed stays bad for as long as it takes an operator to notice,
+ * so the agent re-flags the same SKU every cycle and the trail accumulates one
+ * record per cycle — all of them correct, all of them the same problem. Showing
+ * every copy turned the panel into a list of near-identical cards and made three
+ * problems look like six.
+ *
+ * Collapse to one row per SKU and keep the newest. Keying on the observation
+ * text as well was tried and does not work: the agent rewords the same finding
+ * every cycle, so near-identical descriptions still stacked up. The trade-off is
+ * that a genuinely different second problem on one SKU would be hidden behind
+ * the newer one — acceptable for a panel whose job is "what needs looking at",
+ * where the newest reading is the one an operator would act on, and where the
+ * full history is one `query-trail` away. The trail itself is append-only and
+ * untouched; this is a read-side view, not a deletion.
+ */
 function readAnomalies(limit = 20): Record<string, unknown>[] {
   if (!existsSync(DECISION_TRAIL_PATH)) return [];
-  const anomalies: Record<string, unknown>[] = [];
+  const newestByProblem = new Map<string, Record<string, unknown>>();
   for (const line of readFileSync(DECISION_TRAIL_PATH, "utf8").split("\n").filter(Boolean)) {
     try {
       const rec = JSON.parse(line) as Record<string, unknown>;
-      if (rec.kind === "anomaly") anomalies.push(rec);
+      if (rec.kind !== "anomaly") continue;
+      // Later lines are newer, so a plain overwrite keeps the latest sighting.
+      newestByProblem.set(String(rec.sku), rec);
     } catch {
       /* skip malformed */
     }
   }
-  return anomalies.reverse().slice(0, limit);
+  return [...newestByProblem.values()]
+    .sort((a, b) => String(b.timestamp).localeCompare(String(a.timestamp)))
+    .slice(0, limit);
 }
 
 /**
@@ -84,12 +106,16 @@ function readRecentActivity(limit = 8): Record<string, unknown>[] {
         timestamp?: string;
         proposedAction?: { args?: { sku?: string; newPrice?: number }; changePct?: number };
         reasoning?: { summary?: string };
-        policyResult?: { tier?: string; context?: { currentPrice?: number } };
+        policyResult?: { tier?: string; rule?: string; context?: { currentPrice?: number } };
         outcome?: { executed?: boolean };
       };
       if (r.kind !== "decision" || !r.outcome?.executed) continue;
       const tier = r.policyResult?.tier;
-      if (tier !== "PERMIT" && tier !== "NOTIFY") continue;
+      // PERMIT/NOTIFY are the agent acting alone. ESCALATE only reaches this
+      // point once an operator has approved it and the change has actually been
+      // released to commerce — which is exactly the moment the feed should show,
+      // and used to be the one thing it silently dropped.
+      if (tier !== "PERMIT" && tier !== "NOTIFY" && tier !== "ESCALATE") continue;
       actions.push({
         id: r.id,
         timestamp: r.timestamp,
@@ -98,6 +124,11 @@ function readRecentActivity(limit = 8): Record<string, unknown>[] {
         newPrice: r.proposedAction?.args?.newPrice,
         changePct: r.proposedAction?.changePct,
         tier,
+        // The dashboard needs the rule, not just the tier, to label an entry
+        // honestly: an executed ESCALATE is a change a human released, and
+        // calling that "the agent acted autonomously" inverts the one moment in
+        // the demo where it explicitly did not.
+        rule: r.policyResult?.rule,
         reason: r.reasoning?.summary,
       });
     } catch {
@@ -140,7 +171,19 @@ app.post("/agent/halt", (req, res) => {
 
 app.post("/agent/resume", (req, res) => {
   const dataFilter = (req.body?.dataFilter as string) || null;
-  breakers.reset(); // clear the windows so the agent starts fresh post-recovery
+  // The breaker windows are ROLLING and time-based — they prune themselves by
+  // age. Wiping them on resume used to throw away real history: the dashboard's
+  // "actions this hour" and "revenue impact this hour" dropped to zero, which
+  // reads as the agent starting over when in fact it carries on from its
+  // checkpoint. Worse, it handed the agent a fresh rate budget the instant an
+  // incident ended, which is the opposite of prudent.
+  //
+  // An operator who genuinely wants a clean budget can ask for one; the default
+  // is to keep the history and let it age out on its own.
+  if (req.body?.resetBreakers === true) {
+    breakers.reset();
+    log("RESUME: breaker windows cleared at operator request");
+  }
   const status = oversight.resume(dataFilter);
   log(`RESUME${dataFilter ? ` (data filter: ${dataFilter})` : ""}`);
   res.json(status);

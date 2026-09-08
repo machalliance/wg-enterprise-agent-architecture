@@ -1,0 +1,2 @@
+import{createRequire} from"node:module";const require=createRequire(import.meta.url);
+function i(...s){let e=[...new Set(s.filter(n=>n!==void 0))];if(e.length===0)return{signal:void 0,cleanup(){}};if(e.length===1)return{signal:e[0],cleanup(){}};let r=new AbortController,o=[];for(let n of e){if(n.aborted){r.abort(n.reason);break}let t=()=>r.abort(n.reason);n.addEventListener("abort",t,{once:!0}),o.push([n,t])}return{signal:r.signal,cleanup(){for(let[n,t]of o)n.removeEventListener("abort",t)}}}export{i as a};

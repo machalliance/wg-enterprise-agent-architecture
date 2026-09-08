@@ -1,0 +1,223 @@
+{
+  "batchId": "MERIDFIN-20260824-001",
+  "valueDate": "2026-08-25",
+  "debtor": {
+    "name": "MERIDIAN OUTFITTERS LTD",
+    "postalAddress": {
+      "streetName": "MARK LANE",
+      "buildingNumber": "55",
+      "postCode": "EC3R 7NE",
+      "townName": "LONDON",
+      "country": "GB"
+    },
+    "lei": "213800MBWEIJDM5CU638"
+  },
+  "debtorAccount": { "iban": "GB33BUKB20201555555555", "currency": "GBP" },
+  "debtorAgent": { "bicfi": "MERIGB2LXXX", "name": "MERIDIAN FINANCIAL PLC" },
+  "instructions": [
+    {
+      "txId": "TX-001",
+      "endToEndId": "MO-INV-88201",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000001",
+      "scheme": "SEPA",
+      "amount": { "value": "18450.00", "currency": "EUR" },
+      "chargeBearer": "SLEV",
+      "purposeCode": "SUPP",
+      "creditor": {
+        "name": "NORDLICHT WEBEREI GMBH",
+        "postalAddress": { "townName": "HAMBURG", "country": "DE", "addressLines": ["GROSSE ELBSTRASSE 27"] },
+        "countryOfResidence": "DE"
+      },
+      "creditorAccount": { "iban": "de89 3704 0044 0532 0130 00" },
+      "creditorAgent": { "bicfi": "COBADEFFXXX" },
+      "remittanceInformation": { "unstructured": ["INVOICE 88201 AUTUMN WOVENS"] }
+    },
+    {
+      "txId": "TX-002",
+      "endToEndId": "MO-INV-88202",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000002",
+      "scheme": "CBPR+",
+      "amount": { "value": "94200.00", "currency": "EUR" },
+      "chargeBearer": "SHAR",
+      "purposeCode": "GDDS",
+      "creditor": {
+        "name": "RHEINTAL AUSRUESTUNG AG",
+        "postalAddress": { "townName": "FRANKFURT AM MAIN", "country": "DE", "addressLines": ["TAUNUSANLAGE 12"] },
+        "countryOfResidence": "DE"
+      },
+      "creditorAccount": { "iban": "DE02120300000000202051" },
+      "creditorAgent": { "bicfi": "DEUTDEFF" },
+      "remittanceInformation": { "unstructured": ["PO 4471 TECHNICAL OUTERWEAR"] }
+    },
+    {
+      "txId": "TX-003",
+      "endToEndId": "MO-INV-88203",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000003",
+      "scheme": "CBPR+",
+      "amount": { "value": "1250000.00", "currency": "JPY" },
+      "chargeBearer": "SHAR",
+      "purposeCode": "GDDS",
+      "creditor": {
+        "name": "SETOUCHI GEAR WORKS KK",
+        "postalAddress": { "townName": "OSAKA", "country": "JP", "addressLines": ["2-1-61 SHIROMI CHUO-KU"] },
+        "countryOfResidence": "JP"
+      },
+      "creditorAccount": { "otherId": "0012345678", "domicile": "JP" },
+      "creditorAgent": { "bicfi": "BOTKJPJTXXX" },
+      "remittanceInformation": { "unstructured": ["PO 4472 HARDWARE"] }
+    },
+    {
+      "txId": "TX-004",
+      "endToEndId": "MO-INV-88204",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000004",
+      "scheme": "SEPA",
+      "amount": { "value": "6120.50", "currency": "EUR" },
+      "chargeBearer": "SHAR",
+      "purposeCode": "SCVE",
+      "creditor": {
+        "name": "ATELIER DUFOUR SARL",
+        "postalAddress": { "townName": "LYON", "country": "FR", "addressLines": ["14 RUE DE LA REPUBLIQUE"] },
+        "countryOfResidence": "FR"
+      },
+      "creditorAccount": { "iban": "FR1420041010050500013M02606" },
+      "creditorAgent": { "bicfi": "PSSTFRPPLYO" },
+      "remittanceInformation": { "unstructured": ["DESIGN RETAINER Q3 2026"] }
+    },
+    {
+      "txId": "TX-005",
+      "endToEndId": "MO-INV-88205",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000005",
+      "scheme": "CBPR+",
+      "amount": { "value": "41800.00", "currency": "EUR" },
+      "chargeBearer": "SHAR",
+      "purposeCode": null,
+      "creditor": {
+        "name": "TESSUTI BERGAMO SPA",
+        "postalAddress": { "townName": "BERGAMO", "country": "IT", "addressLines": ["VIA BROSETA 41"] },
+        "countryOfResidence": "IT"
+      },
+      "creditorAccount": { "iban": "IT60X0542811101000000123456" },
+      "creditorAgent": { "bicfi": "BPMOIT22XXX" },
+      "remittanceInformation": { "unstructured": ["INV 88213 TEXTILE SUPPLY 2026Q3"] }
+    },
+    {
+      "txId": "TX-006",
+      "endToEndId": "MO-INV-88206",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000006",
+      "scheme": "SEPA",
+      "amount": { "value": "27350.00", "currency": "EUR" },
+      "chargeBearer": "SLEV",
+      "purposeCode": "SUPP",
+      "creditor": {
+        "name": "NORDWIND TEXTIL GMBH",
+        "postalAddress": { "townName": "BREMEN", "country": "DE", "addressLines": ["MARTINISTRASSE 8"] },
+        "countryOfResidence": "DE"
+      },
+      "creditorAccount": { "iban": "DE75512108001245126199" },
+      "creditorAgent": { "bicfi": "SOLADEST600" },
+      "remittanceInformation": { "unstructured": ["INVOICE 88206 LINING STOCK"] }
+    },
+    {
+      "txId": "TX-007",
+      "endToEndId": "MO-INV-88207",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000007",
+      "scheme": "FEDWIRE",
+      "amount": { "value": "63000.00", "currency": "EUR" },
+      "chargeBearer": "SHAR",
+      "purposeCode": "GDDS",
+      "creditor": {
+        "name": "CASCADE TRAIL SUPPLY INC",
+        "postalAddress": { "townName": "PORTLAND", "country": "US", "addressLines": ["1200 NW EVERETT ST"] },
+        "countryOfResidence": "US"
+      },
+      "creditorAccount": { "otherId": "483920117", "domicile": "US", "accountCurrency": "USD" },
+      "creditorAgent": { "clearingSystemMemberId": "121000248" },
+      "remittanceInformation": { "unstructured": ["PO 4480 TRAIL HARDWARE"] }
+    },
+    {
+      "txId": "TX-008",
+      "endToEndId": "MO-INV-88208",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000008",
+      "scheme": "CBPR+",
+      "amount": { "value": "88000.00", "currency": "USD" },
+      "chargeBearer": "SHAR",
+      "purposeCode": "GDDS",
+      "creditor": {
+        "name": "ZARRIN MARITIME HOLDINGS",
+        "postalAddress": { "townName": "LIMASSOL", "country": "CY", "addressLines": ["8 AGIAS ZONIS"] },
+        "countryOfResidence": "CY"
+      },
+      "creditorAccount": { "iban": "CY17002001280000001200527600" },
+      "creditorAgent": { "bicfi": "BCYPCY2NXXX" },
+      "remittanceInformation": { "unstructured": ["FREIGHT SETTLEMENT AUG 2026"] }
+    },
+    {
+      "txId": "TX-009",
+      "endToEndId": "MO-INV-88209",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000009",
+      "scheme": "CBPR+",
+      "amount": { "value": "15900.00", "currency": "USD" },
+      "chargeBearer": "SHAR",
+      "purposeCode": "SCVE",
+      "creditor": {
+        "name": "ORIENT STAR LOGISTIK LLC",
+        "postalAddress": { "addressLines": ["OFFICE 14, TRADE CENTRE ROAD, DUBAI, AE"] },
+        "countryOfResidence": null
+      },
+      "creditorAccount": { "iban": "AE070331234567890123456" },
+      "creditorAgent": { "bicfi": "EBILAEADXXX" },
+      "remittanceInformation": { "unstructured": ["CONSOLIDATION FEE 2026-08"] }
+    },
+    {
+      "txId": "TX-010",
+      "endToEndId": "MO-INV-88210",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000010",
+      "scheme": "SEPA",
+      "amount": { "value": "3200.00", "currency": "EUR" },
+      "chargeBearer": "SLEV",
+      "purposeCode": "SCVE",
+      "creditor": {
+        "name": "BUREAU VERT SPRL",
+        "postalAddress": { "townName": "BRUSSELS", "country": "BE", "addressLines": ["RUE DU LOMBARD 22"] },
+        "countryOfResidence": "BE"
+      },
+      "creditorAccount": { "iban": "BE68539007547034" },
+      "creditorAgent": { "bicfi": "GEBABEBBXXX" },
+      "remittanceInformation": { "unstructured": ["SUSTAINABILITY AUDIT 2026"] }
+    },
+    {
+      "txId": "TX-011",
+      "endToEndId": "MO-INV-88211",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000011",
+      "scheme": "SEPA",
+      "amount": { "value": "11750.00", "currency": "EUR" },
+      "chargeBearer": "SLEV",
+      "purposeCode": "SUPP",
+      "creditor": {
+        "name": "KAPPA CLOSURES SRL",
+        "postalAddress": { "townName": "MILANO", "country": "IT", "addressLines": ["VIA TORTONA 37"] },
+        "countryOfResidence": "IT"
+      },
+      "creditorAccount": { "iban": "IT13S0542811101000000123457" },
+      "creditorAgent": { "bicfi": "BPMOIT22XXX" },
+      "remittanceInformation": { "unstructured": ["INVOICE 88211 ZIPS AND TRIMS"] }
+    },
+    {
+      "txId": "TX-012",
+      "endToEndId": "MO-INV-88212",
+      "uetr": "a1b2c3d4-1111-4aaa-8bbb-000000000012",
+      "scheme": "SEPA",
+      "amount": { "value": "8900.00", "currency": "EUR" },
+      "chargeBearer": "SLEV",
+      "purposeCode": "SUPP",
+      "creditor": {
+        "name": "LISBOA CORDAS LDA",
+        "postalAddress": { "townName": "LISBOA", "country": "PT", "addressLines": ["RUA DO OURO 145"] },
+        "countryOfResidence": "PT"
+      },
+      "creditorAccount": { "iban": "PT50000201231234567890154" },
+      "creditorAgent": { "bicfi": "BCOMPTPLXXX" },
+      "remittanceInformation": { "unstructured": ["INVOICE 88212 CORDAGE"] }
+    }
+  ]
+}

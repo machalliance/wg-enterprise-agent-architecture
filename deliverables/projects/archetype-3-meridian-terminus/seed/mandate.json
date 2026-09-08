@@ -1,0 +1,85 @@
+{
+  "_note": "The desk's mandate. It is the answer to 'what is this agent allowed to touch', and it is authored by people, not by the agent. Nothing here is negotiable at runtime.",
+  "mandateId": "MERIDFIN-REPAIR-DESK-V3",
+  "grantedTo": "payment-repair-agent",
+  "grantedBy": "Head of Payment Operations, Meridian Financial plc",
+  "effective": "2026-08-01",
+  "reviewDue": "2026-11-01",
+
+  "writeScope": {
+    "_note": "The blast radius. Everything outside this list is unreachable, not merely discouraged.",
+    "repairableFields": [
+      "creditorAccount.iban",
+      "creditorAgent.bicfi",
+      "creditorAgent.clearingSystemMemberId",
+      "amount.value",
+      "chargeBearer",
+      "purposeCode",
+      "creditor.postalAddress",
+      "creditor.countryOfResidence",
+      "creditor.name"
+    ],
+    "neverRepairable": [
+      "amount.currency",
+      "debtor",
+      "debtorAccount",
+      "debtorAgent",
+      "endToEndId",
+      "uetr",
+      "batchId",
+      "valueDate"
+    ],
+    "maxInstructionValue": { "value": "250000.00", "currency": "EUR" }
+  },
+
+  "screeningRelevantFields": {
+    "_note": "Fields a sanctions filter reads. Under any screening state other than CLEAR these are frozen — that freeze is what separates this agent from the conduct in Lloyds 2009, Deutsche Bank 2015, Commerzbank 2015, Credit Agricole 2015 and UniCredit 2019, where the violation WAS the repair.",
+    "fields": [
+      "creditor.name",
+      "creditor.postalAddress",
+      "creditor.countryOfResidence",
+      "creditorAgent.bicfi",
+      "creditorAgent.clearingSystemMemberId",
+      "remittanceInformation"
+    ]
+  },
+
+  "tiers": {
+    "A": {
+      "label": "Deterministic repair",
+      "control": "auto-execute, recorded in the trace with the reference-data entry that justified it",
+      "requires": "a single reference-data lookup that yields exactly one correct value"
+    },
+    "B": {
+      "label": "Proposed repair",
+      "control": "maker-checker — the agent is the maker, a named human is the checker; nothing commits without approval",
+      "requires": "a cited candidate value plus an explicit statement of what the human is being asked to confirm"
+    },
+    "C": {
+      "label": "Hard stop",
+      "control": "no proposed edit of any kind; escalate with the instruction untouched",
+      "requires": "nothing — this tier is entered on screening state alone, before any failure analysis"
+    }
+  },
+
+  "escalationQueues": {
+    "PAYMENT-REPAIR-L1": "Repair desk. Handles proposed field repairs under maker-checker.",
+    "SANCTIONS-L2": "Sanctions adjudication. Sole owner of any instruction under a screening state.",
+    "CLIENT-SERVICE": "Confirms commercial intent with the payer. Owns purpose and beneficiary-identity questions.",
+    "TREASURY-OPS": "Owns funding, value date and correspondent routing decisions."
+  },
+
+  "budget": {
+    "_note": "Termination is a design decision, not an emergent property. Two of the three terminal branches live here.",
+    "maxSteps": 40,
+    "maxToolCalls": 60,
+    "maxRepairsPerRun": 12,
+    "wallClockMs": 600000
+  },
+
+  "successCriteria": {
+    "_note": "'Done' has to be defined or the agent cannot decide it is finished.",
+    "definition": "Every instruction in the batch is either (a) passing validation, or (b) assigned a reason code and a named owner queue.",
+    "partialAllowed": true
+  }
+}

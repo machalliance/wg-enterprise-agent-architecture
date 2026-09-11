@@ -20,7 +20,7 @@ const mono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bucket 3 Agent example",
+  title: "Meridian Terminus — Archetype 3",
   description:
     "Goal-directed, task-oriented agent. One bounded job, a scoped toolset, a definite stop.",
 };

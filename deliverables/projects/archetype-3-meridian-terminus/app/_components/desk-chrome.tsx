@@ -11,9 +11,9 @@ export function DeskChrome({
     <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-6">
       <div className="min-w-0">
         <p className="font-mono text-[11px] tracking-[0.22em] text-primary uppercase">
-          Bucket 3
+          Archetype 3
         </p>
-        <h1 className="truncate text-lg font-medium tracking-tight">Agent example</h1>
+        <h1 className="truncate text-lg font-medium tracking-tight">Meridian Terminus</h1>
       </div>
       <dl className="hidden items-center gap-6 text-xs md:flex">
         <div>

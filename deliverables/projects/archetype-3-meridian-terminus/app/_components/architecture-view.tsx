@@ -4,13 +4,13 @@ export function ArchitectureView() {
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6">
         <section className="max-w-3xl">
           <p className="font-mono text-[11px] tracking-[0.22em] text-primary uppercase">
-            Bucket 3 · Goal-directed agent
+            Archetype 3 · Goal-directed agent
           </p>
           <h2 className="mt-2 text-3xl font-medium tracking-tight">
             The path is gone. The session still ends.
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            MACH Alliance bucket 3 hands the system a goal and a toolset, then
+            MACH Alliance archetype 3 hands the system a goal and a toolset, then
             lets the model invent the steps. This example applies that shape to
             one failed outbound payment batch: inspect, investigate, act,
             re-validate, adapt, and stop. Vercel hosts the loop; it does not
@@ -243,7 +243,7 @@ function VercelStack() {
             Session identity is the eve <span className="font-mono">wrun_*</span>{" "}
             id. It is created when the goal arrives, used as the credential for
             every tool call, and released at <span className="font-mono">close_batch</span>.
-            There is no standing machine identity — that would be bucket 4.
+            There is no standing machine identity — that would be archetype 4.
           </p>
         </div>
       </div>
@@ -373,7 +373,7 @@ function MappingTable() {
         <table className="w-full min-w-[40rem] text-left text-xs">
           <thead className="border-b border-border text-muted-foreground">
             <tr>
-              <th className="px-4 py-2 font-medium">Bucket 3 component</th>
+              <th className="px-4 py-2 font-medium">Archetype 3 component</th>
               <th className="px-4 py-2 font-medium">This example</th>
               <th className="px-4 py-2 font-medium">Vercel</th>
             </tr>

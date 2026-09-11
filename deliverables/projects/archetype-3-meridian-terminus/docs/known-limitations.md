@@ -7,13 +7,8 @@ operation, and which apparent bugs are load-bearing.
 is the task you were given. Every item was a decision, and several of the things
 that look like defects are the demonstration.
 
-Audited 2026-08-24 against the code as it stands. Paths in this file are relative
-to this project directory (`deliverables/projects/archetype-3-meridian-terminus/`).
-
-**Status (2026-09-08):** the desk now runs against a live model on Vercel
-([meridian-terminus-eight.vercel.app](https://meridian-terminus-eight.vercel.app)).
-Item 1 below described the prototype before that deploy; the rest of the
-accepted scope still holds.
+Audited 2026-08-24 against the code as it stands. All paths in this file are
+relative to the project root — the directory containing `package.json`.
 
 ---
 

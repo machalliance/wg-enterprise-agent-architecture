@@ -1,0 +1,16 @@
+node_modules/
+.env.local
+.eve/
+.output/
+.vercel/
+
+# Run artefacts. Trails and outcome records are per-run and contain payment
+# data; they are written for a reviewer, not for the repository.
+trails/
+.vercel
+
+# Written into the project root by `next dev` on every run. Not authored here:
+# if these are committed they will be read as this project's agent instructions,
+# silently competing with agent/instructions.md.
+AGENTS.md
+CLAUDE.md

@@ -33,7 +33,7 @@ Two specific things worth knowing before anyone gets ideas:
   `agent/skills/triage-payment-exception.md` cites public
   enforcement actions and standards texts as evidence for a design constraint.**
   It is not legal or compliance advice; some of it is inference clearly marked as
-  inference in `docs/known-limitations.md` §22; and running this
+  inference in `docs/known-limitations.md` §21; and running this
   software makes no one compliant with anything.
 - **There is a `just-bash` sandbox with no network isolation.** That is a
   deliberate choice explained in `agent/sandbox.ts` and safe

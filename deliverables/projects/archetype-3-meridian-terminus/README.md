@@ -303,15 +303,11 @@ chain. And for the eve layer specifically: `tsc --noEmit` passes against eve
 the sandbox; `eve build` produces an output bundle; and `eve start` serves
 `/eve/v1/health` as `{"ok":true,"status":"ready"}`.
 
-*Not verified:* the agent has **never been driven by a live model**, because that
-needs an AI Gateway key. So the tools are known to compile, register and be
-serveable; what a model does when handed them is unmeasured.
-
-That gap is not a formality. A single live run would not close it either —
-identical inputs legitimately produce different outputs, so the honest instrument
-is a distribution over many runs, and `PLAN.md` §5.1 says what that would take
-and what it should measure. Until then: everything under *What it proves* is
-tested, and every claim about the agent's *behaviour* is a claim about what the
+*Not verified:* **the agent's behaviour is unmeasured.** Identical inputs
+legitimately produce different outputs, so the honest instrument is a
+distribution over many runs, and `PLAN.md` §5.1 says what that would take and
+what it should measure. Until then: everything under *What it proves* is tested,
+and every claim about the agent's *behaviour* is a claim about what the
 architecture permits, not about what a model chose.
 
 ## Layout

@@ -227,10 +227,9 @@ and the discovery manifest additionally records the hook and the sandbox; `eve
 build` produces an output bundle; `eve start` serves `/eve/v1/health` as
 `{"ok":true,"status":"ready"}`.
 
-**Not verified — the agent has never been driven by a live model.** That needs an
-AI Gateway key. The tools compile, register and serve; what a model does when
-handed them is unmeasured, and a single run would not measure it. See §5.1, which
-is first in the list for that reason.
+**Not verified — the agent's behaviour is unmeasured.** The tools compile,
+register and serve; what a model does when handed them is not something a single
+run can establish. See §5.1, which is first in the list for that reason.
 
 ## 5. What a second pass would add
 

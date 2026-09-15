@@ -41,7 +41,7 @@ prototype becomes a broken one between two demos.
 npm test
 ```
 
-Expect **54 passing** across four files. The one to read is `hard stop is
+Expect **56 passing** across five files. The one to read is `hard stop is
 structural, not instructional` in `tests/policy.test.ts` — it crosses every
 screened instruction with every field the mandate would otherwise permit and
 asserts that not one combination yields a write or a proposed value.

@@ -7,7 +7,7 @@ Crossing (Archetype 5), and it is deliberate.
 ## Why
 
 This prototype's entire value is that its claims are checkable. The README says
-54 tests pass, that a frozen instruction yields zero candidates, that the replay
+56 tests pass, that a frozen instruction yields zero candidates, that the replay
 terminates `GOAL_ACHIEVED`. A reviewer should be able to clone it and see exactly
 that — not something close to it.
 
@@ -46,7 +46,7 @@ that suite is what the documentation's claims rest on:
 
 ```bash
 npm install
-npm test            # 54 tests
+npm test            # 56 tests
 npm run typecheck
 npm run replay:commit
 npm run verify:trail

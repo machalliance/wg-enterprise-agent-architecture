@@ -19,7 +19,7 @@ you are showing one run rather than a distribution.
 
 ```bash
 npm install
-npm test                  # 54 passing — leave this on screen while you talk
+npm test                  # 56 passing — leave this on screen while you talk
 ```
 
 Have three terminals ready, or one and a clear screen:
@@ -210,7 +210,7 @@ incapable of clearing it, not to be right about it.
 Because that puts an approve button in front of the one person who should never
 be offered one. The eve approval policy returns *denied*, not *ask*.
 
-**"How do you know it works?"** `npm test` — 54 tests across four files, and one
+**"How do you know it works?"** `npm test` — 56 tests across five files, and one
 of them pins the seed's exact tier membership, so the README cannot drift from the
 code without going red. `tools.test.ts` drives the tools themselves through the
 same `execute` and `approval` entry points eve uses, so the guarantees are checked

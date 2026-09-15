@@ -214,7 +214,7 @@ dangerous tool, but because nobody removes a general one.
 
 **Verified.**
 
-*Offline* — 54 tests green, all three terminal branches exercised, trail chain
+*Offline* — 56 tests green, all three terminal branches exercised, trail chain
 verified and tamper-detection asserted against a file on disk: the policy layer,
 the eight tools through their own `execute`/`approval` entry points, the
 validation gate, the store, the trail, the seed corpus (12 instructions across 4

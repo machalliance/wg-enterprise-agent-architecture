@@ -260,7 +260,7 @@ it deploys to Vercel as one project with no extra configuration.
 
 ```bash
 npm install
-npm test                      # 54 tests, no key needed — do this first
+npm test                      # 56 tests, no key needed — do this first
 vercel                        # preview
 vercel --prod                 # production
 ```
@@ -295,7 +295,7 @@ Worth being blunt, because a demo that blurs this teaches the wrong lesson.
 **One more, and it is the important one.** Here is exactly how far the
 verification goes.
 
-*Verified:* 54 tests and a deterministic replay covering the validators, the
+*Verified:* 56 tests and a deterministic replay covering the validators, the
 policy layer, the tools, the freeze, the three terminal branches and the trail
 chain. And for the eve layer specifically: `tsc --noEmit` passes against eve
 0.44.3's real type definitions; `eve info` reports **0 errors, 0 warnings** with
@@ -362,7 +362,7 @@ archetype-3-meridian-terminus/
 │   ├── reference-data.json  # PUBLIC standing data — directories, code sets, rules
 │   ├── screening.json       # the filter's output. No tool writes to it.
 │   └── mandate.json         # the desk's authority: write scope, tiers, budget
-├── tests/                   # 54 tests. policy.test.ts is the acceptance suite;
+├── tests/                   # 56 tests. policy.test.ts is the acceptance suite;
 │                            # tools.test.ts drives the tools themselves
 │                            # through eve's own execute/approval entry points
 ├── infra/
@@ -379,10 +379,11 @@ every guard in `policy.ts` is enforcing something declared in it.
 ## What it proves
 
 Each guarantee is backed by a named test in `tests/`. `npm test`
-runs all **54**, across four files: `policy.test.ts` (the policy functions),
+runs all **56**, across five files: `policy.test.ts` (the policy functions),
 `tools.test.ts` (the tools themselves, invoked through the same `execute` and
-`approval` entry points eve uses), `codes.test.ts` (the arithmetic) and
-`termination.test.ts` (endings and the trail).
+`approval` entry points eve uses), `codes.test.ts` (the arithmetic),
+`termination.test.ts` (endings and the trail) and `env.test.ts` (that
+`.env.example` still names every variable the code reads, in both directions).
 
 That split matters. A correct `guardRepair` is worth nothing if `apply_repair`
 forgets to call it, so the tool layer is tested as a layer rather than inferred

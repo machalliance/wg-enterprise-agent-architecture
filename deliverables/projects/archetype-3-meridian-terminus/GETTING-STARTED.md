@@ -7,7 +7,7 @@ that first, because it is what the test claims rest on.
 
 | | Version | Needed for |
 |---|---|---|
-| Node.js | **22.6+** | tests and the offline replay (native TypeScript stripping) |
+| Node.js | **22.6+, built with type stripping** | tests and the offline replay (native TypeScript stripping) |
 | Node.js | **24+** | eve itself — `eve dev`, `eve build`, `eve deploy` |
 | An AI Gateway key | — | running the actual agent; nothing else |
 
@@ -16,8 +16,13 @@ type stripping, so a reviewer can check the security properties on a machine tha
 will never run the agent. `package.json` declares `>=24` because that is eve's
 floor, not the prototype's.
 
+The version alone is not the whole check. Type stripping is provided by Amaro,
+which a Node build can be compiled without — and a 22.6+ build that was will fail
+every test file rather than falling back. Check both:
+
 ```bash
-node --version   # v22.6.0 or newer for the offline path
+node --version                                      # v22.6.0 or newer
+node -p "process.config.variables.node_use_amaro"   # must print true
 ```
 
 ## 1. Install
@@ -255,6 +260,14 @@ demo: the freeze is doing real work, and you can see the counterfactual.
 
 **`ERR_UNKNOWN_FILE_EXTENSION` or a TypeScript syntax error on `npm test`.** Node
 is older than 22.6, so native type stripping is unavailable. Upgrade.
+
+**`ERR_NO_TYPESCRIPT: Node.js is not compiled with TypeScript support` on `npm
+test`.** A different failure with the same cause and a different fix: the version
+is new enough, but this particular build was compiled without Amaro, so
+`--experimental-strip-types` has nothing behind it. Every test file fails at
+import. `node -p "process.config.variables.node_use_amaro"` prints `false`.
+Upgrading the version will not help — install a Node build that has it, such as
+an official nodejs.org release.
 
 **`npm install` warns `EBADENGINE`.** Node is below eve's floor of 24. The tests
 and replay still work; `eve dev` will not.

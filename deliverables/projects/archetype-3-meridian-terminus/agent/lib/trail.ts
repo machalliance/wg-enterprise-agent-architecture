@@ -1,7 +1,7 @@
 /**
  * The reasoning trail.
  *
- * Bucket 2 needed a decision record for one routing choice. Bucket 3 needs the
+ * Archetype 2 needed a decision record for one routing choice. Archetype 3 needs the
  * whole sequence: each step, the rationale behind it, the tool call it produced,
  * the result that came back, and the reason the run stopped. Without that, an
  * autonomous run is unreviewable — you can see that the agent changed a

@@ -11,7 +11,7 @@ import { validateInstruction } from "../lib/validate.ts";
  * Termination, as an action the agent takes rather than something that happens
  * to it.
  *
- * An agent with no way to declare itself finished is a bucket-4 agent you did
+ * An agent with no way to declare itself finished is an archetype 4 agent you did
  * not mean to build. The three arguments this tool accepts are the entire
  * terminal decision space — goal achieved, blocked, out of budget — and the tool
  * checks the claim rather than accepting it: calling GOAL_ACHIEVED while

@@ -16,7 +16,8 @@ architecture debt and the places the model diverges from a real bank — see
 > "as is" under MIT. See `SECURITY.md`.
 
 Built on [eve](https://eve.dev), Vercel's agent framework, with model routing
-through [AI Gateway](https://vercel.com/docs/ai-gateway) and an egress-denied
+through [AI Gateway](https://vercel.com/docs/ai-gateway) by default — or any
+OpenAI-compatible endpoint via `LLM_BASE_URL` — and an egress-denied
 [Vercel Sandbox](https://vercel.com/docs/vercel-sandbox).
 
 ## What it is
@@ -217,6 +218,15 @@ project or API key, and returns HTTP `402` `quota_for_entity_exceeded` once the
 limit is crossed — the financial sibling of the iteration ceiling. Note it is a
 soft cap, checked before each request, so the request that crosses the limit
 still completes.
+
+The gateway is the default, not a dependency. Setting `LLM_BASE_URL` routes the
+agent at any OpenAI-compatible endpoint instead — the same `LLM_BASE_URL` /
+`LLM_MODEL` / `LLM_API_KEY` contract Pulse and Crossing use, so one key runs all
+three prototypes. That matters more here than it looks: what a model does when
+handed these tools is the part worth checking for yourself, and a routing path
+only one vendor can supply is a poor way to invite someone to check it. Only the
+model reference changes; nothing beneath it ever knew which provider it was
+talking to. Setup is in `GETTING-STARTED.md`.
 
 **The sandbox** is where the tool-scoping argument got sharper during the build,
 and it is worth the detour. Every eve agent has exactly one sandbox, and eve

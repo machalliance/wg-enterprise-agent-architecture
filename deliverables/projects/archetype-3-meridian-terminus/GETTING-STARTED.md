@@ -161,10 +161,42 @@ This is the part that needs a key, and the part that has not been run in anger �
 see *What is real, and what is modelled* in `README.md`.
 
 ```bash
-cp .env.example .env.local   # .env.local, matching Meridian Crossing; Meridian Pulse uses .env
+cp .env.example .env   # .env, matching Meridian Pulse and Meridian Crossing
 # set AI_GATEWAY_API_KEY, or run `eve link` to pull VERCEL_OIDC_TOKEN
 npm run dev
 ```
+
+### Or point it somewhere that is not AI Gateway
+
+A gateway credential is the default, not a requirement. Set `LLM_BASE_URL` and
+the agent routes to any OpenAI-compatible endpoint instead — the same three
+variables Meridian Pulse and Meridian Crossing use, so a reviewer with a key for
+any provider can run all three:
+
+```bash
+LLM_BASE_URL=https://openrouter.ai/api/v1 \
+LLM_API_KEY=sk-or-v1-... \
+LLM_MODEL=openai/gpt-5.4 \
+npm run dev
+```
+
+Only the model reference moves. The tools, the mandate, the tier policy and the
+terminals never knew which provider they were talking to.
+
+Two things that will catch you out:
+
+- **The endpoint's own model namespace applies.** `openai/gpt-5.4` is an
+  OpenRouter id, not a gateway one; Bedrock behind a shim wants something else
+  again. A residency-constrained endpoint narrows it further — `us.openrouter.ai`
+  serves 41 models against the global catalogue's several hundred, all of them on
+  US provider endpoints (`azure/us`, `amazon-bedrock/us`, `google-vertex/us-east5`).
+  Check yours before assuming a model id resolves:
+  `curl -s $LLM_BASE_URL/models -H "Authorization: Bearer $LLM_API_KEY"`.
+- **Region-scoped keys need the region host.** An OpenRouter key whose workspace
+  guardrail names a data region rejects `openrouter.ai` with a `403` naming the
+  hostname it does want — use that host (e.g. `https://us.openrouter.ai/api/v1`).
+  A `401 User not found` means the opposite problem: the host is reachable and
+  the key is not valid there.
 
 `eve dev` starts on port 2000 with a terminal UI. Give it the goal:
 
@@ -177,7 +209,7 @@ Then watch which tool it reaches for first. Nothing tells it to start with
 `list_repair_queue`, and nothing tells it the order to work the queue in.
 
 To commit repairs rather than dry-run them, set `REPAIR_MODE=commit` in
-`.env.local`. Start in dry-run. That is not ceremony — it is how the archetype
+`.env`. Start in dry-run. That is not ceremony — it is how the archetype
 says you earn a write scope.
 
 ### If something breaks on first run
@@ -195,7 +227,10 @@ Every variable the code reads. `.env.example` is committed and must stay in sync
 | Variable | Default | Effect |
 |---|---|---|
 | `AI_GATEWAY_API_KEY` | unset | AI Gateway credential for string model ids. Not needed for tests or replay. |
-| `VERCEL_OIDC_TOKEN` | unset | Alternative gateway auth; `eve link` pulls it into `.env.local`, 12-hour lifetime. |
+| `VERCEL_OIDC_TOKEN` | unset | Alternative gateway auth; `eve link` pulls it into `.env`, 12-hour lifetime. |
+| `LLM_BASE_URL` | unset | Set it to route the agent at an OpenAI-compatible endpoint instead of AI Gateway. Unset means the gateway, which is what the deployed demo uses. |
+| `LLM_MODEL` |  `openai/gpt-5.4` | Model id in the endpoint's own namespace. Read only when `LLM_BASE_URL` is set. |
+| `LLM_API_KEY` | unset | Credential for that endpoint. Read only when `LLM_BASE_URL` is set. |
 | `REPAIR_MODE` | `dry-run` | `commit` writes repairs to the working copy. Anything else is dry-run. |
 | `MAX_STEPS` | unset | Overrides the mandate's step ceiling. Replay harness only. Set to 4 for the budget branch. |
 | `PORT` | `2000` | `eve dev` port. |

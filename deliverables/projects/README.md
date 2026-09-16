@@ -7,6 +7,7 @@ Buildable deliverables of the [Enterprise Agent Architecture Working Group](../.
 | Project | What it is | State |
 |---|---|---|
 | [`agent-build-lab/`](./agent-build-lab/) | **Agent Architecture Hackathon in a Box** — a reusable two-half-day hackathon for learning to design and combine agent architectures. Debuts at MACH X Amsterdam, September 29–30, 2026. | Active development |
+| [`archetype-3-meridian-terminus/`](./archetype-3-meridian-terminus/) | **Bucket 3 Agent example (Meridian Terminus)** — a working **archetype 3** reference prototype: a goal-directed, task-oriented agent that is handed a bounded goal and tools, invents its own steps for one failed payment batch, and finishes. Live demo: [meridian-terminus-eight.vercel.app](https://meridian-terminus-eight.vercel.app). | Prototype |
 | [`archetype-4-meridian-pulse/`](./archetype-4-meridian-pulse/) | **Meridian Pulse** — a working **archetype 4** reference prototype: an agent that runs over extended periods and acts on its own according to policy, with real policy gates, circuit breakers, and an auditable decision trail. The step-by-step build guide lives in [`agent-build-lab/archetype-4-meridian-pulse/`](./agent-build-lab/archetype-4-meridian-pulse/). | Prototype |
 | [`archetype-5-meridian-crossing/`](./archetype-5-meridian-crossing/) | **Meridian Crossing** — a working **archetype 5** prototype: multiple self-directed agents representing different interests, negotiating across trust boundaries. | Prototype |
 

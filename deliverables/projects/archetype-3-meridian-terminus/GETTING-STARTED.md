@@ -238,6 +238,7 @@ Every variable the code reads. `.env.example` is committed and must stay in sync
 | `LLM_API_KEY` | unset | Credential for that endpoint. Read only when `LLM_BASE_URL` is set. |
 | `REPAIR_MODE` | `dry-run` | `commit` writes repairs to the working copy. Anything else is dry-run. |
 | `MAX_STEPS` | unset | Overrides the mandate's step ceiling. Replay harness only. Set to 4 for the budget branch. |
+| `TERMINUS_MAX_INPUT_TOKENS` | `400000` | Overrides `maxInputTokensPerSession`. At the default, a full batch exhausts the window around step 39 and eve parks the session for a human — correct with someone watching, fatal for an unattended sampling run. Raise it (1000000 is enough for one batch) only when nobody is there to approve. |
 | `PORT` | `2000` | `eve dev` port. |
 | `EVE_TRACES_CONTENT` | off | Captures model/tool I/O in eve's own local traces. Left off deliberately — the trail already records what the desk needs, and turning this on puts a second, unchained copy of the same payment data on disk. |
 

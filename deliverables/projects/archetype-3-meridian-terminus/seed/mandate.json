@@ -71,8 +71,9 @@
 
   "budget": {
     "_note": "Termination is a design decision, not an emergent property. Two of the three terminal branches live here.",
-    "maxSteps": 40,
-    "maxToolCalls": 60,
+    "_ceilingNote": "maxSteps was 40. Runs clustered at 35-43 and looked capped, but the cap was not this one: eve was parking them at maxInputTokensPerSession (agent/agent.ts) around step 39 and waiting for a human who, in an unattended run, never came. With that limit lifted the work fits comfortably under 40 most of the time and legitimately exceeds it sometimes — a sampled run closed itself BUDGET_EXHAUSTED at 61. 60 is set so the step ceiling binds on a genuine runaway rather than on a normal batch, and so BUDGET_EXHAUSTED stays a terminal the scenario can actually reach.",
+    "maxSteps": 60,
+    "maxToolCalls": 90,
     "maxRepairsPerRun": 12,
     "wallClockMs": 600000
   },

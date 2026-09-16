@@ -1,5 +1,5 @@
 import { defineHook } from "eve/hooks";
-import { session } from "../lib/toolkit.ts";
+import { accountRun, finishRun, session } from "../lib/toolkit.ts";
 
 /**
  * The reasoning half of the trail.
@@ -80,14 +80,50 @@ export default defineHook({
       });
     },
 
+    /**
+     * The ending of last resort.
+     *
+     * Measured over 30 live runs, half of them ended here: the agent simply
+     * stopped, leaving a batch with no outcome record and no declared terminal.
+     * Recording that and moving on was the honest thing to do and the wrong
+     * thing to ship — an operator inherits a batch either way, and one with no
+     * outcome record is strictly worse than one closed from observed state.
+     *
+     * So the runtime closes it. The terminal is derived, never assumed:
+     * BUDGET_EXHAUSTED if a ceiling was crossed, GOAL_ACHIEVED only when the
+     * same completeness check `close_batch` applies finds nothing outstanding,
+     * BLOCKED otherwise. `declaredBy: "runtime"` keeps this distinguishable
+     * from a run the agent ended itself, which is a different event.
+     */
     async "turn.completed"(_event, ctx) {
       const s = session(ctx.session.id);
       if (s.run.closed) return;
+
+      const { stillFailing, unaccounted } = accountRun(s.run);
+      const budget = s.run.budgetState();
+      const termination = budget.exhausted
+        ? "BUDGET_EXHAUSTED"
+        : unaccounted.length === 0
+          ? "GOAL_ACHIEVED"
+          : "BLOCKED";
+
       s.trail.append(
-        "termination",
+        "refusal",
         s.run.steps,
         "Turn completed without close_batch — the run has not declared an ending.",
-        { steps: s.run.steps, toolCalls: s.run.toolCalls },
+        { steps: s.run.steps, toolCalls: s.run.toolCalls, unaccounted },
+      );
+
+      finishRun(
+        s,
+        termination,
+        budget.exhausted
+          ? `Closed by the runtime: the turn ended without close_batch and the budget was spent (${budget.reason}). ${unaccounted.length} instruction(s) left unaccounted for.`
+          : unaccounted.length === 0
+            ? "Closed by the runtime: the turn ended without close_batch, but every instruction is accounted for."
+            : `Closed by the runtime: the turn ended without close_batch with ${unaccounted.length} instruction(s) unaccounted for.`,
+        stillFailing,
+        "runtime",
       );
     },
   },

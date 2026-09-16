@@ -146,6 +146,14 @@ export type Termination = "GOAL_ACHIEVED" | "BLOCKED" | "BUDGET_EXHAUSTED";
 export interface Outcome {
   batchId: string;
   termination: Termination;
+  /**
+   * Who declared the ending. `agent` means close_batch was called; `runtime`
+   * means the turn ended without it and the tool layer closed the run from
+   * observed state. The distinction is kept because a run the agent never
+   * ended is a different event from one it did, and a trail that hid that
+   * would be tidier and less true.
+   */
+  declaredBy: "agent" | "runtime";
   startedAt: string;
   endedAt: string;
   steps: number;

@@ -68,7 +68,18 @@ export default defineAgent({
 
   reasoning: "medium",
   limits: {
-    maxInputTokensPerSession: 400_000,
+    /**
+     * Crossing this parks the session for a human, which is right for an
+     * assistant and fatal for an unattended one: measured over 20 sampled runs,
+     * 13 of 14 abandoned runs were parked here rather than finishing, at around
+     * step 39. Input grows quadratically with steps because each one re-sends
+     * the conversation, so a full twelve-instruction batch does not fit in 400K.
+     * The default stays put — a demo run in front of a person should still
+     * pause — and TERMINUS_MAX_INPUT_TOKENS lifts it for unattended sampling.
+     */
+    maxInputTokensPerSession: Number(
+      process.env.TERMINUS_MAX_INPUT_TOKENS ?? 400_000,
+    ),
     maxOutputTokensPerSession: 60_000,
     // One batch, one sitting. A repair desk session that outlives the value date
     // is not a session, it is an unsupervised process.

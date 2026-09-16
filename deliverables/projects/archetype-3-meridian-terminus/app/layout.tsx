@@ -1,23 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
 import "./globals.css";
-
-const sans = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: "variable",
-  display: "swap",
-});
-
-const mono = Geist_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: "variable",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Meridian Terminus — Archetype 3",
@@ -27,7 +11,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { readonly children: ReactNode }) {
   return (
-    <html className={cn("dark", sans.variable, mono.variable)} lang="en">
+    <html lang="en">
+      <head>
+        {/* Waypoint's typefaces, self-contained: the same fonts.css the Archetype 4
+            control plane and the Archetype 5 dashboard serve, woff2 inlined, so the
+            three prototypes set type identically and nothing is fetched at runtime. */}
+        <link href="/fonts.css" rel="stylesheet" />
+      </head>
       <body>
         <TooltipProvider>{children}</TooltipProvider>
       </body>

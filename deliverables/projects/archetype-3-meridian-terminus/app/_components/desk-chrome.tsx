@@ -8,28 +8,28 @@ export function DeskChrome({
   readonly active: "desk" | "architecture";
 }) {
   return (
-    <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-6">
+    <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 border-b-2 border-foreground bg-surface px-4 py-3.5 sm:px-6">
       <div className="min-w-0">
-        <p className="font-mono text-[11px] tracking-[0.22em] text-primary uppercase">
-          Archetype 3
-        </p>
-        <h1 className="truncate text-lg font-medium tracking-tight">Meridian Terminus</h1>
+        <p className="wp-eyebrow">Archetype 3</p>
+        <h1 className="truncate font-condensed text-[25px] uppercase tracking-[0.04em]">
+          Meridian Terminus
+        </h1>
       </div>
-      <dl className="hidden items-center gap-6 text-xs md:flex">
+      <dl className="hidden items-center gap-6 font-mono text-[13px] md:flex">
         <div>
-          <dt className="text-muted-foreground">Batch</dt>
-          <dd className="font-mono">{BATCH.batchId}</dd>
+          <dt className="text-text-3">Batch</dt>
+          <dd>{BATCH.batchId}</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground">Value date</dt>
-          <dd className="font-mono">{BATCH.valueDate}</dd>
+          <dt className="text-text-3">Value date</dt>
+          <dd>{BATCH.valueDate}</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground">Debtor</dt>
-          <dd className="max-w-56 truncate">{BATCH.debtor}</dd>
+          <dt className="text-text-3">Debtor</dt>
+          <dd className="max-w-56 truncate font-sans">{BATCH.debtor}</dd>
         </div>
       </dl>
-      <nav className="flex shrink-0 items-center gap-1 rounded-md border border-border p-0.5 text-xs">
+      <nav className="flex shrink-0 items-center gap-1.5">
         <NavChip href="/" current={active === "desk"}>
           Desk
         </NavChip>
@@ -54,10 +54,10 @@ function NavChip({
     <Link
       aria-current={current ? "page" : undefined}
       className={cn(
-        "rounded-sm px-2.5 py-1 font-medium transition-colors",
+        "rounded-full border px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.06em] transition-colors",
         current
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+          ? "border-action bg-action-wash text-action"
+          : "border-border text-text-3 hover:bg-fill hover:text-foreground",
       )}
       href={href}
     >

@@ -135,10 +135,10 @@ export function AgentChat({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-2.5 sm:px-6">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-surface px-4 py-2.5 sm:px-6">
         <div className="min-w-0">
-          <p className="text-sm font-medium">Desk run</p>
-          <p className="truncate font-mono text-[11px] text-muted-foreground">
+          <p className="font-condensed text-base uppercase tracking-[0.03em]">Desk run</p>
+          <p className="truncate font-mono text-[11px] text-text-3">
             {activeSessionId ?? "No session yet"}
           </p>
         </div>
@@ -194,10 +194,8 @@ export function AgentChat({
       ) : (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6">
           <div className="max-w-md text-center">
-            <p className="font-mono text-[11px] tracking-[0.18em] text-primary uppercase">
-              Outbound exceptions
-            </p>
-            <h2 className="mt-2 text-2xl font-medium tracking-tight">
+            <p className="wp-eyebrow">Outbound exceptions</p>
+            <h2 className="mt-2 font-condensed text-3xl uppercase tracking-[0.03em]">
               One batch failed the gate
             </h2>
             <p className="mt-3 text-sm text-muted-foreground">
@@ -210,7 +208,7 @@ export function AgentChat({
             </Button>
             <p className="mt-4 text-xs text-muted-foreground">
               Inspect, investigate, act, adapt, stop.{" "}
-              <a className="text-primary underline-offset-4 hover:underline" href="/architecture">
+              <a className="text-action underline-offset-4 hover:underline" href="/architecture">
                 How Vercel hosts the loop
               </a>
             </p>
@@ -218,7 +216,7 @@ export function AgentChat({
         </div>
       )}
 
-      <div className="shrink-0 border-t border-border bg-background px-4 py-4 sm:px-6">
+      <div className="shrink-0 border-t border-border bg-surface px-4 py-4 sm:px-6">
         <div className="mx-auto w-full max-w-3xl">{composer}</div>
       </div>
     </div>
@@ -230,13 +228,13 @@ function ErrorMessage({ message }: { readonly message: string }) {
     <Message className="max-w-full" from="assistant">
       <MessageContent>
         <div
-          className="flex w-full items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm"
+          className="flex w-full items-start gap-3 rounded-md border border-error border-l-4 bg-error-wash px-3 py-2.5 text-sm"
           role="alert"
         >
-          <AlertCircleIcon className="mt-0.5 size-4 shrink-0 text-destructive" />
+          <AlertCircleIcon className="mt-0.5 size-4 shrink-0 text-error" />
           <div>
-            <p className="font-medium">Request failed</p>
-            <p className="mt-0.5 text-muted-foreground">{message}</p>
+            <p className="font-bold text-error">Request failed</p>
+            <p className="mt-0.5 text-text-2">{message}</p>
           </div>
         </div>
       </MessageContent>

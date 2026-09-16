@@ -3,7 +3,7 @@ import { DeskChrome } from "@/app/_components/desk-chrome";
 
 export default function ArchitecturePage() {
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex h-dvh flex-col overflow-hidden text-foreground">
       <DeskChrome active="architecture" />
       <ArchitectureView />
     </div>

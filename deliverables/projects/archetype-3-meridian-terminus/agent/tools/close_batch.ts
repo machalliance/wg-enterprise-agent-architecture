@@ -1,11 +1,6 @@
 import { defineTool } from "eve/tools";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { z } from "zod";
-import { loadReferenceData, trailsDir } from "../lib/refdata.ts";
-import { accountFor, classify } from "../lib/policy.ts";
-import { enterTool, exitTool, session } from "../lib/toolkit.ts";
-import { validateInstruction } from "../lib/validate.ts";
+import { accountRun, enterTool, exitTool, finishRun, session } from "../lib/toolkit.ts";
 
 /**
  * Termination, as an action the agent takes rather than something that happens
@@ -34,24 +29,7 @@ export default defineTool({
     const refusal = enterTool(s, "close_batch", { termination });
     if (refusal && termination !== "BUDGET_EXHAUSTED") return refusal;
 
-    const ref = loadReferenceData();
-    const { stillFailing, unaccounted } = accountFor(
-      s.run.batch.instructions.map((instruction) => {
-        const result = validateInstruction(instruction, ref);
-        const disposition = classify(
-          instruction,
-          result,
-          s.run.screeningFor(instruction.txId),
-          s.run.mandate,
-        );
-        return {
-          txId: instruction.txId,
-          passes: result.txSts === "ACTC",
-          frozen: disposition.frozen,
-          handled: s.run.handled(instruction.txId),
-        };
-      }),
-    );
+    const { stillFailing, unaccounted } = accountRun(s.run);
 
     if (termination === "GOAL_ACHIEVED" && unaccounted.length > 0) {
       s.trail.append("refusal", s.run.steps, "close_batch refused: goal not achieved", {
@@ -68,21 +46,19 @@ export default defineTool({
       });
     }
 
-    const outcome = s.run.close(termination, narrative, stillFailing);
-    const persist = process.env.TERMINUS_TRAIL !== "off";
-    const outcomePath = join(trailsDir, `${s.runId}.outcome.json`);
-    if (persist) {
-      mkdirSync(trailsDir, { recursive: true });
-      writeFileSync(outcomePath, `${JSON.stringify(outcome, null, 2)}\n`, "utf8");
-    }
-
-    s.trail.append("termination", s.run.steps, `Run closed: ${termination}`, outcome);
+    const { outcome, outcomePath } = finishRun(
+      s,
+      termination,
+      narrative,
+      stillFailing,
+      "agent",
+    );
 
     return exitTool(s, "close_batch", {
       ok: true,
       outcome,
       trail: s.trail.path,
-      outcomeRecord: persist ? outcomePath : null,
+      outcomeRecord: outcomePath,
       note: "Session may be released. Nothing in this agent persists past it.",
     });
   },

@@ -149,7 +149,12 @@ export class RunStore {
     );
   }
 
-  close(termination: Termination, narrative: string, stillFailing: string[]): Outcome {
+  close(
+    termination: Termination,
+    narrative: string,
+    stillFailing: string[],
+    declaredBy: Outcome["declaredBy"] = "agent",
+  ): Outcome {
     const repaired = [...new Set(this.repairs.map((r) => r.txId))];
     const escalated = this.escalations.map((e) => ({
       txId: e.txId,
@@ -160,6 +165,7 @@ export class RunStore {
     const outcome: Outcome = {
       batchId: this.batch.batchId,
       termination,
+      declaredBy,
       startedAt: this.startedAt,
       endedAt: new Date().toISOString(),
       steps: this.steps,

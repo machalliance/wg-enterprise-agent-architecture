@@ -10,31 +10,31 @@ export function RepairDesk({
   const holds = BATCH.instructions.filter((row) => row.hold !== null).length;
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
+    <div className="flex h-dvh flex-col overflow-hidden text-foreground">
       <DeskChrome active="desk" />
 
       <div className="flex min-h-0 flex-1">
-        <aside className="hidden w-88 shrink-0 flex-col border-r border-border lg:flex">
-          <div className="flex items-baseline justify-between px-4 py-3">
-            <h2 className="text-sm font-medium">Repair queue</h2>
-            <p className="font-mono text-[11px] text-muted-foreground">
+        <aside className="hidden w-88 shrink-0 flex-col border-r border-border bg-surface lg:flex">
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <h2 className="wp-title shrink-0 text-base">Repair queue</h2>
+            <p className="shrink-0 font-mono text-[11px] text-text-3">
               {BATCH.instructions.length} RJCT · {holds} hold
             </p>
           </div>
           <ol className="min-h-0 flex-1 overflow-y-auto">
             {BATCH.instructions.map((row) => (
-              <li key={row.txId} className="border-t border-border px-4 py-3">
+              <li key={row.txId} className="border-t border-hairline px-4 py-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-mono text-xs">{row.txId}</p>
                     <p className="truncate text-sm">{row.creditor}</p>
-                    <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 font-mono text-[11px] text-text-3">
                       {row.endToEndId} · {row.country}
                     </p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="font-mono text-xs">{row.amount}</p>
-                    <p className="mt-1 font-mono text-[10px] tracking-wide text-muted-foreground">
+                    <p className="font-mono text-xs tabular-nums">{row.amount}</p>
+                    <p className="mt-1 font-mono text-[10px] tracking-wide text-text-3">
                       {row.scheme}
                     </p>
                   </div>
@@ -68,8 +68,8 @@ function StatusChip({
     <span
       className={
         tone === "hold"
-          ? "rounded-sm bg-amber-500/15 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-amber-200"
-          : "rounded-sm bg-destructive/15 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-red-300"
+          ? "rounded-sm bg-warn-tint px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-wide text-warn-text"
+          : "rounded-sm bg-error-tint px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-wide text-error-text"
       }
     >
       {children}

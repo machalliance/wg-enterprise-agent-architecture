@@ -1,57 +1,161 @@
 @import "tailwindcss";
 @source "../node_modules/streamdown/dist/*.js";
 
+/* ============================================================
+   Waypoint design system — the same three tiers the Archetype 4
+   control plane and the Archetype 5 dashboard carry
+   (packages/control-plane/public/index.html and
+   packages/dashboard/public/index.html in those repos).
+   Tier 1 primitives → Tier 2 semantics → shadcn's token names.
+   Product code reads the semantic names and the shadcn aliases;
+   nothing below reaches for a Tier 1 primitive directly.
+   The typefaces are the same self-contained fonts.css those two
+   ship — Barlow, Barlow Condensed, IBM Plex Mono — so the three
+   archetype UIs render in one voice.
+   ============================================================ */
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
+  /* shadcn's vocabulary, re-pointed at the Waypoint semantics */
+  --color-background: var(--ground);
+  --color-foreground: var(--text);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--text);
+  --color-primary: var(--action);
+  --color-primary-foreground: var(--wp-chalk);
+  --color-secondary: var(--fill);
+  --color-secondary-foreground: var(--text-2);
+  --color-muted: var(--fill);
+  --color-muted-foreground: var(--text-3);
+  --color-accent: var(--fill);
+  --color-accent-foreground: var(--text);
+  --color-destructive: var(--error);
   --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+  --color-input: var(--border);
+  --color-ring: var(--focus);
+
+  /* Waypoint's own semantics, exposed as utilities: bg-surface, text-signal, … */
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-fill: var(--fill);
+  --color-hairline: var(--hairline);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-action-wash: var(--wp-pine-50);
+  --color-signal: var(--signal);
+  --color-signal-tint: var(--signal-tint);
+  --color-success: var(--success);
+  --color-success-text: var(--success-text);
+  --color-success-tint: var(--success-tint);
+  --color-warn: var(--warn);
+  --color-warn-text: var(--warn-text);
+  --color-warn-tint: var(--warn-tint);
+  --color-info: var(--info);
+  --color-info-text: var(--info-text);
+  --color-info-tint: var(--info-tint);
+  --color-error: var(--error);
+  --color-error-text: var(--wp-scree-700);
+  --color-error-tint: var(--error-tint);
+  --color-error-wash: var(--error-wash);
+  --color-contour: var(--wp-contour-300);
+
+  /* Waypoint shape: a 2px control, a 4px card, and nothing rounder.
+     Every step of the scale collapses onto those two so a stray
+     rounded-2xl in a vendored component cannot reintroduce a pill. */
+  --radius-xs: var(--r-control);
+  --radius-sm: var(--r-control);
+  --radius-md: var(--r-card);
+  --radius-lg: var(--r-card);
+  --radius-xl: var(--r-card);
+  --radius-2xl: var(--r-card);
+  --radius-3xl: var(--r-card);
+
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-data);
+  /* Named `condensed`, not `display`, so the theme key cannot alias
+     itself onto the --font-display it is meant to read. */
+  --font-condensed: var(--font-display);
 }
 
 :root {
-  color-scheme: dark;
-  --background: oklch(0.17 0.018 250);
-  --foreground: oklch(0.93 0.012 90);
-  --card: oklch(0.21 0.02 250);
-  --card-foreground: oklch(0.93 0.012 90);
-  --popover: oklch(0.21 0.02 250);
-  --popover-foreground: oklch(0.93 0.012 90);
-  --primary: oklch(0.8 0.11 82);
-  --primary-foreground: oklch(0.18 0.02 250);
-  --secondary: oklch(0.26 0.02 250);
-  --secondary-foreground: oklch(0.93 0.012 90);
-  --muted: oklch(0.26 0.02 250);
-  --muted-foreground: oklch(0.72 0.02 230);
-  --accent: oklch(0.28 0.025 250);
-  --accent-foreground: oklch(0.93 0.012 90);
-  --destructive: oklch(0.7 0.18 22);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.8 0.11 82);
-  --radius: 0.5rem;
+  color-scheme: light;
+
+  /* Tier 1 · primitives (only the steps this UI uses) */
+  --wp-chalk: #fdfdfb;
+  --wp-granite-50: #f5f4ee;
+  --wp-granite-100: #e7e9e1;
+  --wp-granite-200: #dbded4;
+  --wp-granite-300: #c6ccc5;
+  --wp-granite-600: #626c65;
+  --wp-granite-700: #4e5852;
+  --wp-granite-900: #232d27;
+  --wp-pine-50: #edfbf3;
+  --wp-pine-700: #2a5b45;
+  --wp-pine-800: #224937;
+  --wp-pine-900: #163225;
+  --wp-blaze-100: #ffe7df;
+  --wp-blaze-600: #b84408;
+  --wp-glacier-100: #e2eff9;
+  --wp-glacier-300: #b2c7d9;
+  --wp-glacier-600: #49708e;
+  --wp-glacier-700: #395971;
+  --wp-summit-100: #def3e3;
+  --wp-summit-600: #2f7d4c;
+  --wp-summit-700: #24643c;
+  --wp-lichen-100: #fceacf;
+  --wp-lichen-500: #b07c0f;
+  --wp-lichen-700: #714e02;
+  --wp-scree-50: #fff4f1;
+  --wp-scree-100: #ffe6e2;
+  --wp-scree-600: #b23a2e;
+  --wp-scree-700: #912f25;
+  --wp-contour-300: #cfc7ae;
+  --wp-contour-400: #afa483;
+
+  /* Tier 2 · semantics — the vocabulary the components speak */
+  --ground: var(--wp-granite-50);
+  --surface: var(--wp-chalk);
+  --fill: var(--wp-granite-100);
+  --hairline: var(--wp-granite-200);
+  --border: var(--wp-granite-300);
+  --text: var(--wp-granite-900);
+  --text-2: var(--wp-granite-700);
+  --text-3: var(--wp-granite-600);
+  --action: var(--wp-pine-700);
+  --action-hover: var(--wp-pine-800);
+  --signal: var(--wp-blaze-600);
+  --signal-tint: var(--wp-blaze-100);
+  --focus: var(--wp-blaze-600);
+  --success: var(--wp-summit-600);
+  --success-text: var(--wp-summit-700);
+  --success-tint: var(--wp-summit-100);
+  --warn: var(--wp-lichen-500);
+  --warn-text: var(--wp-lichen-700);
+  --warn-tint: var(--wp-lichen-100);
+  --error: var(--wp-scree-600);
+  --error-hover: var(--wp-scree-700);
+  --error-tint: var(--wp-scree-100);
+  --error-wash: var(--wp-scree-50);
+  --info: var(--wp-glacier-600);
+  --info-text: var(--wp-glacier-700);
+  --info-tint: var(--wp-glacier-100);
+
+  /* type / shape / motion */
+  --font-display: "Barlow Condensed", ui-sans-serif, "Arial Narrow", sans-serif;
+  --font-body: Barlow, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r-control: 2px;
+  --r-card: 4px;
+  --shadow-overlay: 0 8px 24px rgba(22, 29, 25, 0.2);
+  --ease: 150ms ease-out;
+  --topo-line: rgba(207, 199, 174, 0.45);
 }
 
 * {
+  box-sizing: border-box;
   border-color: var(--border);
 }
 
@@ -62,12 +166,102 @@ html {
 body {
   min-height: 100%;
   margin: 0;
-  background: var(--background);
-  font-family: var(--font-sans);
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  /* A single faint topographic contour bleeds in from the corner — Waypoint's expedition
+     motif, kept low-contrast so it lives only in the gutters behind the opaque panels. */
+  background-image: repeating-radial-gradient(
+    circle at 100% -8%,
+    transparent 0 70px,
+    var(--topo-line) 70px 71px
+  );
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+::selection {
+  background: var(--signal-tint);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 1px;
 }
 
 button,
 input,
 textarea {
   font: inherit;
+}
+
+/* Waypoint's control shape reaches the shadcn button through its data-slot
+   rather than a fork of the primitive, so the generated component stays
+   regenerable: Barlow 600 caps, 2px radius, a 44px target on full-size. */
+[data-slot="button"] {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[data-slot="button"][data-size="default"],
+[data-slot="button"][data-size="lg"] {
+  min-height: 44px;
+}
+
+[data-slot="button"][data-variant="link"] {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Waypoint's section signature: a single blaze diamond, an uppercase
+   Barlow Condensed title, and a hairline contour rule out to the edge. */
+.wp-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+
+.wp-title::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: var(--signal);
+  transform: rotate(45deg);
+  flex: none;
+}
+
+.wp-title::after {
+  content: "";
+  height: 1px;
+  background: var(--wp-contour-300);
+  flex: 1;
+  min-width: 16px;
+}
+
+/* The eyebrow above a title: mono, tracked out, blaze. */
+.wp-eyebrow {
+  font-family: var(--font-data);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--signal);
 }

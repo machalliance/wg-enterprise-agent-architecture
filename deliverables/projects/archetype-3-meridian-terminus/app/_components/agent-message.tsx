@@ -263,12 +263,9 @@ function AuthorizationPrompt({ part }: { readonly part: EveAuthorizationPart }) 
   return (
     <div
       className={cn(
-        "space-y-3 rounded-md border p-3",
-        isAuthorized
-          ? "border-emerald-500/30 bg-emerald-500/5"
-          : isCompleted
-            ? "border-destructive/30 bg-destructive/5"
-            : "border-blue-500/30 bg-blue-500/5",
+        // Waypoint carries state on a single accent edge, not a tinted panel.
+        "space-y-3 rounded-md border border-hairline border-l-[3px] bg-surface p-3",
+        isAuthorized ? "border-l-success" : isCompleted ? "border-l-error" : "border-l-info",
       )}
     >
       <div className="flex items-start gap-3">
@@ -276,10 +273,10 @@ function AuthorizationPrompt({ part }: { readonly part: EveAuthorizationPart }) 
           className={cn(
             "mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full",
             isAuthorized
-              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+              ? "bg-success-tint text-success-text"
               : isCompleted
-                ? "bg-destructive/10 text-destructive"
-                : "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+                ? "bg-error-tint text-error-text"
+                : "bg-info-tint text-info-text",
           )}
         >
           <Icon className="size-4" />
@@ -293,7 +290,7 @@ function AuthorizationPrompt({ part }: { readonly part: EveAuthorizationPart }) 
           {part.state === "required" && part.authorization?.userCode ? (
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <span className="text-muted-foreground">Code</span>
-              <code className="rounded-md bg-background px-2 py-1 font-mono">
+              <code className="rounded-sm bg-fill px-2 py-1 font-mono">
                 {part.authorization.userCode}
               </code>
             </div>
@@ -379,8 +376,8 @@ function InputRequestActions({
   );
 
   return (
-    <div className="space-y-3 rounded-md border border-yellow-500/30 bg-yellow-500/5 p-3">
-      <p className="text-muted-foreground text-sm">{inputRequest.prompt}</p>
+    <div className="space-y-3 rounded-md border border-hairline border-l-[3px] border-l-warn bg-surface p-3">
+      <p className="text-text-2 text-sm">{inputRequest.prompt}</p>
       {inputResponse ? (
         <p className="font-medium text-sm">
           Responded: {selectedOption?.label ?? inputResponse.text ?? inputResponse.optionId}

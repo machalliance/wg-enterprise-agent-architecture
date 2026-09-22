@@ -58,7 +58,7 @@ jobs:
           AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CONFIG_PATH: ${{ github.event.inputs.config_path || 'config/ai-structured-content.json' }}
+          CONFIG_PATH: ${{ github.event.inputs.config_path }}
           LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '24' }}
           SAVE_AS_GITHUB_ISSUE: ${{ github.event.inputs.save_as_github_issue || 'false' }}
           RESEARCH_MODE: ${{ github.event.inputs.research_mode || 'false' }}

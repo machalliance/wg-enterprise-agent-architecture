@@ -1,0 +1,31 @@
+#!/bin/sh
+# Run unit tests before every commit.
+#
+# Uses the repo's .venv (created by run.sh) when it exists so the tests see the
+# project's dependencies. Falls back to whatever python3 is on PATH otherwise.
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+if [ -x ".venv/bin/python" ]; then
+    PYTHON=".venv/bin/python"
+else
+    PYTHON="python3"
+fi
+
+if ! "$PYTHON" -c "import pytest, feedparser, bs4, requests" 2>/dev/null; then
+    echo "pre-commit: test dependencies are missing for $PYTHON." >&2
+    echo "Install them with:" >&2
+    if [ "$PYTHON" = ".venv/bin/python" ]; then
+        echo "    .venv/bin/pip install -r requirements.txt pytest" >&2
+    else
+        echo "    ./run.sh test            # creates .venv and installs requirements" >&2
+        echo "    .venv/bin/pip install pytest" >&2
+    fi
+    echo "Or skip the hook once with: git commit --no-verify" >&2
+    exit 1
+fi
+
+echo "Running tests..."
+"$PYTHON" -m pytest src/test_watcher.py -q --tb=short

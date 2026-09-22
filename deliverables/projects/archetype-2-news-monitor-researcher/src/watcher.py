@@ -539,7 +539,6 @@ def post_to_slack(
     config: dict,
     webhook_url: str,
     scan_date: str,
-    deep_dive_url: str | None = None,
 ) -> None:
     chunks = [
         relevant[i : i + _MAX_ARTICLES_PER_MESSAGE]
@@ -582,12 +581,6 @@ def post_to_slack(
                     ),
                 },
             }
-            if deep_dive_url:
-                section["accessory"] = {
-                    "type": "button",
-                    "text": {"type": "plain_text", "text": "Deep Dive"},
-                    "url": deep_dive_url,
-                }
             blocks.append(section)
             blocks.append({"type": "divider"})
 
@@ -643,10 +636,31 @@ def main() -> None:
     github_repo = os.environ.get("GITHUB_REPOSITORY", "")
     github_token = os.environ.get("GITHUB_TOKEN", "")
 
-    deep_dive_url = (
-        f"https://github.com/{github_repo}/actions/workflows/deep-summary.yml"
-        if github_repo else None
-    )
+    if not config_path:
+        print(
+            "Error: no config file specified.\n"
+            "\n"
+            "Set CONFIG_PATH in your .env file or environment, for example:\n"
+            "\n"
+            "  CONFIG_PATH=config/example.json\n"
+            "\n"
+            "Copy config/example.json to get started, then edit it with your thesis,\n"
+            "keywords, and RSS feeds.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    if not Path(config_path).exists():
+        print(
+            f"Error: config file not found: {config_path}\n"
+            "\n"
+            "Check that the path in CONFIG_PATH is correct and the file exists.\n"
+            "Config files live in the config/ directory — for example:\n"
+            "\n"
+            "  CONFIG_PATH=config/example.json",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     config = load_config(config_path)
     client, provider, model = build_llm_client(config)
@@ -700,7 +714,7 @@ def main() -> None:
 
     if relevant:
         if webhook_url:
-            post_to_slack(relevant, config, webhook_url, scan_date, deep_dive_url)
+            post_to_slack(relevant, config, webhook_url, scan_date)
             print(f"Posted {len(relevant)} article(s) to Slack.")
 
         if issue_enabled:

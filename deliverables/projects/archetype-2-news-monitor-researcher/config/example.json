@@ -1,0 +1,92 @@
+{
+  "name": "AI + Structured Content Watcher",
+  "thesis": "AI functions better when pulling information from structured, modular content",
+  "keywords": [
+    "structured content",
+    "knowledge graph",
+    "RAG",
+    "retrieval augmented generation",
+    "retrieval-augmented generation",
+    "grounding",
+    "content model",
+    "semantic markup",
+    "XML",
+    "DITA",
+    "metadata",
+    "taxonomy",
+    "controlled vocabulary",
+    "knowledge base",
+    "context quality",
+    "structured authoring",
+    "CCMS",
+    "content structure"
+  ],
+  "themes": [
+    "AI accuracy improves with well-organized source material",
+    "Structured formats reduce AI hallucination",
+    "Knowledge graphs enhance LLM reasoning",
+    "RAG performance depends on source content quality",
+    "Enterprise AI benefits from structured documentation",
+    "Metadata and taxonomy improve information retrieval for AI",
+    "Content architecture as a factor in AI system performance"
+  ],
+  
+  "publications": [
+    {
+      "name": "arXiv AI",
+      "rss_url": "https://rss.arxiv.org/rss/cs.AI"
+    },
+    {
+      "name": "LessWrong",
+      "rss_url": "https://www.lesswrong.com/feed.xml"
+    },
+    {
+      "name": "VentureBeat AI",
+      "rss_url": "https://venturebeat.com/category/ai/feed/"
+    },
+    {
+      "name": "TechCrunch AI",
+      "rss_url": "https://techcrunch.com/category/artificial-intelligence/feed/"
+    },
+    {
+      "name": "MIT Technology Review",
+      "rss_url": "https://www.technologyreview.com/feed/"
+    },
+    {
+      "name": "The Verge",
+      "rss_url": "https://www.theverge.com/rss/index.xml"
+    },
+    {
+      "name": "AI News",
+      "rss_url": "https://artificialintelligence-news.com/feed/"
+    },
+    {
+      "name": "The Gradient",
+      "rss_url": "https://thegradient.pub/rss/"
+    },
+    {
+      "name": "Towards Data Science",
+      "rss_url": "https://towardsdatascience.com/feed"
+    },
+    {
+      "name": "Hugging Face Blog",
+      "rss_url": "https://huggingface.co/blog/feed.xml"
+    }
+  ],
+  "notify_on_empty": false,
+  "min_relevance_score": 9,
+
+  "ai_provider": "anthropic",
+
+  "github_issues": {
+    "enabled": false,
+    "assignee": "pboz",
+    "labels": ["daily-digest"]
+  },
+
+  "research_mode": {
+    "enabled": true,
+    "hypothesis": "AI accuracy and reliability improve significantly when retrieval systems are built on well-structured, semantically rich content rather than unstructured text.",
+    "state_file": "research/exmample-state.json"
+  }
+}

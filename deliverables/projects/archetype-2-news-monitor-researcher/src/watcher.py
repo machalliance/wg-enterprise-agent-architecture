@@ -6,6 +6,7 @@ import os
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from urllib.parse import urlparse
 
 import feedparser
 import requests
@@ -47,7 +48,12 @@ def _fetch_bytes(url: str, timeout: int, headers: dict | None = None) -> bytes:
     if url.startswith("file://"):
         if os.environ.get("DEMO_FIXTURES") != "1":
             raise ValueError("file:// is only fetched under DEMO_FIXTURES=1")
-        return Path(url[len("file://"):]).read_bytes()
+        # feedparser rewrites file:///a/b as file://a/b, which puts the first
+        # path segment in the netloc where a host would go, so neither a naive
+        # slice nor urlparse().path alone recovers it. Fixture paths are always
+        # absolute, which is what makes rejoining the two halves safe here.
+        parsed = urlparse(url)
+        return Path("/" + (parsed.netloc + parsed.path).lstrip("/")).read_bytes()
 
     if not url.startswith(ALLOWED_SCHEMES):
         raise ValueError(f"refusing to fetch non-http(s) URL: {url[:80]}")
@@ -66,27 +72,64 @@ BATCH_SIZE = 50  # max articles per LLM call to stay within context limits
 
 
 # ---------------------------------------------------------------------------
-# LLM abstraction (Anthropic, OpenAI, or Vercel AI Gateway)
+# LLM abstraction (any OpenAI-compatible endpoint, Anthropic, OpenAI, Vercel)
 # ---------------------------------------------------------------------------
 
 VERCEL_AI_GATEWAY_BASE_URL = "https://ai-gateway.vercel.sh/v1"
+
+# Providers reached through the OpenAI Chat Completions wire format. Anthropic
+# is the odd one out and takes its own branch in _call_llm.
+OPENAI_COMPATIBLE = ("openai", "vercel", "openai-compatible")
+
+
+def _require_openai_sdk() -> None:
+    try:
+        import openai  # noqa: F401
+    except ImportError:
+        print("Error: openai package not installed. Run: pip install openai", file=sys.stderr)
+        sys.exit(1)
 
 
 def build_llm_client(config: dict) -> tuple:
     """Return (client, provider, model) based on config and environment.
 
-    Provider is chosen by the AI_PROVIDER env var, then config["ai_provider"],
-    defaulting to "anthropic". Model defaults to the provider's flagship model
-    but can be overridden via AI_MODEL or config["ai_model"].
+    LLM_BASE_URL wins over everything: setting it routes the agent at any
+    OpenAI-compatible endpoint, which is the same LLM_BASE_URL / LLM_MODEL /
+    LLM_API_KEY contract archetypes 3, 4 and 5 use, so one credential runs all
+    four prototypes. Unset, the provider is chosen by the AI_PROVIDER env var,
+    then config["ai_provider"], defaulting to "anthropic". Model defaults to the
+    provider's flagship but can be overridden via AI_MODEL or config["ai_model"].
     """
+    base_url = os.environ.get("LLM_BASE_URL", "").strip()
+    if base_url:
+        _require_openai_sdk()
+        import openai as _openai
+
+        model = os.environ.get("LLM_MODEL", "").strip()
+        if not model:
+            print(
+                "Error: LLM_BASE_URL is set but LLM_MODEL is not.\n"
+                "\n"
+                "A model id is only meaningful in its own endpoint's namespace, so there is\n"
+                "no sensible default to fall back on — naming one would send whatever this\n"
+                "project happens to ship to an endpoint that has never heard of it.\n"
+                "\n"
+                "  LLM_MODEL=anthropic/claude-sonnet-4.5",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        # Optional on purpose. Some deployments put a proxy between the agent and
+        # the endpoint that attaches the credential, and the OpenAI SDK refuses
+        # to construct without an api_key at all, so a placeholder stands in.
+        api_key = os.environ.get("LLM_API_KEY", "").strip() or "unused-proxy-managed"
+        client = _openai.OpenAI(api_key=api_key, base_url=base_url)
+        return client, "openai-compatible", model
+
     provider = os.environ.get("AI_PROVIDER", config.get("ai_provider", "anthropic")).lower()
 
     if provider == "vercel":
-        try:
-            import openai  # noqa: F401
-        except ImportError:
-            print("Error: openai package not installed. Run: pip install openai", file=sys.stderr)
-            sys.exit(1)
+        _require_openai_sdk()
         api_key = os.environ.get("AI_GATEWAY_API_KEY")
         if not api_key:
             print("Error: AI_GATEWAY_API_KEY is not set.", file=sys.stderr)
@@ -95,11 +138,7 @@ def build_llm_client(config: dict) -> tuple:
         client = _openai.OpenAI(api_key=api_key, base_url=VERCEL_AI_GATEWAY_BASE_URL)
         default_model = "anthropic/claude-sonnet-4-6"
     elif provider == "openai":
-        try:
-            import openai  # noqa: F401
-        except ImportError:
-            print("Error: openai package not installed. Run: pip install openai", file=sys.stderr)
-            sys.exit(1)
+        _require_openai_sdk()
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             print("Error: OPENAI_API_KEY is not set.", file=sys.stderr)
@@ -135,10 +174,16 @@ def _call_llm(
     max_tokens: int = 2048,
 ) -> str:
     """Send a prompt to the configured LLM and return the text response."""
-    if provider in ("openai", "vercel"):
+    if provider in OPENAI_COMPATIBLE:
         import openai
-        key_name = "AI_GATEWAY_API_KEY" if provider == "vercel" else "OPENAI_API_KEY"
-        service_name = "Vercel AI Gateway" if provider == "vercel" else "OpenAI"
+        key_name = {
+            "vercel": "AI_GATEWAY_API_KEY",
+            "openai": "OPENAI_API_KEY",
+        }.get(provider, "LLM_API_KEY")
+        service_name = {
+            "vercel": "Vercel AI Gateway",
+            "openai": "OpenAI",
+        }.get(provider, f"the endpoint at {os.environ.get('LLM_BASE_URL', '')}")
         try:
             response = client.chat.completions.create(
                 model=model,
@@ -151,6 +196,16 @@ def _call_llm(
             return response.choices[0].message.content.strip()
         except openai.AuthenticationError:
             print(f"Error: {service_name} API key is invalid or missing. Check your {key_name}.", file=sys.stderr)
+            sys.exit(1)
+        except openai.NotFoundError:
+            # The likeliest failure against a custom endpoint: model ids live in
+            # the endpoint's own namespace, and the SDK reports a miss as a 404
+            # on the route rather than as anything about the model.
+            print(
+                f"Error: {service_name} does not have a model called '{model}'.\n"
+                "Model ids are specific to the endpoint — check its model list.",
+                file=sys.stderr,
+            )
             sys.exit(1)
         except openai.RateLimitError:
             print(f"Error: {service_name} rate limit reached. Wait a few minutes and try again.", file=sys.stderr)

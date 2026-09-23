@@ -67,7 +67,7 @@ records what would move it toward the middle.
 ### Prerequisites
 
 - Python 3.12+
-- An [Anthropic API key](https://console.anthropic.com/), an [OpenAI API key](https://platform.openai.com/api-keys), **or** a [Vercel AI Gateway API key](https://vercel.com/docs/ai-gateway)
+- One model credential: any **OpenAI-compatible endpoint** via `LLM_BASE_URL` (see [Model routing](#model-routing)), or an [Anthropic API key](https://console.anthropic.com/), an [OpenAI API key](https://platform.openai.com/api-keys), or a [Vercel AI Gateway API key](https://vercel.com/docs/ai-gateway)
 - At least one output configured — Slack, GitHub Issues, or Research Mode (see below)
 
 ### 1. Set credentials
@@ -76,12 +76,36 @@ Put whichever of these match your chosen outputs in a `.env` file at the project
 
 | Variable | When required | Value |
 |--------|---------------|-------|
+| `LLM_BASE_URL` | To use any OpenAI-compatible endpoint | Its base URL, e.g. `https://us.openrouter.ai/api/v1`. Set, it overrides `AI_PROVIDER` entirely |
+| `LLM_MODEL` | When `LLM_BASE_URL` is set | A model id in that endpoint's namespace. Required — there is no default |
+| `LLM_API_KEY` | When `LLM_BASE_URL` is set | That endpoint's credential. Optional where a proxy attaches it for you |
 | `ANTHROPIC_API_KEY` | If using Anthropic (default) | Your Anthropic API key |
 | `OPENAI_API_KEY` | If using OpenAI | Your OpenAI API key |
 | `AI_GATEWAY_API_KEY` | If using Vercel AI Gateway | Your Vercel AI Gateway API key |
 | `SLACK_WEBHOOK_URL` | If posting to Slack | Your Slack [Incoming Webhook](https://api.slack.com/messaging/webhooks) URL |
 | `GITHUB_TOKEN` | If creating GitHub Issues | A token with `issues: write` on the target repository |
 | `GITHUB_REPOSITORY` | If creating GitHub Issues | `owner/repo` to file the issue against |
+
+### Model routing
+
+`LLM_BASE_URL` wins over everything. Set it and the agent speaks the OpenAI
+Chat Completions format to whatever is at that URL:
+
+```bash
+LLM_BASE_URL=https://us.openrouter.ai/api/v1
+LLM_MODEL=anthropic/claude-sonnet-4.5
+LLM_API_KEY=...            # optional where a proxy attaches the credential
+```
+
+This is the same `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY` contract
+archetypes 3, 4 and 5 use, so one credential runs all four prototypes. `LLM_MODEL`
+has no default on purpose: a model id only means something inside its own
+endpoint's namespace, and falling back to whatever this project happens to ship
+would send a name to an endpoint that has never heard of it.
+
+Leave `LLM_BASE_URL` unset to use the `AI_PROVIDER` path instead — `anthropic`
+(default), `openai`, or `vercel` — each with its own key and its own default
+model.
 
 ### 2. Configure your watcher
 

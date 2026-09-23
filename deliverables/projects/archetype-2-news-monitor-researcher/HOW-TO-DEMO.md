@@ -1,7 +1,8 @@
 # How to demo
 
-A three-minute talk track. One command, no network, no Slack webhook, no GitHub
-token — just the LLM key the project already needs.
+A three-minute talk track over a run that takes about the same. One command,
+no Slack webhook, no GitHub token, no network beyond the model endpoint — just
+the one model credential the project already needs.
 
 ```bash
 ./run.sh demo
@@ -41,10 +42,16 @@ accounting of what maintaining a content model actually costs — 1.5 FTE, a 40%
 metadata error rate, and mistagged documents failing at nearly the unstructured
 baseline.
 
-By now the claim count is in the low teens and the stance mix is visibly split.
-The honest end state is "mixed, conditional on maintenance," which no single
-article in the set argues. That conclusion only exists because the claims
-accumulated.
+By now the claim count is approaching thirty and the stance mix is visibly
+split — roughly half supporting, the rest contradicting or neutral. The end
+state lands somewhere near "conditional support, hybrid architecture optimal,"
+which no single article in the set argues. That conclusion only exists because
+the claims accumulated.
+
+Exact wording varies per run; the arc does not. Three observed headings from one
+run: *Moderately Supported with Important Qualifications* → *Mixed Evidence with
+Context-Dependent Support* → *Conditional Support with Hybrid Architecture
+Emerging as Optimal*.
 
 ## The close
 
@@ -72,7 +79,15 @@ single downstream path, which is the thin end of archetype 2. The structure is
 authored by a person; what varies per run is which branch the model sends each
 item down.
 
+## If someone asks which model it ran on
+
+Whatever you pointed it at. `LLM_BASE_URL` routes the agent at any
+OpenAI-compatible endpoint with `LLM_MODEL` — the same contract archetypes 3, 4
+and 5 use, so one credential runs all four prototypes. Unset it and the
+`AI_PROVIDER` path takes over with Anthropic, OpenAI or the Vercel AI Gateway.
+
 ## Reset
 
 `./run.sh demo` rebuilds `demo/.build/` from the templates every time, so the
-state starts empty on every run. Nothing to clean up.
+state starts empty on every run. Nothing to clean up, though `debug/` does
+accumulate one pair of files per run and is never pruned.

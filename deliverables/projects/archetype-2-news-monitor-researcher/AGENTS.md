@@ -22,6 +22,12 @@ ship never worked and were removed.
 
 ## Two things that will mislead you if you don't know them
 
+**`LLM_BASE_URL` wins over `AI_PROVIDER`.** Set, it routes everything at an
+OpenAI-compatible endpoint with `LLM_MODEL` and `LLM_API_KEY` — the contract
+archetypes 3, 4 and 5 share, so one credential runs all four. `_call_llm`
+branches on `OPENAI_COMPATIBLE`, which holds every provider on the Chat
+Completions wire format; Anthropic is the one that is not.
+
 **Every model call in the test suite is mocked**, so `pytest` passing says
 nothing about whether a provider SDK still returns what the code expects. The
 only thing that exercises a real response shape is `./run.sh demo`. Run it after

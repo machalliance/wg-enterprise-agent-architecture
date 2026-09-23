@@ -6,7 +6,8 @@ else, a live watcher needs a config and at least one output.
 ## Prerequisites
 
 - **Python 3.12** (3.10 is the floor — see [`VERSIONS.md`](./VERSIONS.md))
-- **One LLM key**: Anthropic (default), OpenAI, or a Vercel AI Gateway key
+- **One model credential**: any OpenAI-compatible endpoint via `LLM_BASE_URL`, or an
+  Anthropic (default), OpenAI, or Vercel AI Gateway key
 
 Check your Python:
 
@@ -20,7 +21,17 @@ python3 --version        # 3.10 or newer
 cp .env.example .env
 ```
 
-Open `.env` and set one provider key. The default provider is Anthropic:
+Open `.env` and set one model credential. Either point it at any
+OpenAI-compatible endpoint:
+
+```bash
+LLM_BASE_URL=https://us.openrouter.ai/api/v1
+LLM_MODEL=anthropic/claude-sonnet-4.5
+LLM_API_KEY=...            # optional where a proxy attaches the credential
+```
+
+— the same contract archetypes 3, 4 and 5 use, so one credential runs all four
+— or use a named provider instead, leaving `LLM_BASE_URL` unset:
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-...
@@ -39,8 +50,8 @@ fails if those two drift apart.
 
 First run creates `.venv` and installs `requirements.txt`, which takes a minute.
 Then three consecutive daily runs execute against fixture feeds in `demo/feeds/`
-— no network, no Slack webhook, no GitHub token. Expect roughly 40 seconds and
-a dozen model calls.
+— no network beyond the model endpoint, no Slack webhook, no GitHub token.
+Twelve model calls, about three minutes on Sonnet-class models.
 
 You should see each run report articles scored, claims extracted, and the
 position summary printed between runs, ending at:
@@ -49,9 +60,9 @@ position summary printed between runs, ending at:
 Accumulated state: demo/.build/state.json
 ```
 
-Open that file. If it has a `position_summary` paragraph and a `claims` array
-with a dozen or so entries, each carrying `stance` and `evidence`, the install
-is good. The talk track for showing this to someone else is in
+Open that file. If it has a multi-paragraph `position_summary` and a `claims`
+array of roughly 25-30 entries, each carrying `stance` and `evidence`, the
+install is good. The talk track for showing this to someone else is in
 [`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md).
 
 ## 3. Run the tests
@@ -123,7 +134,9 @@ the agent's only memory.
 | Symptom | Cause |
 |---|---|
 | `Error: no config file specified` | `CONFIG_PATH` is unset. Set it in `.env` or inline. |
-| `Error: ANTHROPIC_API_KEY is not set` | No key for the selected provider. `AI_PROVIDER` may not be the one you set a key for. |
+| `Error: ANTHROPIC_API_KEY is not set` | No key for the selected provider, and `LLM_BASE_URL` is unset. |
+| `Error: LLM_BASE_URL is set but LLM_MODEL is not` | Model ids are endpoint-specific and have no default. Set one. |
+| `Error: ... does not have a model called '...'` | The endpoint returned 404 for that model id. Check its model list. |
 | `Warning: failed to fetch <publication>` | Dead or moved RSS URL. The run continues without it — check the URL in a browser. |
 | `Total articles to evaluate: 0` | Nothing published in the lookback window. Raise `LOOKBACK_HOURS` to confirm the feeds work. |
 | `Relevant articles: 0` every run | `min_relevance_score` too high for the thesis, or the thesis is too narrow for the feeds. |

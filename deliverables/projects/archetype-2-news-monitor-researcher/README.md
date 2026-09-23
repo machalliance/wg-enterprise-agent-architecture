@@ -392,9 +392,11 @@ verification goes.
 *Verified:* the scheme allow-list and the `DEMO_FIXTURES` gate refuse what they
 claim to refuse; `_parse_json_response` raises rather than crashing the run;
 every fixture feed parses and every fixture article resolves; `.env.example`
-names exactly the variables the code reads, in both directions; and 40 unit
-tests cover provider selection, GitHub issue creation, research state I/O, claim
-extraction, relevance scoring and output routing.
+names exactly the variables the code reads, in both directions; and 58 unit
+tests cover provider selection and custom-endpoint routing, the fetch guards,
+GitHub issue creation, research state I/O, claim extraction, relevance scoring
+and output routing. Each guard below was additionally checked by breaking it and
+confirming the test that names it goes red.
 
 *Not verified:* **the agent's behaviour is unmeasured.** Every model call in the
 test suite is mocked, so no test has ever seen a real provider response. There
@@ -407,7 +409,7 @@ is a claim about what the structure permits, not about what a model chose.
 
 ## What it proves
 
-`pytest src/test_watcher.py src/test_env_docs.py` runs **44** tests across two
+`pytest src/test_watcher.py src/test_env_docs.py` runs **62** tests across two
 files. Each guarantee below is backed by a named test.
 
 **The two model-routed branches exist and route.** `test_scores_and_attaches_to_articles`
@@ -448,6 +450,43 @@ both directions, and `test_the_regexes_actually_match_something` stops the pair
 from passing vacuously on two empty sets. This test found `GITHUB_REPOSITORY`
 undocumented on its first run.
 
+**The fetch boundary holds.** `_fetch_bytes` is the single choke point for every
+outbound fetch, and four tests pin what it refuses: `test_file_url_is_refused_without_the_demo_gate`,
+`test_non_http_schemes_are_refused_before_any_network_call` (which replaces
+`requests` with `None`, so it cannot pass by accidentally making a request),
+`test_the_redirect_chain_is_capped`, and
+`test_a_redirect_that_lands_off_http_is_refused` — the last covering where a
+chain *ends*, which the scheme check at the top cannot see.
+`test_a_feedparser_mangled_file_url_still_resolves` is a regression test for a
+bug that shipped: feedparser rewrites `file:///a/b` as `file://a/b`, and the
+naive slice it replaced turned every demo fixture into a warning.
+
+**Untrusted article text stays quoted.** `test_the_body_sits_between_untrusted_markers`
+asserts the body is inside the fence rather than merely near it;
+`test_the_system_prompt_says_the_article_is_never_an_instruction` pins the
+instruction itself; and `test_a_page_reproducing_the_fence_cannot_close_it_early`
+feeds a page containing the fence marker followed by an injection attempt and
+asserts the marker count is still exactly the four belonging to the two real
+markers.
+
+**A malformed reply costs one batch.** `test_one_bad_batch_does_not_discard_the_batches_already_scored`
+runs two batches where the first returns prose, and asserts the second's result
+survives and the warning names the batch that did not.
+
+**The shared routing contract behaves.** `test_base_url_beats_ai_provider_and_the_config_file`
+pins the precedence, `test_a_base_url_without_a_model_exits_rather_than_guessing`
+pins that `LLM_MODEL` has no default, `test_the_key_is_optional_so_a_proxy_can_attach_it`
+and `test_the_key_is_used_when_it_is_set` cover both credential paths, and
+`test_leaving_base_url_unset_falls_back_to_the_provider_path` checks the old
+behaviour is untouched.
+
+**None of the above is vacuous.** Each of those guards was broken in turn — the
+gate removed, the allow-list dropped, the cap raised, the fence stripping
+disabled, the precedence inverted — and in all twelve cases the test that names
+it failed. A test that passes whether or not the code works is worse than no
+test, which is what makes `test_filters_by_min_score` worth reading as the
+counter-example it is documented to be.
+
 **What no test covers:** any real model response, the relevance threshold
 (enforced in the prompt, not in code), the shape of malformed-but-valid JSON,
 and the Slack block-chunking path. See
@@ -470,7 +509,7 @@ archetype-2-news-monitor-researcher/
 ├── src/
 │   ├── watcher.py             # the whole agent: fetch, score, route, extract,
 │   │                          #   synthesize, output
-│   ├── test_watcher.py        # 40 unit tests, every model call mocked
+│   ├── test_watcher.py        # 58 unit tests, every model call mocked
 │   ├── test_env_docs.py       # .env.example ↔ code, both directions
 │   ├── test_config.py         # MANUAL live credential check (./run.sh test)
 │   └── test_slack_payload.py  # MANUAL live Slack post

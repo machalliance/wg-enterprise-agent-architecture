@@ -74,7 +74,7 @@
     }
   ],
   "notify_on_empty": false,
-  "min_relevance_score": 9,
+  "min_relevance_score": 6,
 
   "ai_provider": "anthropic",
 
@@ -87,6 +87,6 @@
   "research_mode": {
     "enabled": true,
     "hypothesis": "AI accuracy and reliability improve significantly when retrieval systems are built on well-structured, semantically rich content rather than unstructured text.",
-    "state_file": "research/exmample-state.json"
+    "state_file": "research/example-state.json"
   }
 }

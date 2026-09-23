@@ -118,14 +118,17 @@ is the part a single run cannot show. The talk track is in
 
 ## Development
 
-Create the virtual environment with the project dependencies plus `pytest`, then
-run the tests:
+Setup and conventions are in [`GETTING-STARTED.md`](./GETTING-STARTED.md) and
+[`AGENTS.md`](./AGENTS.md). To run the tests:
 
 ```bash
-./run.sh test                      # creates .venv and installs requirements.txt
 .venv/bin/pip install pytest
-.venv/bin/python -m pytest src/test_watcher.py -v
+.venv/bin/python -m pytest src/test_watcher.py src/test_env_docs.py -v
 ```
+
+No API key needed — every model call is mocked, which is also the limit of what
+they prove. `./run.sh test` is a different thing: a live credential check that
+makes real API calls and posts to Slack.
 
 ## Running locally
 
@@ -248,7 +251,7 @@ Each watcher is a JSON file in `config/`. Fields:
     // Path (relative to the working directory) where the research state is
     // persisted. Commit it, or put it on a volume — whatever runs the
     // watcher on a schedule has to carry it between runs.
-    "state_file": "research/state.json"
+    "state_file": "research/example-state.json"
   }
 }
 ```
@@ -346,3 +349,126 @@ Give each watcher its own `research_mode.state_file`; two theses sharing one
 state file would interleave their claims into a single incoherent position.
 
 For a one-off run, set `CONFIG_PATH` inline: `CONFIG_PATH=config/climate-tech.json ./run.sh`.
+
+## What is real, and what is modelled
+
+Worth being blunt, because a demo that blurs this teaches the wrong lesson.
+
+| Real | Modelled |
+|---|---|
+| The RSS fetching, parsing and lookback filtering — pointed at live feeds it reads live feeds | The demo's six articles and three feeds in `demo/`, which are written for this repository and are not reporting |
+| The relevance scoring and claim extraction — real model calls, and in the demo too; only the sources are fixtures | The demo's evidence arc (support → challenge → nuance), which is arranged so three runs show reconciliation |
+| The accumulation: the position summary is rebuilt from the entire claim history plus the previous summary on every run | Nothing about the *quality* of that summary — no evaluation, no ground truth, no measurement of whether it is any good |
+| The untrusted-content fence, the scheme allow-list, the redirect cap, the `DEMO_FIXTURES` gate | A hostile page. Nothing here has been tested against a real prompt-injection attempt |
+| `example.json`'s thesis and hypothesis, which are the working group's own | The example config's ten publications — real feeds, but chosen as a plausible set rather than a researched one |
+
+**One more, and it is the important one.** Here is exactly how far the
+verification goes.
+
+*Verified:* the scheme allow-list and the `DEMO_FIXTURES` gate refuse what they
+claim to refuse; `_parse_json_response` raises rather than crashing the run;
+every fixture feed parses and every fixture article resolves; `.env.example`
+names exactly the variables the code reads, in both directions; and 40 unit
+tests cover provider selection, GitHub issue creation, research state I/O, claim
+extraction, relevance scoring and output routing.
+
+*Not verified:* **the agent's behaviour is unmeasured.** Every model call in the
+test suite is mocked, so no test has ever seen a real provider response. There
+is no evaluation of whether the scores are sensible, whether the extracted
+claims appear in the articles, or whether the position summary is a fair reading
+of them. Identical inputs legitimately produce different outputs, and the honest
+instrument would be a distribution over many runs. Until that exists: everything
+under *What it proves* is tested, and every claim about the agent's *judgement*
+is a claim about what the structure permits, not about what a model chose.
+
+## What it proves
+
+`pytest src/test_watcher.py src/test_env_docs.py` runs **44** tests across two
+files. Each guarantee below is backed by a named test.
+
+**The two model-routed branches exist and route.** `test_scores_and_attaches_to_articles`
+and `test_returns_empty_when_nothing_relevant` cover the relevance gate in both
+directions. `test_saves_state_when_claims_found`,
+`test_does_not_overwrite_existing_file_when_no_claims` and
+`test_initializes_file_on_first_run_even_with_no_claims` cover the synthesis
+gate — the last of these pins the case that matters, where a run with zero
+claims still initialises state but does not rewrite the position.
+
+**The position accumulates rather than resets.** `test_save_and_load_round_trip`
+and `test_load_returns_existing_state` check the state survives a run;
+`test_returns_placeholder_when_no_claims` checks the empty case does not
+fabricate a position.
+
+**A bad provider reply costs one batch, not the run.** `_parse_json_response`
+raises `LLMResponseError` with an excerpt of what the model actually said, and
+`evaluate_relevance` skips that batch and continues. Verified directly rather
+than through a test in the suite.
+
+**Provider selection is precedence-correct.** `test_env_overrides_config_provider`,
+`test_ai_model_env_override` and `test_config_ai_model_override` pin that the
+environment beats the config file, in both the provider and the model. The three
+`test_missing_*_key_exits` cases check each provider fails loudly rather than
+running keyless.
+
+**One article failing does not end Research Mode.** `test_continues_after_fetch_error`
+asserts the loop survives a fetch that raises.
+
+**Outputs are independent.** `test_slack_only`, `test_research_mode_only_no_slack`,
+`test_github_issues_only_no_slack`, `test_all_outputs_together` and
+`test_no_outputs_configured_does_not_raise` cross the three outputs, including
+the case where none is configured.
+
+**`.env.example` cannot drift from the code.** `test_every_variable_the_code_reads_is_documented`
+and `test_every_documented_variable_is_read_by_the_code` run the comparison in
+both directions, and `test_the_regexes_actually_match_something` stops the pair
+from passing vacuously on two empty sets. This test found `GITHUB_REPOSITORY`
+undocumented on its first run.
+
+**What no test covers:** any real model response, the relevance threshold
+(enforced in the prompt, not in code), the shape of malformed-but-valid JSON,
+and the Slack block-chunking path. See
+[`docs/known-limitations.md`](./docs/known-limitations.md).
+
+## Layout
+
+```
+archetype-2-news-monitor-researcher/
+├── README.md                  # this file
+├── GETTING-STARTED.md         # clone to green run
+├── HOW-TO-DEMO.md             # the three-minute talk track
+├── SECURITY.md                # unmaintained-demo statement
+├── VERSIONS.md                # why every dependency is pinned exactly
+├── AGENTS.md                  # conventions and load-bearing invariants
+├── LICENSE                    # MIT
+├── run.sh                     # scan | test | test-payload | demo
+├── requirements.txt           # exact pins, justified in VERSIONS.md
+├── .env.example               # every variable the code reads
+├── src/
+│   ├── watcher.py             # the whole agent: fetch, score, route, extract,
+│   │                          #   synthesize, output
+│   ├── test_watcher.py        # 40 unit tests, every model call mocked
+│   ├── test_env_docs.py       # .env.example ↔ code, both directions
+│   ├── test_config.py         # MANUAL live credential check (./run.sh test)
+│   └── test_slack_payload.py  # MANUAL live Slack post
+├── config/
+│   └── example.json           # the authored structure: thesis, keywords,
+│                              #   themes, threshold, feeds, hypothesis
+├── demo/
+│   ├── run-demo.sh            # three runs offline; the house demo pattern
+│   ├── config.json.tmpl       # {{DEMO_DIR}} / {{DAY}}, rendered at run time
+│   ├── feeds/day{1,2,3}.xml.tmpl   # support → challenge → nuance
+│   └── articles/*.html        # six synthetic articles
+├── research/
+│   └── example-state.json     # a state file from a real run, for reference
+└── docs/known-limitations.md  # twelve accepted items — read before refactoring
+```
+
+`config/example.json` is the file to read first. It is the authored structure —
+everything the model is not allowed to decide — and it is the only place a
+person states what this watcher is for.
+
+## License
+
+MIT — see [LICENSE](./LICENSE). "As is", no warranty, and no maintenance: see
+[SECURITY.md](./SECURITY.md).
+

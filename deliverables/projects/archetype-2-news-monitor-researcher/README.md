@@ -377,7 +377,7 @@ A demo that blurs these teaches the wrong lesson, so:
 | The relevance scoring and claim extraction — real model calls, and in the demo too; only the sources are fixtures | The demo's evidence arc (support → challenge → nuance), which is arranged so three runs show reconciliation |
 | The accumulation: the position summary is rebuilt from the entire claim history plus the previous summary on every run | Nothing about the *quality* of that summary — no evaluation, no ground truth, no measurement of whether it is any good |
 | The untrusted-content fence, the scheme allow-list, the redirect cap, the `DEMO_FIXTURES` gate | A hostile page. Nothing here has been tested against a real prompt-injection attempt |
-| `example.json`'s thesis and hypothesis, which are the working group's own | The example config's ten publications — real feeds, but chosen as a plausible set rather than a researched one |
+| `example.json`'s ten publications are real, reachable RSS feeds | That they are the right ten. They were picked as a plausible set for the example, not researched as the best coverage of the thesis |
 
 And the one that matters most — how far the verification actually goes.
 

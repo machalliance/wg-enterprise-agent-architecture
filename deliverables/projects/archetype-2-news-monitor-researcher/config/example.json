@@ -80,7 +80,7 @@
 
   "github_issues": {
     "enabled": false,
-    "assignee": "pboz",
+    "assignee": "your-github-username",
     "labels": ["daily-digest"]
   },
 

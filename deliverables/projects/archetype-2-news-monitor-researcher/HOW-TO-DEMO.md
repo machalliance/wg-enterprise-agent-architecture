@@ -67,17 +67,13 @@ anything, against live RSS instead of fixtures, with the state file persisted so
 the position survives between runs. Nothing about the agent changes, which is
 why no scheduler ships in this repository.
 
-## If someone asks why it is archetype 2 and not 1
+## If someone asks what makes it archetype 2
 
-Because the model chooses the path as well as the prose. The relevance score
-routes each article between "dropped" and "fetched, read, and folded into
-persistent state". The claim count routes the run between "leave the position
-alone" and "resynthesize it". A person wrote the structure; what varies per run
-is which branch the model sends each item down.
-
-Concede the fair challenge rather than arguing it: each of those is a yes/no
-over one downstream path, which puts this at the thin end of archetype 2 rather
-than in the middle of it.
+The model chooses the path as well as the prose. The relevance score routes each
+article between "dropped" and "fetched, read, and folded into persistent state".
+The claim count routes the run between "leave the position alone" and
+"resynthesize it". A person wrote the structure; what varies per run is which
+branch the model sends each item down.
 
 ## If someone asks which model it ran on
 

@@ -502,8 +502,8 @@ archetype-2-news-monitor-researcher/
 │   │                          #   synthesize, output
 │   ├── test_watcher.py        # 58 unit tests, every model call mocked
 │   ├── test_env_docs.py       # .env.example ↔ code, both directions
-│   ├── test_config.py         # MANUAL live credential check (./run.sh test)
-│   └── test_slack_payload.py  # MANUAL live Slack post
+│   ├── check_credentials.py   # MANUAL live credential check (./run.sh test)
+│   └── check_slack_payload.py # MANUAL live Slack post
 ├── config/
 │   └── example.json           # the authored structure: thesis, keywords,
 │                              #   themes, threshold, feeds, hypothesis

@@ -144,3 +144,7 @@ file is the agent's only memory.
 | `Warning: batch N skipped — model did not return valid JSON` | The model replied with prose. One batch is lost; the rest of the run continues. |
 | `file:// is only fetched under DEMO_FIXTURES=1` | A real config pointed at a `file://` URL. Only the demo may do that. |
 | `refusing to fetch non-http(s) URL` | A feed entry linked to something other than http/https. The article is skipped. |
+
+To see exactly what the model returned on a run, set `DEBUG_DUMP=1`. It writes
+each response and the full research state to `debug/`, unredacted and never
+pruned, so turn it off again afterwards.

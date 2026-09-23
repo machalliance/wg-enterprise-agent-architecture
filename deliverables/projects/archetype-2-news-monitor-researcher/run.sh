@@ -21,10 +21,10 @@ pip install -q -r requirements.txt
 
 if [ "${1:-}" = "test" ]; then
   echo "Running config test..."
-  python src/test_config.py
+  python src/check_credentials.py
 elif [ "${1:-}" = "test-payload" ]; then
   echo "Testing Slack payload..."
-  python src/test_slack_payload.py "${2:-}"
+  python src/check_slack_payload.py "${2:-}"
 elif [ "${1:-}" = "demo" ]; then
   exec ./demo/run-demo.sh
 else

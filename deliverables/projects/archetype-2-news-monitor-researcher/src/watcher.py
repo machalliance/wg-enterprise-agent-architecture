@@ -17,6 +17,14 @@ import requests
 # ---------------------------------------------------------------------------
 
 def _save_debug(name: str, data: dict) -> None:
+    """Dump a full LLM response or the research state, when asked to.
+
+    Off unless DEBUG_DUMP=1. It used to be unconditional, which meant a clone
+    grew a directory of unredacted model output and article text on every run —
+    and on every `pytest`, since the relevance tests call through here.
+    """
+    if os.environ.get("DEBUG_DUMP") != "1":
+        return
     d = Path("debug")
     d.mkdir(exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")

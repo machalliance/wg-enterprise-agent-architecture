@@ -45,9 +45,10 @@ anything.
 webhook URL and a GitHub token. `.env` is gitignored. The Slack webhook is a
 bearer credential — anyone holding it can post to that channel.
 
-**It writes to `debug/` on every run.** Full LLM responses and the complete
-research state, unredacted, including article content. Gitignored, and not
-cleaned up. Delete it if the feeds you scan are not public.
+**It can write unredacted dumps to `debug/`.** Setting `DEBUG_DUMP=1` writes
+every LLM response and the complete research state, including article content,
+to disk on each run. Off by default, gitignored, and never pruned once on.
+Delete the directory if the feeds you scan are not public.
 
 **Nothing rate-limits or budget-caps it.** There is no per-run ceiling on
 articles fetched or model calls made. A feed that suddenly returns hundreds of

@@ -90,9 +90,11 @@ stripped from the content. That raises the cost of an attack; it does not make
 the extracted claims trustworthy. The real control is that a human reads the
 evidence excerpt before believing anything.
 
-**10. `debug/` is written unconditionally and never cleaned up.** Every LLM
-response and the full research state land there on every run, unredacted. It is
-gitignored, which keeps it out of the repository and not off the disk.
+**10. `debug/` is never cleaned up.** Under `DEBUG_DUMP=1`, every LLM response
+and the full research state land there, unredacted, one pair of files per run,
+with no pruning and no retention limit. It is gitignored, which keeps it out of
+the repository and not off the disk. It is off by default, so the failure mode
+is a long-running deployment that turned it on and forgot.
 
 ## Testing
 
@@ -101,10 +103,11 @@ response shape.** `./run.sh demo` is the only thing that does, and it is not
 automated. A provider SDK that changed its response format passes `pytest` and
 fails in production.
 
-**12. `test_config.py` and `test_slack_payload.py` are named like tests but are
-manual credential checks.** They make live API calls and are invoked through
-`./run.sh test`, not through pytest. Collecting `src/` wholesale with pytest
-would try to run them.
+**12. Two scripts under `src/` make live API calls.** `check_credentials.py`
+and `check_slack_payload.py` hit a provider and post to a Slack channel, and are
+invoked through `./run.sh test`. They were once named `test_*`, so `pytest src/`
+collected and ran them; the `check_` prefix fixes that, but they are still live
+calls sitting beside the unit tests rather than in their own directory.
 
 ## Do not "fix" these while working on something else
 

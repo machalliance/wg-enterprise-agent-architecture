@@ -34,10 +34,11 @@ only thing that exercises a real response shape is `./run.sh demo`. Run it after
 touching `_call_llm`, `build_llm_client`, `_parse_json_response`, or any pin in
 `requirements.txt`.
 
-**`src/test_config.py` and `src/test_slack_payload.py` are not pytest tests.**
-They are manual credential checks that make live API calls and post to Slack;
-`./run.sh test` invokes them. Do not point pytest at `src/` wholesale — name the
-test files explicitly, as the commands above do.
+**`src/check_credentials.py` and `src/check_slack_payload.py` are not pytest
+tests.** They make live API calls and post to Slack, and `./run.sh test` invokes
+them. They were once named `test_*`, which meant `pytest src/` fired real
+requests at a provider and a Slack channel; the `check_` prefix is what stops
+that.
 
 ## Conventions worth matching
 

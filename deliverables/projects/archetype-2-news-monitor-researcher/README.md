@@ -1,18 +1,17 @@
 # News Watcher
 
-A research agent for **archetype 2: LLM-directed workflows**. A person authors
-the structure — scan these feeds, score against this thesis, read what clears
-the bar, catalog claims against this hypothesis — and the model picks which
-branch each article takes through it.
+A research agent for **archetype 2: LLM-directed workflows**. A person writes
+the structure: scan these feeds, score against this thesis, read what clears the
+bar, catalog claims against this hypothesis. The model then picks which branch
+each article takes through it.
 
 It scans RSS feeds on a schedule, scores articles against a configurable thesis
-using an LLM, and posts matches to Slack. Optionally saves the digest as a
-GitHub Issue and runs Research Mode, which reads the articles that cleared the
-bar and accumulates a position on a hypothesis across runs.
+using an LLM, and posts matches to Slack. It can also save the digest as a
+GitHub Issue and run Research Mode, which reads the articles that cleared the
+bar and builds up a position on a hypothesis across runs.
 
-To present it, see [`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md); for what it
-deliberately does not do, see
-[`docs/known-limitations.md`](./docs/known-limitations.md).
+To present it, see [`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md). For its accepted
+limits, see [`docs/known-limitations.md`](./docs/known-limitations.md).
 
 > **This is an unmaintained demo — do not deploy it, and use it at your own
 > risk.** No security patches, no advisories, no support, and it is provided
@@ -22,25 +21,25 @@ deliberately does not do, see
 
 Archetype 1 is a fixed flow where the model generates or transforms at certain
 steps. Archetype 2 is a human-authored structure where the model chooses the
-path within it. The distinction is worth being precise about, because this
-project sits near the boundary.
+path within it. This project sits near that boundary, so it is worth being
+precise about which side it falls on.
 
-Two decisions here are the model's, and each one routes an item down a
-structurally different path:
+Two decisions belong to the model, and each sends an item down a different
+path:
 
 | | The model decides | The code then does |
 |---|---|---|
 | **Relevance gate** | how relevant each article is to the thesis, 1–10 | fetches, reads and catalogs it — or drops it and never looks again |
 | **Synthesis gate** | how many claims an article yields, where zero is a legitimate answer | rewrites the position summary from the full claim history — or leaves it untouched |
 
-Everything else — the step order, the word caps, the three permitted stances,
-resynthesising from the whole history rather than today's articles — is authored
-and cannot vary between runs.
+Everything else is authored and fixed across runs: the step order, the word
+caps, the three permitted stances, resynthesising from the whole history instead
+of today's articles.
 
-**The honest caveat:** both branches are booleans over one downstream path
-rather than a choice among qualitatively different ones, which makes this the
-thin end of archetype 2 rather than a central example. `docs/known-limitations.md`
-records what would move it toward the middle.
+**Where this is weak:** each of those two decisions is a yes/no over a single
+downstream path. A central archetype-2 example would let the model pick among
+branches that do genuinely different work, so this is the thin end of the
+category. `docs/known-limitations.md` §1 records what would move it inward.
 
 ## How it works
 
@@ -54,12 +53,12 @@ records what would move it toward the middle.
 
 | The requirement | Where it lives |
 |---|---|
-| The structure is human-authored, and fixed | `src/watcher.py` `main()` — the step order is a function body, not a plan |
+| The structure is human-authored and fixed | `src/watcher.py` `main()`, where the step order is an ordinary function body |
 | The model chooses the path within it | `evaluate_relevance()` scores → the relevance gate; `_extract_claims()` returns 0–5 claims → the synthesis gate in `run_research_mode()` |
-| The authored structure is declared, not implied | `config/*.json` — thesis, keywords, themes, threshold, hypothesis, all outside the code |
-| Model output is data, never instruction | `_extract_claims()` fences the article body and states it is untrusted; `_fetch_bytes()` pins the scheme and caps redirects |
-| The path taken is auditable after the fact | `research/*.json` `claims[]` — every claim carries date, source, URL, stance and an evidence excerpt |
-| State accumulates across runs rather than within one | `_load_research_state()` / `_save_research_state()`; the summary is rebuilt from the full claim history each time |
+| That structure is declared where people can read it | `config/*.json` holds the thesis, keywords, themes, threshold and hypothesis, all outside the code |
+| Fetched text is treated as data | `_extract_claims()` fences the article body and says it is untrusted; `_fetch_bytes()` pins the scheme and caps redirects |
+| The path taken is auditable afterwards | `research/*.json` `claims[]`, where every claim carries date, source, URL, stance and an evidence excerpt |
+| State survives between runs | `_load_research_state()` / `_save_research_state()`; the summary is rebuilt from the full claim history each time |
 | Recurrence is a deployment concern | no scheduler in this repo: a cron line in [Schedule](#3-schedule), and `./run.sh demo` for three runs against fixtures |
 
 ## Setup
@@ -315,14 +314,13 @@ flowchart TD
 
 **The two model-routed branches.**
 
-- **C — the relevance gate.** The model scores each article against the thesis,
-  and that score decides whether the article is fetched in full, read for
-  claims, and folded into persistent state, or dropped and never seen again.
-  One model output, two structurally different downstream paths.
+- **C — the relevance gate.** The model scores each article against the thesis.
+  That score decides whether the article is fetched in full, read for claims and
+  folded into persistent state, or dropped and never seen again.
 - **R — the synthesis gate.** The model decides how many claims each article
-  yields, and zero is a legitimate answer. That decision is what determines
-  whether the position summary is rewritten this run or left alone. A quiet day
-  is a quiet day because the model said so, not because a rule fired.
+  yields, and zero is a legitimate answer. If a run produces none, the position
+  summary is left alone; the quiet day is the model's judgement rather than a
+  threshold firing.
 
 Every other box is authored: the step order, the 6,000-word cap, the redirect
 limit, the three permitted stances, the decision to resynthesise from the whole
@@ -371,7 +369,7 @@ For a one-off run, set `CONFIG_PATH` inline: `CONFIG_PATH=config/climate-tech.js
 
 ## What is real, and what is modelled
 
-Worth being blunt, because a demo that blurs this teaches the wrong lesson.
+A demo that blurs these teaches the wrong lesson, so:
 
 | Real | Modelled |
 |---|---|
@@ -381,8 +379,7 @@ Worth being blunt, because a demo that blurs this teaches the wrong lesson.
 | The untrusted-content fence, the scheme allow-list, the redirect cap, the `DEMO_FIXTURES` gate | A hostile page. Nothing here has been tested against a real prompt-injection attempt |
 | `example.json`'s thesis and hypothesis, which are the working group's own | The example config's ten publications — real feeds, but chosen as a plausible set rather than a researched one |
 
-**One more, and it is the important one.** Here is exactly how far the
-verification goes.
+And the one that matters most — how far the verification actually goes.
 
 *Verified:* the scheme allow-list and the `DEMO_FIXTURES` gate refuse what they
 claim to refuse; `_parse_json_response` raises rather than crashing the run;
@@ -420,16 +417,11 @@ and `test_load_returns_existing_state` check the state survives a run;
 `test_returns_placeholder_when_no_claims` checks the empty case does not
 fabricate a position.
 
-**A bad provider reply costs one batch, not the run.** `_parse_json_response`
-raises `LLMResponseError` with an excerpt of what the model actually said, and
-`evaluate_relevance` skips that batch and continues. Verified directly rather
-than through a test in the suite.
-
-**Provider selection is precedence-correct.** `test_env_overrides_config_provider`,
+**Provider selection respects precedence.** `test_env_overrides_config_provider`,
 `test_ai_model_env_override` and `test_config_ai_model_override` pin that the
-environment beats the config file, in both the provider and the model. The three
-`test_missing_*_key_exits` cases check each provider fails loudly rather than
-running keyless.
+environment beats the config file, for both the provider and the model. The
+three `test_missing_*_key_exits` cases check that each provider fails loudly
+when its key is absent.
 
 **One article failing does not end Research Mode.** `test_continues_after_fetch_error`
 asserts the loop survives a fetch that raises.
@@ -446,15 +438,16 @@ from passing vacuously on two empty sets. This test found `GITHUB_REPOSITORY`
 undocumented on its first run.
 
 **The fetch boundary holds.** `_fetch_bytes` is the single choke point for every
-outbound fetch, and four tests pin what it refuses: `test_file_url_is_refused_without_the_demo_gate`,
-`test_non_http_schemes_are_refused_before_any_network_call` (which replaces
-`requests` with `None`, so it cannot pass by accidentally making a request),
-`test_the_redirect_chain_is_capped`, and
-`test_a_redirect_that_lands_off_http_is_refused` — the last covering where a
-chain *ends*, which the scheme check at the top cannot see.
-`test_a_feedparser_mangled_file_url_still_resolves` is a regression test for a
-bug that shipped: feedparser rewrites `file:///a/b` as `file://a/b`, and the
-naive slice it replaced turned every demo fixture into a warning.
+outbound fetch, and four tests pin what it refuses:
+`test_file_url_is_refused_without_the_demo_gate`;
+`test_non_http_schemes_are_refused_before_any_network_call`, which replaces
+`requests` with `None` so it cannot pass by accidentally making a request;
+`test_the_redirect_chain_is_capped`; and
+`test_a_redirect_that_lands_off_http_is_refused`, which covers where a chain
+*ends*, something the scheme check at the top cannot see.
+`test_a_feedparser_mangled_file_url_still_resolves` guards a bug that shipped:
+feedparser rewrites `file:///a/b` as `file://a/b`, and the naive slice it
+replaced turned every demo fixture into a warning.
 
 **Untrusted article text stays quoted.** `test_the_body_sits_between_untrusted_markers`
 asserts the body is inside the fence rather than merely near it;
@@ -464,9 +457,12 @@ feeds a page containing the fence marker followed by an injection attempt and
 asserts the marker count is still exactly the four belonging to the two real
 markers.
 
-**A malformed reply costs one batch.** `test_one_bad_batch_does_not_discard_the_batches_already_scored`
-runs two batches where the first returns prose, and asserts the second's result
-survives and the warning names the batch that did not.
+**A malformed reply costs one batch.** `_parse_json_response` raises
+`LLMResponseError` carrying an excerpt of what the model actually said, and
+`evaluate_relevance` skips that batch and carries on.
+`test_one_bad_batch_does_not_discard_the_batches_already_scored` runs two
+batches where the first returns prose, then asserts the second's result survives
+and the warning names the batch that did not.
 
 **The shared routing contract behaves.** `test_base_url_beats_ai_provider_and_the_config_file`
 pins the precedence, `test_a_base_url_without_a_model_exits_rather_than_guessing`
@@ -475,12 +471,12 @@ and `test_the_key_is_used_when_it_is_set` cover both credential paths, and
 `test_leaving_base_url_unset_falls_back_to_the_provider_path` checks the old
 behaviour is untouched.
 
-**None of the above is vacuous.** Each of those guards was broken in turn — the
-gate removed, the allow-list dropped, the cap raised, the fence stripping
-disabled, the precedence inverted — and in all twelve cases the test that names
-it failed. A test that passes whether or not the code works is worse than no
-test, which is what makes `test_filters_by_min_score` worth reading as the
-counter-example it is documented to be.
+**None of the above is vacuous.** Each of those twelve guards was broken in
+turn: the gate removed, the allow-list dropped, the cap raised, the fence
+stripping disabled, the precedence inverted. In every case the test that names
+the guard failed. `test_filters_by_min_score` is the counter-example, and is
+documented as one — it asserts that a one-item mock returns one item, which
+would pass however the threshold behaved.
 
 **What no test covers:** any real model response, the relevance threshold
 (enforced in the prompt, not in code), the shape of malformed-but-valid JSON,

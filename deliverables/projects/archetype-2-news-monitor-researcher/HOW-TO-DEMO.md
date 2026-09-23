@@ -1,8 +1,8 @@
 # How to demo
 
-A three-minute talk track over a run that takes about the same. One command,
-no Slack webhook, no GitHub token, no network beyond the model endpoint — just
-the one model credential the project already needs.
+A three-minute talk track over a run that takes about the same. One command.
+No Slack webhook, no GitHub token, and the only network call is to your model
+endpoint.
 
 ```bash
 ./run.sh demo
@@ -18,14 +18,13 @@ the wording is not.
 **Run 1 — two supporting articles.** A benchmark reporting 41% fewer unsupported
 assertions from schema-aware chunking, and a survey where teams with a
 maintained taxonomy hit their accuracy targets at twice the rate. The position
-summary comes back supportive, and that is the boring part.
+summary comes back supportive, which is the least interesting thing on screen.
 
 Point at the two gates instead. The model scored each article against the
-thesis, and that score is what decided whether the article got fetched in full
-and read for claims at all. Then it decided how many claims each article yields
-— zero is a legitimate answer — and *that* decided whether the position summary
-got rewritten. Both are model decisions the surrounding Python routes on. That
-is the archetype: the structure is authored, the path through it is not.
+thesis, and that score decided whether the article got fetched in full and read
+for claims at all. It then decided how many claims each article yields, where
+zero is a legitimate answer, and that decided whether the position summary got
+rewritten. Both are model decisions the surrounding Python routes on.
 
 **Run 2 — the evidence turns.** Long-context models matching a structured
 pipeline on 7 of 9 categories, and controlled vocabularies actively hurting
@@ -59,25 +58,26 @@ Emerging as Optimal*.
 Accumulated state: demo/.build/state.json
 ```
 
-Open it. Every claim carries its date, source, stance, and an evidence excerpt,
+Open it. Every claim carries its date, source, stance and an evidence excerpt,
 so any sentence in the summary can be walked back to the article that produced
-it. That file is the deliverable — the digest is a side effect.
+it. That file is the deliverable; the Slack digest is a by-product.
 
-Then say the line that matters: **in production this runs on a schedule.** A
-cron job, a CI timer, anything — against live RSS instead of fixtures,
-committing the state file so the position survives between runs. Nothing about
-the agent changes. The scheduler is deployment, not architecture, which is why
-it is not in this repository.
+Then: **in production this runs on a schedule.** A cron job, a CI timer,
+anything, against live RSS instead of fixtures, with the state file persisted so
+the position survives between runs. Nothing about the agent changes, which is
+why no scheduler ships in this repository.
 
 ## If someone asks why it is archetype 2 and not 1
 
-Because the model chooses the path, not just the prose. The relevance score
+Because the model chooses the path as well as the prose. The relevance score
 routes each article between "dropped" and "fetched, read, and folded into
-persistent state," and the claim count routes the run between "leave the
-position alone" and "resynthesize it." Fair challenge: both are booleans over a
-single downstream path, which is the thin end of archetype 2. The structure is
-authored by a person; what varies per run is which branch the model sends each
-item down.
+persistent state". The claim count routes the run between "leave the position
+alone" and "resynthesize it". A person wrote the structure; what varies per run
+is which branch the model sends each item down.
+
+Concede the fair challenge rather than arguing it: each of those is a yes/no
+over one downstream path, which puts this at the thin end of archetype 2 rather
+than in the middle of it.
 
 ## If someone asks which model it ran on
 

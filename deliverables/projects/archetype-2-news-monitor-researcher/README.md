@@ -39,7 +39,7 @@ of today's articles.
 **Where this is weak:** each of those two decisions is a yes/no over a single
 downstream path. A central archetype-2 example would let the model pick among
 branches that do genuinely different work, so this is the thin end of the
-category. `docs/known-limitations.md` §1 records what would move it inward.
+category.
 
 ## How it works
 
@@ -326,7 +326,7 @@ Every other box is authored: the step order, the 6,000-word cap, the redirect
 limit, the three permitted stances, the decision to resynthesise from the whole
 claim history. A person chose all of it and no run can change any of it. See
 [Why this is archetype 2 and not 1](#why-this-is-archetype-2-and-not-1) for what
-that split is worth, and `docs/known-limitations.md` §2 for the threshold, which
+that split is worth, and `docs/known-limitations.md` §1 for the threshold, which
 is currently enforced by instructing the model rather than in code.
 
 ### Research state file
@@ -384,10 +384,10 @@ And the one that matters most — how far the verification actually goes.
 *Verified:* the scheme allow-list and the `DEMO_FIXTURES` gate refuse what they
 claim to refuse; `_parse_json_response` raises rather than crashing the run;
 every fixture feed parses and every fixture article resolves; `.env.example`
-names exactly the variables the code reads, in both directions; and 58 unit
+names exactly the variables the code reads, in both directions; and 72 unit
 tests cover provider selection and custom-endpoint routing, the fetch guards,
 GitHub issue creation, research state I/O, claim extraction, relevance scoring
-and output routing. Each guard below was additionally checked by breaking it and
+and output routing, the untrusted fence and the output escaping. Each guard below was additionally checked by breaking it and
 confirming the test that names it goes red.
 
 *Not verified:* **the agent's behaviour is unmeasured.** Every model call in the
@@ -401,7 +401,7 @@ is a claim about what the structure permits, not about what a model chose.
 
 ## What it proves
 
-`pytest src/test_watcher.py src/test_env_docs.py` runs **62** tests across two
+`pytest src/test_watcher.py src/test_env_docs.py` runs **76** tests across two
 files. Each guarantee below is backed by a named test.
 
 **The two model-routed branches exist and route.** `test_scores_and_attaches_to_articles`
@@ -451,11 +451,28 @@ replaced turned every demo fixture into a warning.
 
 **Untrusted article text stays quoted.** `test_the_body_sits_between_untrusted_markers`
 asserts the body is inside the fence rather than merely near it;
+`test_the_title_and_url_sit_inside_the_fence_too` asserts the same of the other
+two fields from the same feed entry;
 `test_the_system_prompt_says_the_article_is_never_an_instruction` pins the
 instruction itself; and `test_a_page_reproducing_the_fence_cannot_close_it_early`
-feeds a page containing the fence marker followed by an injection attempt and
-asserts the marker count is still exactly the four belonging to the two real
-markers.
+and `test_a_title_reproducing_the_fence_cannot_forge_a_block` feed the fence
+marker followed by an injection attempt through the body and the title in turn,
+each asserting the marker count is still exactly the four belonging to the two
+real markers. `test_a_long_title_is_capped` pins the length limit.
+
+**Nothing a feed writes is rendered as markup.** A title and a URL are chosen by
+the publication, and both are pasted into a Slack message and a GitHub Issue
+that parse markup. `test_a_link_target_must_be_http_or_https` and
+`test_a_link_target_cannot_close_the_construct_holding_it` cover `_safe_link`;
+`test_markdown_text_cannot_close_a_link_label`,
+`test_markdown_text_cannot_carry_html` and
+`test_markdown_text_cannot_mention_a_github_user` cover the Markdown escaping,
+the last because the issue is filed with the operator's token;
+`test_slack_text_cannot_close_a_link_element` covers Slack mrkdwn. Four more
+drive `create_github_issue` and `post_to_slack` with a hostile title, so a
+refactor that drops the escaping at the render site fails even with the helpers
+intact, and two of those pin that an unusable URL degrades to plain text rather
+than disappearing.
 
 **A malformed reply costs one batch.** `_parse_json_response` raises
 `LLMResponseError` carrying an excerpt of what the model actually said, and
@@ -471,10 +488,11 @@ and `test_the_key_is_used_when_it_is_set` cover both credential paths, and
 `test_leaving_base_url_unset_falls_back_to_the_provider_path` checks the old
 behaviour is untouched.
 
-**None of the above is vacuous.** Each of those twelve guards was broken in
-turn: the gate removed, the allow-list dropped, the cap raised, the fence
-stripping disabled, the precedence inverted. In every case the test that names
-the guard failed. `test_filters_by_min_score` is the counter-example, and is
+**None of the above is vacuous.** Each of those twenty-five guards was broken
+in turn: the gate removed, the allow-list dropped, the cap raised, the fence
+stripping disabled, the precedence inverted, each escape in turn deleted, each
+render site reverted to raw interpolation. In every case the test that names the
+guard failed. `test_filters_by_min_score` is the counter-example, and is
 documented as one — it asserts that a one-item mock returns one item, which
 would pass however the threshold behaved.
 
@@ -500,7 +518,7 @@ archetype-2-news-monitor-researcher/
 ├── src/
 │   ├── watcher.py             # the whole agent: fetch, score, route, extract,
 │   │                          #   synthesize, output
-│   ├── test_watcher.py        # 58 unit tests, every model call mocked
+│   ├── test_watcher.py        # 72 unit tests, every model call mocked
 │   ├── test_env_docs.py       # .env.example ↔ code, both directions
 │   ├── check_credentials.py   # MANUAL live credential check (./run.sh test)
 │   └── check_slack_payload.py # MANUAL live Slack post

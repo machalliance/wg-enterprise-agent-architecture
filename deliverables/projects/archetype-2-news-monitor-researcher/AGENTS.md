@@ -58,24 +58,30 @@ that.
 
 ## Load-bearing invariants
 
-Two properties must survive any refactor, both recorded in
+Three properties must survive any refactor, all recorded in
 [`docs/known-limitations.md`](./docs/known-limitations.md):
 
 - **`_fetch_bytes` is the single choke point for every outbound fetch.** The
   scheme allow-list, the redirect cap and the `DEMO_FIXTURES` gate live there. A
   caller reaching for `requests` directly bypasses all three.
-- **The article body stays inside the untrusted fence in `_extract_claims`,**
-  with the fence marker stripped from the content before interpolation. Scraped
-  third-party text is data about what someone published, never instruction.
+- **The article's title, URL and body stay inside the untrusted fence in
+  `_extract_claims`,** with the fence marker stripped from each before
+  interpolation. Scraped third-party text is data about what someone published,
+  never instruction — and the title comes from the same feed entry as the body,
+  so it is no more trustworthy for sitting in its own field.
+- **Feed- and model-derived text is escaped before it is rendered.** `_md` /
+  `_md_inline` for a GitHub Issue, `_slack` / `_slack_inline` for Slack, `_safe_link` for
+  anything that becomes a link target. Both outputs parse markup, so an
+  unescaped title writes into a message the reader trusts.
 
 ## Known limitations — ACCEPTED for the prototype stage
 
 The full list is in [`docs/known-limitations.md`](./docs/known-limitations.md):
-twelve items across archetype framing, long-run operation, security and testing,
+twelve items across model routing, long-run operation, security and testing,
 found in a review on 2026-09-23 and deliberately left in place.
 
 **Do not act on anything in that file unless that is the task you were given.**
 It exists so nobody re-discovers those items as bugs or re-litigates them
 mid-task. The two most likely to tempt you: the relevance threshold is enforced
-in the prompt rather than in code (§2), and the claims list grows without bound
-and is resent in full every run (§4). Both are documented deliberately.
+in the prompt rather than in code (§1), and the claims list grows without bound
+and is resent in full every run (§3). Both are documented deliberately.

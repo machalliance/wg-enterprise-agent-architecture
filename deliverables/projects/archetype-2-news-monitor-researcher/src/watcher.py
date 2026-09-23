@@ -76,6 +76,81 @@ def _fetch_bytes(url: str, timeout: int, headers: dict | None = None) -> bytes:
     return resp.content
 
 
+# ---------------------------------------------------------------------------
+# Rendering untrusted text
+# ---------------------------------------------------------------------------
+#
+# A feed entry's <title> and <link> are chosen by whoever publishes the feed,
+# and `explanation` is model output written from them. All three are pasted
+# into a Slack message and a GitHub Issue, both of which parse markup. Without
+# escaping, a title carrying `>` or `](` closes the link it is the label of and
+# the rest of it renders as markup the reader has no reason to distrust.
+
+def _safe_link(url: str) -> str | None:
+    """Return the URL if it is safe to make the target of a rendered link.
+
+    Same allow-list as _fetch_bytes: a <link> of `javascript:` or `data:` is
+    not something this program puts behind a label it wrote.
+    """
+    candidate = str(url).strip()
+    if not candidate.startswith(ALLOWED_SCHEMES):
+        return None
+    # Percent-encode the characters that end a link destination in either
+    # syntax, so the URL cannot terminate the construct that contains it.
+    for char, encoded in (("(", "%28"), (")", "%29"), ("<", "%3C"), (">", "%3E"),
+                          ("|", "%7C"), (" ", "%20")):
+        candidate = candidate.replace(char, encoded)
+    return candidate
+
+
+def _md(value: str) -> str:
+    """Escape feed- or model-derived text for a GitHub Markdown body.
+
+    Not a general Markdown escaper — this is the set that matters for the two
+    shapes create_github_issue emits: a link label and a paragraph. `@` becomes
+    an entity so a title cannot notify arbitrary GitHub users from whoever owns
+    GITHUB_TOKEN; it still renders as `@`.
+    """
+    return (
+        str(value)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("[", "\\[")
+        .replace("]", "\\]")
+        .replace("@", "&#64;")
+    )
+
+
+def _md_inline(value: str) -> str:
+    """_md for a single-line context: a heading or a link label."""
+    return " ".join(_md(value).split())
+
+
+def _slack(value: str) -> str:
+    """Escape feed- or model-derived text for Slack mrkdwn.
+
+    Slack decodes exactly these three entities and expects the sender to encode
+    them. With `<` and `>` gone the text cannot close a <url|label> element, so
+    a `|` left inside a label is literal and needs no handling.
+    """
+    return (
+        str(value)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
+
+
+def _slack_inline(value: str) -> str:
+    """_slack for a single-line context: the label of a heading link.
+
+    A newline in a title cannot break out of the element, but it can still put
+    the rest of the title on its own line above the source and date.
+    """
+    return " ".join(_slack(value).split())
+
+
 BATCH_SIZE = 50  # max articles per LLM call to stay within context limits
 
 
@@ -435,12 +510,14 @@ def create_github_issue(
     for article in relevant:
         filled = article["relevance_score"]
         score_bar = "█" * filled + "░" * (10 - filled)
+        title = _md_inline(article["title"])
+        link = _safe_link(article["url"])
         body_lines.extend([
-            f"### [{article['title']}]({article['url']})",
+            f"### [{title}]({link})" if link else f"### {title}",
             f"**Source:** {article['source']} · **Published:** {article['published']}  ",
             f"**Relevance:** `{score_bar} {filled}/10`",
             "",
-            article["explanation"],
+            _md(article["explanation"]),
             "",
             "---",
             "",
@@ -526,12 +603,18 @@ def _extract_claims(
     # A page that reproduced the fence could close it early and have the rest of
     # itself read as prompt, so the marker cannot survive inside the content.
     content = content.replace(fence, "[=]")
+    # Title and URL come out of the same feed entry as the body and are chosen
+    # by the same party, so they belong inside the fence too. Above it they were
+    # in the region the system prompt treats as operator-authored, and an
+    # uncapped title reproducing the marker could forge a whole fence block.
+    title = str(article["title"]).replace(fence, "[=]")[:300]
+    url = str(article["url"]).replace(fence, "[=]")[:500]
     prompt = f"""Hypothesis: {hypothesis}
 
-Article title: {article['title']}
-Article URL: {article['url']}
-
 {fence} BEGIN UNTRUSTED ARTICLE {fence}
+Title: {title}
+URL: {url}
+
 {content}
 {fence} END UNTRUSTED ARTICLE {fence}
 
@@ -694,14 +777,17 @@ def post_to_slack(
         for article in chunk:
             filled = article["relevance_score"]
             score_bar = "█" * filled + "░" * (10 - filled)
+            title = _slack_inline(article["title"])
+            link = _safe_link(article["url"])
+            heading = f"*<{link}|{title}>*" if link else f"*{title}*"
             section: dict = {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
                     "text": (
-                        f"*<{article['url']}|{article['title']}>*\n"
+                        f"{heading}\n"
                         f"_{article['source']}_ · {article['published']}\n"
-                        f"{article['explanation']}\n"
+                        f"{_slack(article['explanation'])}\n"
                         f"`{score_bar} {filled}/10`"
                     ),
                 },

@@ -20,20 +20,35 @@ repository. Do not send anything you would not publish.
 
 These are properties of the design, not defects to report.
 
-**It fetches arbitrary third-party URLs.** Research Mode opens whatever a
-publication puts in an RSS `<link>` and scrapes the page. `_fetch_bytes` permits
-`http`/`https` only and follows at most three redirects, re-checking the scheme
-after the chain resolves, and `file://` is reachable only under
-`DEMO_FIXTURES=1`. There is **no host allow-list and no private-address block**,
-so a feed you trust can still point the fetcher at any reachable host, including
-one on your own network. Run it where that does not matter.
+**It fetches arbitrary third-party URLs, and publishes what comes back.**
+Research Mode opens whatever a publication puts in an RSS `<link>` and scrapes
+the page. `_fetch_bytes` permits `http`/`https` only and follows at most three
+redirects, and `file://` is reachable only under `DEMO_FIXTURES=1`. There is
+**no host allow-list and no private-address block**, and the check after the
+redirect chain resolves re-validates the **scheme only, not the host**. So a
+feed you trust can point the fetcher at any reachable host, including one on
+your own network, either directly or via a redirect from a public URL.
+
+Treat that as an exfiltration path, not only a reachability one. Whatever the
+fetch returns is scraped, summarised by the model, and written into
+`research/state.json`, a Slack message and a GitHub Issue — which is to say the
+party who chose the URL also gets to read the response. Run it only where an
+outbound request to your own network does not matter.
+
+**Under `DEMO_FIXTURES=1` it will read any file it has permission to read.**
+That variable exists so the demo can serve fixture articles from disk without a
+web server, and `demo/run-demo.sh` is the only thing that sets it — alongside a
+`CONFIG_PATH` pinned to local fixture feeds, which is the whole of what keeps it
+contained. The path is rebuilt from the feed-supplied URL with no confinement to
+`demo/`. Do not export it in a shell you then run a real scan from.
 
 **It puts untrusted text in a prompt.** Up to 6,000 words of scraped page
-content goes into the claim-extraction call. The body is fenced and the system
-prompt states it is quoted material and never instruction, and the fence marker
-is stripped from the content so it cannot be closed early. That is mitigation,
-not a guarantee — prompt injection is not a solved problem, and a sufficiently
-crafted page may still influence what gets recorded as a claim.
+content goes into the claim-extraction call, along with the article's title and
+URL. All three are fenced, the system prompt states the fenced region is quoted
+material and never instruction, and the fence marker is stripped from each so
+none can close it early. That is mitigation, not a guarantee — prompt injection
+is not a solved problem, and a sufficiently crafted page may still influence
+what gets recorded as a claim.
 
 **Its output is model-written and unverified.** `position_summary` is a
 language model's synthesis of claims it extracted from pages nobody checked. It

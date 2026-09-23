@@ -1,6 +1,46 @@
 # News Watcher
 
-An agent that scans RSS feeds on a schedule, scores articles against a configurable thesis using an LLM, and posts matches to Slack. Optionally saves the digest as a GitHub Issue and runs Research Mode to catalog claims against a hypothesis over time.
+A research agent for **archetype 2: LLM-directed workflows**. A person authors
+the structure — scan these feeds, score against this thesis, read what clears
+the bar, catalog claims against this hypothesis — and the model picks which
+branch each article takes through it.
+
+It scans RSS feeds on a schedule, scores articles against a configurable thesis
+using an LLM, and posts matches to Slack. Optionally saves the digest as a
+GitHub Issue and runs Research Mode, which reads the articles that cleared the
+bar and accumulates a position on a hypothesis across runs.
+
+To present it, see [`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md); for what it
+deliberately does not do, see
+[`docs/known-limitations.md`](./docs/known-limitations.md).
+
+> **This is an unmaintained demo — do not deploy it, and use it at your own
+> risk.** No security patches, no advisories, no support, and it is provided
+> "as is" under MIT. See [`SECURITY.md`](./SECURITY.md).
+
+## Why this is archetype 2 and not 1
+
+Archetype 1 is a fixed flow where the model generates or transforms at certain
+steps. Archetype 2 is a human-authored structure where the model chooses the
+path within it. The distinction is worth being precise about, because this
+project sits near the boundary.
+
+Two decisions here are the model's, and each one routes an item down a
+structurally different path:
+
+| | The model decides | The code then does |
+|---|---|---|
+| **Relevance gate** | how relevant each article is to the thesis, 1–10 | fetches, reads and catalogs it — or drops it and never looks again |
+| **Synthesis gate** | how many claims an article yields, where zero is a legitimate answer | rewrites the position summary from the full claim history — or leaves it untouched |
+
+Everything else — the step order, the word caps, the three permitted stances,
+resynthesising from the whole history rather than today's articles — is authored
+and cannot vary between runs.
+
+**The honest caveat:** both branches are booleans over one downstream path
+rather than a choice among qualitatively different ones, which makes this the
+thin end of archetype 2 rather than a central example. `docs/known-limitations.md`
+records what would move it toward the middle.
 
 ## How it works
 
@@ -9,6 +49,18 @@ An agent that scans RSS feeds on a schedule, scores articles against a configura
 3. Sends article titles and summaries to the configured LLM, which scores each 1–10 for relevance to the thesis
 4. Posts articles scoring above the configured threshold to a Slack channel
 5. Optionally creates a GitHub Issue with the digest and/or runs Research Mode
+
+## Where the archetype's requirements land in code
+
+| The requirement | Where it lives |
+|---|---|
+| The structure is human-authored, and fixed | `src/watcher.py` `main()` — the step order is a function body, not a plan |
+| The model chooses the path within it | `evaluate_relevance()` scores → the relevance gate; `_extract_claims()` returns 0–5 claims → the synthesis gate in `run_research_mode()` |
+| The authored structure is declared, not implied | `config/*.json` — thesis, keywords, themes, threshold, hypothesis, all outside the code |
+| Model output is data, never instruction | `_extract_claims()` fences the article body and states it is untrusted; `_fetch_bytes()` pins the scheme and caps redirects |
+| The path taken is auditable after the fact | `research/*.json` `claims[]` — every claim carries date, source, URL, stance and an evidence excerpt |
+| State accumulates across runs rather than within one | `_load_research_state()` / `_save_research_state()`; the summary is rebuilt from the full claim history each time |
+| Recurrence is deployment, not architecture | no scheduler in this repo — a cron line in [Schedule](#3-schedule), and `./run.sh demo` for three runs offline |
 
 ## Setup
 
@@ -201,52 +253,61 @@ Each watcher is a JSON file in `config/`. Fields:
 }
 ```
 
-### Research Mode decision tree
+### Research Mode control flow
 
-When Research Mode is enabled, the agent runs the following decision tree after the daily relevance scan. Only articles that cleared `min_relevance_score` are read in full; everything else is dropped before Research Mode starts.
+The flow below is authored here, in Python, and does not vary between runs.
+What varies is which branch each article takes, and two of those branches are
+chosen by the model rather than by a rule — **C** and **R**, drawn with thick
+borders. Everything else is an `if` statement whose answer was fixed when the
+code was written.
 
 ```mermaid
 flowchart TD
     A[Daily scan: fetch RSS articles<br/>from the lookback window] --> B[LLM scores each article 1–10<br/>against the thesis]
-    B --> C{Score ≥<br/>min_relevance_score?}
-    C -- No --> D[Drop article<br/>not read in Research Mode]
+    B --> C{{"ROUTED BY MODEL<br/>Score ≥ min_relevance_score?"}}
+    C -- No --> D[Drop article<br/>never read in Research Mode]
     C -- Yes --> E[Load research state file<br/>or initialize a new one]
-    E --> F[Fetch full article text<br/>strip nav, scripts, boilerplate<br/>cap at 6,000 words]
+    E --> F[Fetch full article text<br/>http/https only, ≤3 redirects<br/>strip nav, scripts, boilerplate<br/>cap at 6,000 words]
     F --> G{Fetch<br/>succeeded?}
     G -- No --> H[Log warning<br/>skip article]
-    G -- Yes --> I[LLM reads article against<br/>the hypothesis and extracts<br/>up to 5 specific claims]
-    I --> J{Any claims<br/>relevant to the<br/>hypothesis?}
-    J -- No --> K[Record: no relevant claims]
-    J -- Yes --> L{Stance of<br/>each claim?}
-    L -- Supports --> M[Tag claim: supports<br/>+ evidence excerpt]
-    L -- Contradicts --> N[Tag claim: contradicts<br/>+ evidence excerpt]
-    L -- Neutral --> O[Tag claim: neutral<br/>+ evidence excerpt]
-    M --> P[Append to claims list<br/>with date, title, URL, source]
-    N --> P
-    O --> P
+    G -- Yes --> I[LLM reads the article as untrusted<br/>quoted material and extracts<br/>up to 5 claims, each tagged<br/>supports / contradicts / neutral<br/>with an evidence excerpt]
+    I --> P[Append to claims list<br/>with date, title, URL, source]
     P --> Q{More relevant<br/>articles?}
-    K --> Q
     H --> Q
     Q -- Yes --> F
-    Q -- No --> R{Any new claims<br/>this run?}
+    Q -- No --> R{{"ROUTED BY MODEL<br/>Did any article yield a claim?"}}
     R -- No --> S[Leave state unchanged<br/>position summary not rewritten]
-    R -- Yes --> T[LLM re-reads all claims to date<br/>plus the previous position summary]
-    T --> U{Overall assessment<br/>of the hypothesis?}
-    U -- Supported --> V[Write updated position summary]
-    U -- Contradicted --> V
-    U -- Mixed --> V
-    U -- Inconclusive --> V
-    V --> W[Summary covers: strongest supporting evidence,<br/>strongest contradicting evidence,<br/>nuances and gaps]
-    W --> X[Save state file<br/>update last_updated]
-    X --> Y[Commit state file<br/>so the position accumulates across runs]
+    R -- Yes --> T[LLM re-reads ALL claims to date<br/>plus the previous position summary]
+    T --> V[Write updated position summary:<br/>overall assessment, strongest support,<br/>strongest contradiction, nuances and gaps]
+    V --> X[Save state file<br/>update last_updated]
+    X --> Y[Scheduler persists the state file<br/>so the position accumulates]
+
+    style C stroke-width:4px
+    style R stroke-width:4px
 ```
 
-Key decision points:
+**The two model-routed branches.**
 
-- **Relevance gate** — the thesis, keywords, and themes decide which articles are worth reading. Research Mode never sees articles below the threshold.
-- **Claim extraction** — each article is judged against the `hypothesis`, not the thesis. An article can be relevant to the thesis yet yield no claims about the hypothesis, in which case it contributes nothing to the state.
-- **Stance tagging** — every claim is labelled `supports`, `contradicts`, or `neutral`, and stored with an evidence excerpt so the position can later be audited back to its source.
-- **Position synthesis** — the summary is only rewritten when at least one new claim was added. It always weighs the full claim history, so a single day's articles can shift but not erase the accumulated position.
+- **C — the relevance gate.** The model scores each article against the thesis,
+  and that score decides whether the article is fetched in full, read for
+  claims, and folded into persistent state, or dropped and never seen again.
+  One model output, two structurally different downstream paths.
+- **R — the synthesis gate.** The model decides how many claims each article
+  yields, and zero is a legitimate answer. That decision is what determines
+  whether the position summary is rewritten this run or left alone. A quiet day
+  is a quiet day because the model said so, not because a rule fired.
+
+**Everything else is authored.** The order of the steps, the 6,000-word cap, the
+redirect limit, the three permitted stances, the decision to resynthesise from
+the whole claim history rather than from today's articles — a person chose all
+of it, and no run can change any of it. That split is the archetype: the
+structure is fixed by people, the path through it is picked by the model.
+
+Two honest caveats, since this sits at the boundary with archetype 1. Both
+branches are booleans over a single downstream path rather than a choice among
+qualitatively different ones, which makes this the thin end of archetype 2. And
+the relevance threshold is currently enforced only by instructing the model in
+the prompt — see `docs/known-limitations.md`.
 
 ### Research state file
 

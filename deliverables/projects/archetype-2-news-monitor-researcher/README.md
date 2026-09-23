@@ -259,6 +259,17 @@ When Research Mode is active, `state_file` is written after each run. It contain
 
 Persist this file between runs so the position accumulates — commit it, or keep it on a volume your scheduler mounts. It is the agent's only memory; discard it and every run starts from nothing.
 
+> **What this file is, and is not.** `position_summary` is written by a language
+> model from the full text of pages it fetched off third-party RSS feeds. Nobody
+> verified those sources, checked whether a publication is reputable, or
+> confirmed that a claim attributed to an article appears in it. The model is
+> instructed to treat article bodies as untrusted quoted material rather than as
+> instructions, and the fetcher will only open `http(s)` URLs and follows at
+> most three redirects — but neither of those makes the *content* true. Read the
+> summary as a reading trail, not a finding, and use the `evidence` excerpt on
+> each claim to walk any sentence back to the article that produced it. Nothing
+> here should be cited without opening the source.
+
 ## Adding a new watcher
 
 1. Create a new config file in `config/`, e.g. `config/climate-tech.json`

@@ -55,6 +55,7 @@ for day in day1 day2 day3; do
   # rather than rewritten on every run.
   CONFIG_PATH="$BUILD_DIR/$day.json" \
   LOOKBACK_HOURS=876000 \
+  DEMO_FIXTURES=1 \
   SLACK_WEBHOOK_URL="" \
   SAVE_AS_GITHUB_ISSUE=false \
   RESEARCH_MODE=true \

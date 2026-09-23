@@ -513,7 +513,8 @@ archetype-2-news-monitor-researcher/
 │   ├── feeds/day{1,2,3}.xml.tmpl   # support → challenge → nuance
 │   └── articles/*.html        # six synthetic articles
 ├── research/
-│   └── example-state.json     # a state file from a real run, for reference
+│   └── example-state.json     # what `./run.sh demo` produces, for reference:
+│                              #   a model's claims about six invented articles
 └── docs/known-limitations.md  # twelve accepted items — read before refactoring
 ```
 

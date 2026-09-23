@@ -9,7 +9,7 @@ on:
       config_path:
         description: 'Path to watcher config (relative to repo root)'
         required: false
-        default: 'config/example.json'
+        default: 'deliverables/projects/archetype-2-news-monitor-researcher/config/example.json'
       lookback_hours:
         description: 'Hours to look back for articles'
         required: false

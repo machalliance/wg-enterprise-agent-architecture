@@ -173,7 +173,7 @@ RESEARCH_MODE=false                                      # set true to track cla
 CONFIG_PATH=config/ai-structured-content.json
 LOOKBACK_HOURS=24
 AI_PROVIDER=anthropic     # or: openai, vercel
-AI_MODEL=claude-sonnet-4-6
+AI_MODEL=claude-sonnet-5
 ```
 
 Before your first run, verify your credentials are working:
@@ -232,11 +232,11 @@ Each watcher is a JSON file in `config/`. Fields:
   // Options: "anthropic" (default) | "openai" | "vercel"
   "ai_provider": "anthropic",
 
-  // Model to use. Defaults to "claude-sonnet-4-6" (Anthropic), "gpt-4o"
-  // (OpenAI), or "anthropic/claude-sonnet-4-6" (Vercel AI Gateway — model
+  // Model to use. Defaults to "claude-sonnet-5" (Anthropic), "gpt-4o"
+  // (OpenAI), or "anthropic/claude-sonnet-5" (Vercel AI Gateway — model
   // names are prefixed with the upstream provider). Can also be set via the
   // AI_MODEL env var.
-  "ai_model": "claude-sonnet-4-6",
+  "ai_model": "claude-sonnet-5",
 
   // ── GitHub Issues ─────────────────────────────────────────────────────────
 

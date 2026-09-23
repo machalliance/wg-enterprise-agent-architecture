@@ -136,7 +136,7 @@ def build_llm_client(config: dict) -> tuple:
             sys.exit(1)
         import openai as _openai
         client = _openai.OpenAI(api_key=api_key, base_url=VERCEL_AI_GATEWAY_BASE_URL)
-        default_model = "anthropic/claude-sonnet-4-6"
+        default_model = "anthropic/claude-sonnet-5"
     elif provider == "openai":
         _require_openai_sdk()
         api_key = os.environ.get("OPENAI_API_KEY")
@@ -159,7 +159,7 @@ def build_llm_client(config: dict) -> tuple:
             sys.exit(1)
         import anthropic as _anthropic
         client = _anthropic.Anthropic(api_key=api_key)
-        default_model = "claude-sonnet-4-6"
+        default_model = "claude-sonnet-5"
 
     model = os.environ.get("AI_MODEL", config.get("ai_model", default_model))
     return client, provider, model

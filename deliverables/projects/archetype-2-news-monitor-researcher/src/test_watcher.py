@@ -49,7 +49,7 @@ class TestBuildLlmClient(unittest.TestCase):
             os.environ.pop("OPENAI_API_KEY", None)
             client, provider, model = watcher.build_llm_client(config)
         self.assertEqual(provider, "anthropic")
-        self.assertEqual(model, "claude-sonnet-4-6")
+        self.assertEqual(model, "claude-sonnet-5")
 
     def test_config_ai_provider_openai(self):
         config = {"ai_provider": "openai"}
@@ -103,7 +103,7 @@ class TestBuildLlmClient(unittest.TestCase):
         with patch.dict(os.environ, env, clear=False):
             client, provider, model = watcher.build_llm_client(config)
         self.assertEqual(provider, "vercel")
-        self.assertEqual(model, "anthropic/claude-sonnet-4-6")
+        self.assertEqual(model, "anthropic/claude-sonnet-5")
         self.assertEqual(client.base_url.host, "ai-gateway.vercel.sh")
 
     def test_missing_vercel_key_exits(self):
@@ -250,7 +250,7 @@ class TestExtractClaims(unittest.TestCase):
         })
         client = MagicMock()
         with patch.object(watcher, "_call_llm", return_value=llm_response):
-            claims = watcher._extract_claims(self._article(), "My hypothesis", "article text", client, "anthropic", "claude-sonnet-4-6")
+            claims = watcher._extract_claims(self._article(), "My hypothesis", "article text", client, "anthropic", "claude-sonnet-5")
 
         self.assertEqual(len(claims), 1)
         self.assertEqual(claims[0]["stance"], "supports")
@@ -269,7 +269,7 @@ class TestExtractClaims(unittest.TestCase):
         llm_response = '```json\n{"claims": [{"claim": "C", "stance": "contradicts", "evidence": "E"}]}\n```'
         client = MagicMock()
         with patch.object(watcher, "_call_llm", return_value=llm_response):
-            claims = watcher._extract_claims(self._article(), "H", "text", client, "anthropic", "claude-sonnet-4-6")
+            claims = watcher._extract_claims(self._article(), "H", "text", client, "anthropic", "claude-sonnet-5")
 
         self.assertEqual(claims[0]["stance"], "contradicts")
 
@@ -283,14 +283,14 @@ class TestUpdatePositionSummary(unittest.TestCase):
         }
         client = MagicMock()
         with patch.object(watcher, "_call_llm", return_value="New synthesized summary."):
-            result = watcher._update_position_summary(state, client, "anthropic", "claude-sonnet-4-6")
+            result = watcher._update_position_summary(state, client, "anthropic", "claude-sonnet-5")
 
         self.assertEqual(result, "New synthesized summary.")
 
     def test_returns_placeholder_when_no_claims(self):
         state = {"hypothesis": "H", "position_summary": "", "claims": []}
         client = MagicMock()
-        result = watcher._update_position_summary(state, client, "anthropic", "claude-sonnet-4-6")
+        result = watcher._update_position_summary(state, client, "anthropic", "claude-sonnet-5")
         self.assertIn("No claims", result)
 
 
@@ -316,7 +316,7 @@ class TestEvaluateRelevance(unittest.TestCase):
         })
         client = MagicMock()
         with patch.object(watcher, "_call_llm", return_value=llm_response):
-            results = watcher.evaluate_relevance(articles, self._config(), client, "anthropic", "claude-sonnet-4-6")
+            results = watcher.evaluate_relevance(articles, self._config(), client, "anthropic", "claude-sonnet-5")
 
         self.assertEqual(len(results), 2)
         self.assertEqual(results[0]["relevance_score"], 9)
@@ -342,7 +342,7 @@ class TestEvaluateRelevance(unittest.TestCase):
         llm_response = json.dumps({"relevant": []})
         client = MagicMock()
         with patch.object(watcher, "_call_llm", return_value=llm_response):
-            results = watcher.evaluate_relevance(articles, self._config(), client, "anthropic", "claude-sonnet-4-6")
+            results = watcher.evaluate_relevance(articles, self._config(), client, "anthropic", "claude-sonnet-5")
 
         self.assertEqual(results, [])
 
@@ -505,7 +505,7 @@ class TestOutputRouting(unittest.TestCase):
         mock_client = MagicMock()
         with (
             patch.dict(os.environ, env, clear=True),
-            patch.object(watcher, "build_llm_client", return_value=(mock_client, "anthropic", "claude-sonnet-4-6")),
+            patch.object(watcher, "build_llm_client", return_value=(mock_client, "anthropic", "claude-sonnet-5")),
             patch.object(watcher, "fetch_articles", return_value=all_articles),
             patch.object(watcher, "evaluate_relevance", return_value=relevant),
             patch.object(watcher, "post_to_slack") as mock_slack,
@@ -751,7 +751,7 @@ class TestCustomEndpointRouting(unittest.TestCase):
         os.environ["LLM_BASE_URL"] = "https://endpoint.test/v1"
         with patch("sys.stderr", new_callable=io.StringIO) as stderr:
             with self.assertRaises(SystemExit) as ctx:
-                watcher.build_llm_client({"ai_model": "claude-sonnet-4-6"})
+                watcher.build_llm_client({"ai_model": "claude-sonnet-5"})
         self.assertEqual(ctx.exception.code, 1)
         self.assertIn("LLM_MODEL", stderr.getvalue())
 
@@ -770,7 +770,7 @@ class TestCustomEndpointRouting(unittest.TestCase):
         os.environ["ANTHROPIC_API_KEY"] = "test-key"
         _, provider, model = watcher.build_llm_client({})
         self.assertEqual(provider, "anthropic")
-        self.assertEqual(model, "claude-sonnet-4-6")
+        self.assertEqual(model, "claude-sonnet-5")
 
 
 if __name__ == "__main__":

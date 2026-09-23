@@ -60,7 +60,7 @@ records what would move it toward the middle.
 | Model output is data, never instruction | `_extract_claims()` fences the article body and states it is untrusted; `_fetch_bytes()` pins the scheme and caps redirects |
 | The path taken is auditable after the fact | `research/*.json` `claims[]` — every claim carries date, source, URL, stance and an evidence excerpt |
 | State accumulates across runs rather than within one | `_load_research_state()` / `_save_research_state()`; the summary is rebuilt from the full claim history each time |
-| Recurrence is deployment, not architecture | no scheduler in this repo — a cron line in [Schedule](#3-schedule), and `./run.sh demo` for three runs offline |
+| Recurrence is a deployment concern | no scheduler in this repo: a cron line in [Schedule](#3-schedule), and `./run.sh demo` for three runs against fixtures |
 
 ## Setup
 
@@ -132,13 +132,13 @@ discards it reduces the agent to a daily digest.
 ./run.sh demo
 ```
 
-Three consecutive daily runs against fixture feeds in `demo/feeds/`, with no
-network and no Slack or GitHub credentials. The scoring and claim-extraction
-calls are real; only the sources are fixtures. Day 1's evidence supports the
-hypothesis, day 2's challenges it, and day 3 complicates both — so the demo
-shows the position being reconciled across runs rather than overwritten, which
-is the part a single run cannot show. The talk track is in
-[`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md).
+Three consecutive daily runs against fixture feeds in `demo/feeds/`. No live
+feeds, no Slack webhook, no GitHub token; the only network call is to your model
+endpoint, because the scoring and claim-extraction calls are real and only the
+sources are fixtures. Day 1's evidence supports the hypothesis, day 2's
+challenges it, and day 3 complicates both, so three runs show the position being
+reconciled rather than overwritten — which a single run cannot show. The talk
+track is in [`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md).
 
 ## Development
 
@@ -324,17 +324,12 @@ flowchart TD
   whether the position summary is rewritten this run or left alone. A quiet day
   is a quiet day because the model said so, not because a rule fired.
 
-**Everything else is authored.** The order of the steps, the 6,000-word cap, the
-redirect limit, the three permitted stances, the decision to resynthesise from
-the whole claim history rather than from today's articles — a person chose all
-of it, and no run can change any of it. That split is the archetype: the
-structure is fixed by people, the path through it is picked by the model.
-
-Two honest caveats, since this sits at the boundary with archetype 1. Both
-branches are booleans over a single downstream path rather than a choice among
-qualitatively different ones, which makes this the thin end of archetype 2. And
-the relevance threshold is currently enforced only by instructing the model in
-the prompt — see `docs/known-limitations.md`.
+Every other box is authored: the step order, the 6,000-word cap, the redirect
+limit, the three permitted stances, the decision to resynthesise from the whole
+claim history. A person chose all of it and no run can change any of it. See
+[Why this is archetype 2 and not 1](#why-this-is-archetype-2-and-not-1) for what
+that split is worth, and `docs/known-limitations.md` §2 for the threshold, which
+is currently enforced by instructing the model rather than in code.
 
 ### Research state file
 
@@ -380,7 +375,7 @@ Worth being blunt, because a demo that blurs this teaches the wrong lesson.
 
 | Real | Modelled |
 |---|---|
-| The RSS fetching, parsing and lookback filtering — pointed at live feeds it reads live feeds | The demo's six articles and three feeds in `demo/`, which are written for this repository and are not reporting |
+| The RSS fetching, parsing and lookback filtering: point it at live feeds and it reads them | The demo's six articles and three feeds in `demo/`, written for this repository and not reporting |
 | The relevance scoring and claim extraction — real model calls, and in the demo too; only the sources are fixtures | The demo's evidence arc (support → challenge → nuance), which is arranged so three runs show reconciliation |
 | The accumulation: the position summary is rebuilt from the entire claim history plus the previous summary on every run | Nothing about the *quality* of that summary — no evaluation, no ground truth, no measurement of whether it is any good |
 | The untrusted-content fence, the scheme allow-list, the redirect cap, the `DEMO_FIXTURES` gate | A hostile page. Nothing here has been tested against a real prompt-injection attempt |
@@ -517,7 +512,7 @@ archetype-2-news-monitor-researcher/
 │   └── example.json           # the authored structure: thesis, keywords,
 │                              #   themes, threshold, feeds, hypothesis
 ├── demo/
-│   ├── run-demo.sh            # three runs offline; the house demo pattern
+│   ├── run-demo.sh            # three runs over fixtures; the house demo pattern
 │   ├── config.json.tmpl       # {{DEMO_DIR}} / {{DAY}}, rendered at run time
 │   ├── feeds/day{1,2,3}.xml.tmpl   # support → challenge → nuance
 │   └── articles/*.html        # six synthetic articles

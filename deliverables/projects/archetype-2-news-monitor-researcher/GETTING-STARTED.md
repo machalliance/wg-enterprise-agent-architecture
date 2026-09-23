@@ -1,7 +1,7 @@
 # Getting started
 
-Clone to a green run. Two paths: the offline demo needs one LLM key and nothing
-else, a live watcher needs a config and at least one output.
+Clone to a green run. Two paths: the demo needs one model credential and
+nothing else, a live watcher needs a config and at least one output.
 
 ## Prerequisites
 

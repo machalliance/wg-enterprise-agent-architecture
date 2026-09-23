@@ -15,7 +15,7 @@ ship never worked and were removed.
 
 ```bash
 ./run.sh                 # one scan, using CONFIG_PATH
-./run.sh demo            # three runs against fixtures, offline
+./run.sh demo            # three runs against fixtures; only the model is live
 ./run.sh test            # live credential check — makes real API calls
 .venv/bin/python -m pytest src/test_watcher.py src/test_env_docs.py -v
 ```

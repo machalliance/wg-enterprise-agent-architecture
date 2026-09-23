@@ -162,13 +162,24 @@ def _call_llm(
             sys.exit(1)
 
 
+class LLMResponseError(Exception):
+    """The model returned something other than the JSON it was asked for."""
+
+
 def _parse_json_response(raw: str) -> dict | list:
     """Strip markdown fences and parse JSON from an LLM response."""
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw)
+    cleaned = raw
+    if cleaned.startswith("```"):
+        cleaned = cleaned.split("```")[1]
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:]
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError as e:
+        excerpt = " ".join(raw.split())[:200]
+        raise LLMResponseError(
+            f"model did not return valid JSON ({e}); response began: {excerpt!r}"
+        ) from e
 
 
 # ---------------------------------------------------------------------------
@@ -289,7 +300,14 @@ Only include articles scoring {config.get("min_relevance_score", 6)} or higher."
             indent=2,
         )
         raw = _call_llm(f"Evaluate these articles:\n\n{payload}", system_prompt, client, provider, model)
-        for result in _parse_json_response(raw).get("relevant", []):
+        # A malformed reply costs this batch, not the batches already scored.
+        try:
+            parsed = _parse_json_response(raw)
+        except LLMResponseError as e:
+            print(f"  Warning: batch {batch_num}/{total_batches} skipped — {e}", file=sys.stderr)
+            continue
+
+        for result in parsed.get("relevant", []):
             article = batch[result["id"]].copy()
             article["relevance_score"] = result["relevance_score"]
             article["explanation"] = result["explanation"]

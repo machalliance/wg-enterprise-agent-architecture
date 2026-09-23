@@ -25,6 +25,8 @@ if [ "${1:-}" = "test" ]; then
 elif [ "${1:-}" = "test-payload" ]; then
   echo "Testing Slack payload..."
   python src/test_slack_payload.py "${2:-}"
+elif [ "${1:-}" = "demo" ]; then
+  exec ./demo/run-demo.sh
 else
   echo "Starting news watcher..."
   python src/watcher.py

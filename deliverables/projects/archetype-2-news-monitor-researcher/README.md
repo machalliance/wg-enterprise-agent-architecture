@@ -1,6 +1,6 @@
 # News Watcher
 
-A GitHub Actions agent that scans RSS feeds daily, scores articles against a configurable thesis using an LLM, and posts matches to Slack. Optionally saves the digest as a GitHub Issue and runs Research Mode to catalog claims against a hypothesis over time.
+An agent that scans RSS feeds on a schedule, scores articles against a configurable thesis using an LLM, and posts matches to Slack. Optionally saves the digest as a GitHub Issue and runs Research Mode to catalog claims against a hypothesis over time.
 
 ## How it works
 
@@ -14,21 +14,22 @@ A GitHub Actions agent that scans RSS feeds daily, scores articles against a con
 
 ### Prerequisites
 
-- A GitHub repository with Actions enabled
+- Python 3.12+
 - An [Anthropic API key](https://console.anthropic.com/), an [OpenAI API key](https://platform.openai.com/api-keys), **or** a [Vercel AI Gateway API key](https://vercel.com/docs/ai-gateway)
 - At least one output configured — Slack, GitHub Issues, or Research Mode (see below)
 
-### 1. Add secrets
+### 1. Set credentials
 
-In your GitHub repository go to **Settings → Secrets and variables → Actions → Repository secrets** and add whichever secrets match your chosen outputs:
+Put whichever of these match your chosen outputs in a `.env` file at the project root (gitignored), or in the environment of whatever runs the watcher:
 
-| Secret | When required | Value |
+| Variable | When required | Value |
 |--------|---------------|-------|
 | `ANTHROPIC_API_KEY` | If using Anthropic (default) | Your Anthropic API key |
 | `OPENAI_API_KEY` | If using OpenAI | Your OpenAI API key |
 | `AI_GATEWAY_API_KEY` | If using Vercel AI Gateway | Your Vercel AI Gateway API key |
 | `SLACK_WEBHOOK_URL` | If posting to Slack | Your Slack [Incoming Webhook](https://api.slack.com/messaging/webhooks) URL |
-| `GITHUB_TOKEN` | If creating GitHub Issues | Provided automatically by Actions — no manual setup needed |
+| `GITHUB_TOKEN` | If creating GitHub Issues | A token with `issues: write` on the target repository |
+| `GITHUB_REPOSITORY` | If creating GitHub Issues | `owner/repo` to file the issue against |
 
 ### 2. Configure your watcher
 
@@ -36,31 +37,43 @@ Edit or create a config file in `config/`. See [Configuration](#configuration) b
 
 ### 3. Schedule
 
-The workflow runs automatically at **9:00 AM UTC** every day. You can also trigger it manually from the **Actions** tab using the **Run workflow** button, where you can override the config path, lookback window, AI provider, and optional features.
+Run it on whatever timer you already have — cron, a CI schedule, a systemd
+timer. The watcher is a single command with its configuration in the
+environment, so scheduling is deployment rather than architecture, and this
+repository deliberately ships none of it:
+
+```cron
+0 9 * * *  cd /path/to/news-watcher && ./run.sh
+```
+
+When Research Mode is enabled, persist `state_file` between runs — commit it, or
+put it on a volume. The accumulated position is the point, and a scheduler that
+discards it reduces the agent to a daily digest.
+
+## Demo
+
+```bash
+./run.sh demo
+```
+
+Three consecutive daily runs against fixture feeds in `demo/feeds/`, with no
+network and no Slack or GitHub credentials. The scoring and claim-extraction
+calls are real; only the sources are fixtures. Day 1's evidence supports the
+hypothesis, day 2's challenges it, and day 3 complicates both — so the demo
+shows the position being reconciled across runs rather than overwritten, which
+is the part a single run cannot show. The talk track is in
+[`HOW-TO-DEMO.md`](./HOW-TO-DEMO.md).
 
 ## Development
 
-### Install git hooks
-
-After cloning, create the virtual environment with the project dependencies plus `pytest`, then install the pre-commit hook that runs unit tests before every commit:
+Create the virtual environment with the project dependencies plus `pytest`, then
+run the tests:
 
 ```bash
 ./run.sh test                      # creates .venv and installs requirements.txt
 .venv/bin/pip install pytest
-./scripts/install-hooks.sh
-```
-
-The hook runs the tests with `.venv/bin/python` when the venv exists, so it sees the same dependencies as the app. If `.venv` is missing it falls back to `python3` on your PATH. When dependencies are missing it fails with the install command to run rather than a stack trace.
-
-Re-run `./scripts/install-hooks.sh` after pulling changes to anything in `scripts/hooks/`, since the hook is copied into `.git/hooks`, not linked.
-
-To run the tests directly at any time:
-
-```bash
 .venv/bin/python -m pytest src/test_watcher.py -v
 ```
-
-Tests also run automatically on every push and pull request via GitHub Actions (`.github/workflows/test.yml`).
 
 ## Running locally
 
@@ -180,9 +193,9 @@ Each watcher is a JSON file in `config/`. Fields:
     // guides claim extraction and position tracking.
     "hypothesis": "AI accuracy improves significantly when retrieval systems are built on well-structured, semantically rich content.",
 
-    // Path (relative to repo root) where the research state is persisted.
-    // Commit this file to keep the position summary across runs.
-    // In GitHub Actions, the workflow commits it back automatically.
+    // Path (relative to the working directory) where the research state is
+    // persisted. Commit it, or put it on a volume — whatever runs the
+    // watcher on a schedule has to carry it between runs.
     "state_file": "research/state.json"
   }
 }
@@ -244,20 +257,20 @@ When Research Mode is active, `state_file` is written after each run. It contain
 - **`claims`** — all extracted claims to date, each with `date`, `article_title`, `article_url`, `claim`, `stance` (`supports` / `contradicts` / `neutral`), and `evidence`
 - **`last_updated`** — ISO 8601 timestamp of the last update
 
-Commit this file to your repository so the position accumulates across runs. In GitHub Actions, the daily scan workflow commits it back automatically when Research Mode is enabled.
+Persist this file between runs so the position accumulates — commit it, or keep it on a volume your scheduler mounts. It is the agent's only memory; discard it and every run starts from nothing.
 
 ## Adding a new watcher
 
 1. Create a new config file in `config/`, e.g. `config/climate-tech.json`
-2. To run it on the same daily schedule, add a second step (or a matrix) to `.github/workflows/daily-scan.yml`:
+2. Point `CONFIG_PATH` at it — each watcher is one invocation, so a second
+   watcher is a second line in your scheduler:
 
-```yaml
-- name: Run climate tech watcher
-  env:
-    ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-    CONFIG_PATH: config/climate-tech.json
-  run: python src/watcher.py
+```cron
+0 9 * * *  cd /path/to/news-watcher && CONFIG_PATH=config/ai-structured-content.json ./run.sh
+5 9 * * *  cd /path/to/news-watcher && CONFIG_PATH=config/climate-tech.json ./run.sh
 ```
 
-Or trigger a one-off run manually from the Actions tab with a custom `config_path` input.
+Give each watcher its own `research_mode.state_file`; two theses sharing one
+state file would interleave their claims into a single incoherent position.
+
+For a one-off run, set `CONFIG_PATH` inline: `CONFIG_PATH=config/climate-tech.json ./run.sh`.

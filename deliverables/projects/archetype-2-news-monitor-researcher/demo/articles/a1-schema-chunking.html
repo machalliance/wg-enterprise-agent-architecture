@@ -1,0 +1,9 @@
+<html><head><title>Schema-aware chunking cuts hallucination 41% in retrieval benchmark</title></head>
+<body><nav>Menu</nav><article>
+<h1>Schema-aware chunking cuts hallucination 41% in retrieval benchmark</h1>
+<p>A benchmark released this week by a group of retrieval researchers reports that splitting source documents along their declared structure — sections, tables, typed fields — rather than at fixed token counts reduced unsupported assertions in generated answers by 41% across a 12,000-question evaluation set.</p>
+<p>The evaluation compared four chunking strategies over the same corpus of technical documentation. Fixed-window chunking at 512 tokens produced the highest rate of unsupported claims. Chunking on semantic headings improved on it. Chunking that preserved the document's own typed structure, including table boundaries and field labels, performed best on every question category.</p>
+<p>The authors are careful about scope. The corpus was DITA-authored product documentation with consistently applied metadata, which they describe as "close to a best case for structure-aware retrieval." They note that the same pipeline applied to a scraped web corpus showed a much smaller improvement, around 6%, and that the gap between the two is the paper's most interesting result rather than an inconvenience to it.</p>
+<p>"The structure has to actually be there and actually be correct," one author said. "We did not test whether structure helps. We tested whether existing, maintained structure helps, and it does, substantially."</p>
+<p>A second finding drew less attention: answers grounded in structured chunks were more likely to carry a usable citation back to a specific field, which the authors argue matters more than the accuracy delta for regulated deployments where an answer without provenance cannot be used at all.</p>
+</article><footer>Copyright</footer></body></html>

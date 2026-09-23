@@ -30,6 +30,15 @@ def load_config(config_path: str) -> dict:
         return json.load(f)
 
 
+def _fetch_bytes(url: str, timeout: int, headers: dict | None = None) -> bytes:
+    """Fetch a URL, reading file:// locally so the demo needs no network."""
+    if url.startswith("file://"):
+        return Path(url[len("file://"):]).read_bytes()
+    resp = requests.get(url, timeout=timeout, headers=headers or {})
+    resp.raise_for_status()
+    return resp.content
+
+
 BATCH_SIZE = 50  # max articles per LLM call to stay within context limits
 
 
@@ -169,9 +178,7 @@ def _parse_json_response(raw: str) -> dict | list:
 def fetch_articles(publication: dict, since: datetime) -> list[dict]:
     """Fetch recent articles from an RSS feed, filtering by publish date."""
     try:
-        response = requests.get(publication["rss_url"], timeout=15)
-        response.raise_for_status()
-        feed = feedparser.parse(response.content)
+        feed = feedparser.parse(_fetch_bytes(publication["rss_url"], timeout=15))
         articles = []
         for entry in feed.entries:
             pub_date = None
@@ -203,13 +210,12 @@ def fetch_articles(publication: dict, since: datetime) -> list[dict]:
 def fetch_article_content(url: str) -> str:
     """Fetch a URL and return its main text content (for Research Mode)."""
     from bs4 import BeautifulSoup
-    resp = requests.get(
+    raw = _fetch_bytes(
         url,
         timeout=30,
         headers={"User-Agent": "Mozilla/5.0 (compatible; news-watcher/1.0)"},
     )
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(raw, "html.parser")
 
     for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe"]):
         tag.decompose()

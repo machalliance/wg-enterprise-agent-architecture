@@ -1,0 +1,9 @@
+<html><head><title>Long-context models narrow the gap on unstructured corpora</title></head>
+<body><article>
+<h1>Long-context models narrow the gap on unstructured corpora</h1>
+<p>New evaluation results suggest that the accuracy advantage of structured retrieval shrinks substantially as model context windows grow. On a 400,000-token benchmark, feeding raw unstructured documents directly to a long-context model matched the accuracy of a tuned structured-retrieval pipeline on 7 of 9 task categories.</p>
+<p>The two categories where structured retrieval still won were multi-hop questions requiring joins across documents, and questions whose answers depended on a field's type rather than its text — distinguishing an effective date from a publication date, for instance.</p>
+<p>The cost picture inverts the accuracy picture. The long-context approach consumed roughly 30 times the tokens per query. The authors note that at current prices this makes the structured pipeline cheaper by a wide margin for any high-volume deployment, and that the accuracy parity is therefore "an architectural observation, not yet a procurement recommendation."</p>
+<p>One of the evaluation's designers argued the result should be read as a caution against over-investing in content modeling as a permanent moat. "If your entire case for structure is accuracy, that case is weakening every six months," she said. "If your case is cost, provenance, or governance, it is not."</p>
+<p>Critics of the benchmark point out that its unstructured corpus was clean prose with few tables, and that document types where structure carries most of the meaning — forms, specifications, regulatory filings — were underrepresented.</p>
+</article></body></html>

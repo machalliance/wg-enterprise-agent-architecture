@@ -1,0 +1,9 @@
+<html><head><title>Enterprise RAG teams report accuracy gains after taxonomy work</title></head>
+<body><article>
+<h1>Enterprise RAG teams report accuracy gains after taxonomy work</h1>
+<p>A survey of 140 enterprise teams running retrieval-augmented generation in production found that those who had invested in a controlled vocabulary or taxonomy before deployment reported measurably better answer quality than those who had not.</p>
+<p>Among teams with a maintained taxonomy, 68% said their system met the accuracy bar they had set at project start. Among teams without one, that figure was 31%. The survey did not control for team size, budget, or domain, and the authors flag this openly: taxonomy investment correlates with organizational maturity, and maturity plausibly drives the outcome on its own.</p>
+<p>The more specific finding is about failure modes. Teams with taxonomies described their remaining failures as retrieval misses — the right document existed and was not returned. Teams without taxonomies described their failures as confident wrong answers, where an adjacent but incorrect document was retrieved and the model presented it as authoritative.</p>
+<p>Several respondents noted that taxonomy work paid off in ways unrelated to model accuracy, particularly in making the retrieval layer debuggable. "When it is wrong, I can tell you which term matched and why," one platform lead said. "Before, the answer to 'why did it say that' was a shrug and an embedding distance."</p>
+<p>The report stops short of recommending taxonomy work universally, observing that three of the highest-performing teams surveyed had none and relied instead on aggressive reranking over unstructured text.</p>
+</article></body></html>

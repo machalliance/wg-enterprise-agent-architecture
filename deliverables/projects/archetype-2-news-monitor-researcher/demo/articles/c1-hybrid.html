@@ -1,0 +1,9 @@
+<html><head><title>Hybrid retrieval outperforms both pure approaches in production deployments</title></head>
+<body><article>
+<h1>Hybrid retrieval outperforms both pure approaches in production deployments</h1>
+<p>An analysis of 60 production retrieval systems found that architectures combining semantic search with structured metadata filtering outperformed both pure-semantic and pure-structured systems on every measured dimension, including accuracy, latency, and debuggability.</p>
+<p>The reported pattern is consistent: semantic retrieval for recall, structured metadata for precision and ranking. Systems built this way showed a 19% accuracy advantage over pure-semantic systems and a 14% advantage over structured-first systems on the same query sets.</p>
+<p>The analysis argues that the long-running framing of structured against unstructured is the wrong question. "Nobody who has run one of these in production for a year thinks it is a choice," the author writes. "The question is which layer carries which responsibility, and the answer has been stable for a while: text finds candidates, structure decides among them."</p>
+<p>The report also quantifies something usually discussed anecdotally. Systems with typed metadata resolved incident investigations in a median of 40 minutes; systems without it took a median of 6 hours, because there was no way to ask why a given document had been returned.</p>
+<p>The dataset is self-reported and skews toward organizations willing to publish their numbers, which the author acknowledges likely over-represents well-run deployments.</p>
+</article></body></html>

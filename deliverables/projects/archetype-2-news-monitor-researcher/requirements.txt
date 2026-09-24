@@ -1,0 +1,5 @@
+anthropic==1.6.0
+beautifulsoup4==4.15.0
+feedparser==6.0.14
+openai==3.14.1
+requests==2.34.2

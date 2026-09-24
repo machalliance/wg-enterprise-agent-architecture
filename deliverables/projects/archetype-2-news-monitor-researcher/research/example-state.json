@@ -1,0 +1,270 @@
+{
+  "_note": "EXAMPLE OUTPUT \u2014 not research. This is what `./run.sh demo` produces: a language model's claims about six synthetic articles written for this repository, which live in demo/articles/. The articles are invented, the studies and figures quoted in them are invented, and position_summary is the model's synthesis of that invented evidence. Nothing here describes real work by real people. It exists to show the shape of a research state file. A run against live feeds produces the same structure with real article URLs, and those claims are unverified too \u2014 see SECURITY.md.",
+  "_source_urls": "rewritten to repo-relative paths; a real run records absolute URLs",
+  "hypothesis": "AI accuracy and reliability improve significantly when retrieval systems are built on well-structured, semantically rich content rather than unstructured text.",
+  "position_summary": "# Updated Position Summary\n\n**Current Assessment: Conditionally supported with critical implementation dependencies**\n\nThe hypothesis receives strong empirical support under specific conditions but faces significant practical and contextual limitations that prevent universal application. The evidence demonstrates that when well-structured, semantically rich content exists and is properly maintained, retrieval systems achieve substantial accuracy improvements: 41% reductions in hallucinations, 68% vs 31% success rates in meeting accuracy targets, and 19% advantages over pure semantic approaches in hybrid deployments. However, these gains are contingent on factors frequently absent in real-world deployments: actual presence of correct structure, user familiarity with domain vocabulary, and sustained maintenance investment. The core finding is not that structure universally improves AI accuracy, but that *correctly maintained* structure targeting *appropriate use cases* delivers measurable benefits that pure semantic approaches cannot replicate.\n\nThe strongest supporting evidence centers on three interconnected benefits that persist across multiple studies. First, accuracy improvements are substantial and consistent when conditions are favorable: 41% hallucination reduction on well-structured documentation, 19% advantage over pure-semantic systems in production hybrid deployments, and sustained advantages specifically for multi-hop reasoning and field-semantic tasks (distinguishing effective dates from publication dates). Second, structured systems transform failure modes in operationally valuable ways\u2014from \"confident wrong answers\" to \"retrieval misses,\" a safer degradation pattern for regulated environments. Third, debuggability gains may prove as valuable as accuracy improvements: median incident resolution times dropped from 6 hours to 40 minutes when typed metadata enabled teams to trace why documents were retrieved, replacing what practitioners described as \"a shrug and an embedding distance.\"\n\nThe strongest contradicting evidence reveals that structure's accuracy advantage erodes or reverses under common conditions. Long-context models matched structured-retrieval accuracy on 7 of 9 benchmark categories when fed raw unstructured text, suggesting the accuracy case \"weakens every six months\" as model capabilities advance. More fundamentally, structured-first retrieval underperformed semantic search by 22% on ambiguous or exploratory queries, with controlled vocabularies acting as filters that excluded relevant material\u2014performing worst on queries from new employees who lacked domain terminology. The finding that three top-performing RAG teams achieved results without any taxonomy demonstrates structure is not the only path to accuracy, while evidence that 40% of documents in a maintained system carried incorrect metadata at any given time reveals that structure you don't maintain \"is not structure.\"\n\nCritical nuances include significant implementation costs rarely captured in accuracy benchmarks (1.5 FTE ongoing maintenance per mid-size deployment), domain specificity in the evidence base (concentrated on technical documentation and enterprise knowledge bases), and the demonstrated superiority of hybrid architectures that use semantic retrieval for recall and structure for precision filtering rather than treating structure as the primary index. The benchmark showing long-context parity underrepresented document types where structure carries most semantic weight (forms, specifications, regulatory filings), suggesting the accuracy advantage may persist longer in specialized domains. The synthesis indicates structure provides significant, measurable advantages when: (1) it exists correctly in source content and is actively maintained, (2) users employ appropriate domain vocabulary, (3) tasks require field-level semantics or cross-document joins, and (4) debuggability and safe failure modes justify the maintenance investment. Outside these boundaries, pure semantic or hybrid approaches often deliver superior results at lower operational cost.",
+  "claims": [
+    {
+      "date": "2026-09-23",
+      "article_title": "Schema-aware chunking cuts hallucination 41% in retrieval benchmark",
+      "article_url": "demo/articles/a1-schema-chunking.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Structure-aware chunking reduced unsupported assertions by 41% compared to fixed-token chunking in a retrieval benchmark using well-structured technical documentation",
+      "stance": "supports",
+      "evidence": "Splitting source documents along their declared structure reduced unsupported assertions in generated answers by 41% across a 12,000-question evaluation set, when applied to DITA-authored product documentation with consistently applied metadata"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Schema-aware chunking cuts hallucination 41% in retrieval benchmark",
+      "article_url": "demo/articles/a1-schema-chunking.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Chunking that preserved typed document structure (sections, tables, typed fields) outperformed fixed-window chunking and semantic heading chunking on every question category",
+      "stance": "supports",
+      "evidence": "Chunking that preserved the document's own typed structure, including table boundaries and field labels, performed best on every question category, compared to fixed-window chunking at 512 tokens which produced the highest rate of unsupported claims"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Schema-aware chunking cuts hallucination 41% in retrieval benchmark",
+      "article_url": "demo/articles/a1-schema-chunking.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The same structure-aware pipeline showed only 6% improvement when applied to unstructured scraped web corpus versus 41% on well-structured documentation",
+      "stance": "supports",
+      "evidence": "The same pipeline applied to a scraped web corpus showed a much smaller improvement, around 6%, compared to DITA-authored documentation. Authors noted 'The structure has to actually be there and actually be correct'"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Schema-aware chunking cuts hallucination 41% in retrieval benchmark",
+      "article_url": "demo/articles/a1-schema-chunking.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Answers grounded in structured chunks were more likely to carry usable citations back to specific fields",
+      "stance": "supports",
+      "evidence": "Answers grounded in structured chunks were more likely to carry a usable citation back to a specific field, which the authors argue matters more than the accuracy delta for regulated deployments where an answer without provenance cannot be used at all"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Schema-aware chunking cuts hallucination 41% in retrieval benchmark",
+      "article_url": "demo/articles/a1-schema-chunking.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The effectiveness of structure-aware retrieval depends on the structure actually existing and being correctly maintained in the source content",
+      "stance": "supports",
+      "evidence": "We did not test whether structure helps. We tested whether existing, maintained structure helps, and it does, substantially. The corpus was described as 'close to a best case for structure-aware retrieval'"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Enterprise RAG teams report accuracy gains after taxonomy work",
+      "article_url": "demo/articles/a2-taxonomy-gains.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "68% of enterprise RAG teams with a maintained taxonomy met their accuracy targets, compared to 31% without one",
+      "stance": "supports",
+      "evidence": "Among teams with a maintained taxonomy, 68% said their system met the accuracy bar they had set at project start. Among teams without one, that figure was 31%."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Enterprise RAG teams report accuracy gains after taxonomy work",
+      "article_url": "demo/articles/a2-taxonomy-gains.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Teams with taxonomies experienced retrieval misses as their primary failure mode, while teams without taxonomies experienced confident wrong answers from incorrect document retrieval",
+      "stance": "supports",
+      "evidence": "Teams with taxonomies described their remaining failures as retrieval misses \u2014 the right document existed and was not returned. Teams without taxonomies described their failures as confident wrong answers, where an adjacent but incorrect document was retrieved and the model presented it as authoritative."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Enterprise RAG teams report accuracy gains after taxonomy work",
+      "article_url": "demo/articles/a2-taxonomy-gains.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Taxonomy work made retrieval systems more debuggable by enabling teams to identify which terms matched and why",
+      "stance": "supports",
+      "evidence": "Several respondents noted that taxonomy work paid off in ways unrelated to model accuracy, particularly in making the retrieval layer debuggable. 'When it is wrong, I can tell you which term matched and why,' one platform lead said. 'Before, the answer to 'why did it say that' was a shrug and an embedding distance.'"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Enterprise RAG teams report accuracy gains after taxonomy work",
+      "article_url": "demo/articles/a2-taxonomy-gains.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Three of the highest-performing RAG teams surveyed had no taxonomy and relied instead on aggressive reranking over unstructured text",
+      "stance": "contradicts",
+      "evidence": "The report stops short of recommending taxonomy work universally, observing that three of the highest-performing teams surveyed had none and relied instead on aggressive reranking over unstructured text."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Enterprise RAG teams report accuracy gains after taxonomy work",
+      "article_url": "demo/articles/a2-taxonomy-gains.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The accuracy correlation with taxonomy investment may be confounded by organizational maturity rather than the taxonomy itself",
+      "stance": "neutral",
+      "evidence": "The survey did not control for team size, budget, or domain, and the authors flag this openly: taxonomy investment correlates with organizational maturity, and maturity plausibly drives the outcome on its own."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Long-context models narrow the gap on unstructured corpora",
+      "article_url": "demo/articles/b1-long-context.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "On a 400,000-token benchmark, feeding raw unstructured documents directly to a long-context model matched the accuracy of a tuned structured-retrieval pipeline on 7 of 9 task categories.",
+      "stance": "contradicts",
+      "evidence": "New evaluation results suggest that the accuracy advantage of structured retrieval shrinks substantially as model context windows grow. On a 400,000-token benchmark, feeding raw unstructured documents directly to a long-context model matched the accuracy of a tuned structured-retrieval pipeline on 7 of 9 task categories."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Long-context models narrow the gap on unstructured corpora",
+      "article_url": "demo/articles/b1-long-context.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Structured retrieval still outperformed unstructured text for multi-hop questions requiring joins across documents and questions whose answers depended on field type rather than text.",
+      "stance": "supports",
+      "evidence": "The two categories where structured retrieval still won were multi-hop questions requiring joins across documents, and questions whose answers depended on a field's type rather than its text \u2014 distinguishing an effective date from a publication date, for instance."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Long-context models narrow the gap on unstructured corpora",
+      "article_url": "demo/articles/b1-long-context.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The benchmark's unstructured corpus was clean prose with few tables, and underrepresented document types where structure carries most of the meaning (forms, specifications, regulatory filings).",
+      "stance": "neutral",
+      "evidence": "Critics of the benchmark point out that its unstructured corpus was clean prose with few tables, and that document types where structure carries most of the meaning \u2014 forms, specifications, regulatory filings \u2014 were underrepresented."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Long-context models narrow the gap on unstructured corpora",
+      "article_url": "demo/articles/b1-long-context.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "If the case for structure is accuracy, that case is weakening every six months due to improvements in long-context models.",
+      "stance": "contradicts",
+      "evidence": "One of the evaluation's designers argued the result should be read as a caution against over-investing in content modeling as a permanent moat. 'If your entire case for structure is accuracy, that case is weakening every six months,' she said."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Long-context models narrow the gap on unstructured corpora",
+      "article_url": "demo/articles/b1-long-context.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The long-context approach consumed roughly 30 times the tokens per query compared to the structured pipeline.",
+      "stance": "neutral",
+      "evidence": "The cost picture inverts the accuracy picture. The long-context approach consumed roughly 30 times the tokens per query."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Structured-first retrieval underperforms on ambiguous queries, study finds",
+      "article_url": "demo/articles/b2-ambiguous-queries.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Strictly structured retrieval performed worse than semantic search on queries that did not map cleanly onto the content model's vocabulary, with a 22% drop in successful task completion.",
+      "stance": "contradicts",
+      "evidence": "A study found that strictly structured retrieval performed worse than semantic search on queries that did not map cleanly onto the content model's vocabulary, measuring a 22% drop in successful task completion against a semantic baseline."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Structured-first retrieval underperforms on ambiguous queries, study finds",
+      "article_url": "demo/articles/b2-ambiguous-queries.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Structured retrieval (controlled vocabulary) acted as a filter that excluded relevant material for exploratory queries where users did not know the correct terminology.",
+      "stance": "contradicts",
+      "evidence": "The effect was concentrated in exploratory queries \u2014 users who did not yet know the term for what they were looking for. In those cases a controlled vocabulary acted as a filter that excluded relevant material."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Structured-first retrieval underperforms on ambiguous queries, study finds",
+      "article_url": "demo/articles/b2-ambiguous-queries.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Structured systems performed best on queries from internal specialists and worst on queries from new employees.",
+      "stance": "neutral",
+      "evidence": "They observe the same system performed best in the study on queries issued by internal specialists and worst on queries from new employees."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Structured-first retrieval underperforms on ambiguous queries, study finds",
+      "article_url": "demo/articles/b2-ambiguous-queries.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The recommended approach is to use semantic retrieval for recall and structured metadata for filtering and ranking afterwards, rather than treating structure as the primary index.",
+      "stance": "contradicts",
+      "evidence": "The recommended mitigation is not to abandon structure but to stop treating it as the primary index \u2014 using semantic retrieval for recall and structured metadata for filtering and ranking afterwards."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Hybrid retrieval outperforms both pure approaches in production deployments",
+      "article_url": "demo/articles/c1-hybrid.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Hybrid retrieval systems combining semantic search with structured metadata filtering outperformed pure-semantic systems by 19% in accuracy.",
+      "stance": "supports",
+      "evidence": "An analysis of 60 production retrieval systems found that architectures combining semantic search with structured metadata filtering outperformed both pure-semantic and pure-structured systems on every measured dimension, including accuracy, latency, and debuggability. Systems built this way showed a 19% accuracy advantage over pure-semantic systems."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Hybrid retrieval outperforms both pure approaches in production deployments",
+      "article_url": "demo/articles/c1-hybrid.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Hybrid systems combining semantic search with structured metadata outperformed pure-structured systems by 14% in accuracy.",
+      "stance": "supports",
+      "evidence": "Systems built this way showed a 19% accuracy advantage over pure-semantic systems and a 14% advantage over structured-first systems on the same query sets."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Hybrid retrieval outperforms both pure approaches in production deployments",
+      "article_url": "demo/articles/c1-hybrid.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Systems with typed metadata resolved incident investigations in 40 minutes median time versus 6 hours for systems without metadata.",
+      "stance": "supports",
+      "evidence": "Systems with typed metadata resolved incident investigations in a median of 40 minutes; systems without it took a median of 6 hours, because there was no way to ask why a given document had been returned."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Hybrid retrieval outperforms both pure approaches in production deployments",
+      "article_url": "demo/articles/c1-hybrid.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Hybrid architectures combining semantic and structured approaches outperformed both pure approaches on debuggability.",
+      "stance": "supports",
+      "evidence": "An analysis of 60 production retrieval systems found that architectures combining semantic search with structured metadata filtering outperformed both pure-semantic and pure-structured systems on every measured dimension, including accuracy, latency, and debuggability."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "Hybrid retrieval outperforms both pure approaches in production deployments",
+      "article_url": "demo/articles/c1-hybrid.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The optimal architecture uses semantic retrieval (text) for finding candidates and structured metadata for precision and ranking decisions.",
+      "stance": "supports",
+      "evidence": "The reported pattern is consistent: semantic retrieval for recall, structured metadata for precision and ranking. The analysis argues that the long-running framing of structured against unstructured is the wrong question... 'text finds candidates, structure decides among them.'"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "The cost of structure: what maintaining a content model actually takes",
+      "article_url": "demo/articles/c2-cost-of-structure.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "A mid-size software company found that 40% of their documents carried at least one incorrect metadata value at any given time in their structured content system.",
+      "stance": "contradicts",
+      "evidence": "The company estimates that 40% of their documents carried at least one incorrect metadata value at any given time."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "The cost of structure: what maintaining a content model actually takes",
+      "article_url": "demo/articles/c2-cost-of-structure.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Queries touching incorrectly tagged documents in a structured system failed at nearly the rate of an unstructured baseline.",
+      "stance": "contradicts",
+      "evidence": "The company measured that queries touching incorrectly tagged documents failed at nearly the rate of an unstructured baseline, which the report summarizes bluntly: 'Structure you do not maintain is not structure.'"
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "The cost of structure: what maintaining a content model actually takes",
+      "article_url": "demo/articles/c2-cost-of-structure.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Maintaining a structured content model for retrieval systems consumed approximately 1.5 full-time equivalents per year ongoing after initial build.",
+      "stance": "neutral",
+      "evidence": "maintaining the content model behind their retrieval system consumed roughly 1.5 full-time equivalents per year, ongoing, after the initial build. The work is not modeling. It is enforcement \u2014 reviewing whether authors applied metadata correctly, reconciling terms that drifted apart across teams, and repairing structure in content migrated from acquisitions."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "The cost of structure: what maintaining a content model actually takes",
+      "article_url": "demo/articles/c2-cost-of-structure.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "The company concluded that structure does pay off at their scale despite maintenance costs.",
+      "stance": "supports",
+      "evidence": "The conclusion is not that structure fails to pay off. The company estimates it does, comfortably, at their scale."
+    },
+    {
+      "date": "2026-09-23",
+      "article_title": "The cost of structure: what maintaining a content model actually takes",
+      "article_url": "demo/articles/c2-cost-of-structure.html",
+      "article_source": "Demo Retrieval Wire",
+      "claim": "Published accuracy comparisons of retrieval systems almost never include maintenance costs on the structured side, leading teams to systematically underestimate their commitments.",
+      "stance": "neutral",
+      "evidence": "The argument is that published accuracy comparisons almost never include the maintenance cost on the structured side, and that teams reading those comparisons systematically underestimate what they are committing to."
+    }
+  ],
+  "last_updated": "2026-09-23T15:56:20.344968+00:00"
+}

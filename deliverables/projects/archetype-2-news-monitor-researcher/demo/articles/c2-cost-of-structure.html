@@ -1,0 +1,9 @@
+<html><head><title>The cost of structure: what maintaining a content model actually takes</title></head>
+<body><article>
+<h1>The cost of structure: what maintaining a content model actually takes</h1>
+<p>A detailed accounting from a mid-size software company puts a number on something usually left vague: maintaining the content model behind their retrieval system consumed roughly 1.5 full-time equivalents per year, ongoing, after the initial build.</p>
+<p>The work is not modeling. It is enforcement — reviewing whether authors applied metadata correctly, reconciling terms that drifted apart across teams, and repairing structure in content migrated from acquisitions. The company estimates that 40% of their documents carried at least one incorrect metadata value at any given time.</p>
+<p>That error rate matters directly for retrieval quality. The company measured that queries touching incorrectly tagged documents failed at nearly the rate of an unstructured baseline, which the report summarizes bluntly: "Structure you do not maintain is not structure. It is a claim about your content that your retrieval layer believes."</p>
+<p>The conclusion is not that structure fails to pay off. The company estimates it does, comfortably, at their scale. The argument is that published accuracy comparisons almost never include the maintenance cost on the structured side, and that teams reading those comparisons systematically underestimate what they are committing to.</p>
+<p>The report recommends measuring metadata correctness continuously and treating it as a production signal rather than a content-operations concern.</p>
+</article></body></html>
